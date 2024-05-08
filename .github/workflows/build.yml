@@ -1,0 +1,23 @@
+on: [push]
+
+name: Build
+
+jobs:
+  build:
+    name: Build and run tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        key: stack
+        path: |
+          ~/.stack
+          ~/.stack-work
+    - uses: actions/checkout@v3
+    - name: Compile library
+      run: stack --system-ghc build
+    - name: Compile tests
+      run: stack --system-ghc test --no-run-tests
+    - name: Run tests
+      run: stack --system-ghc test
