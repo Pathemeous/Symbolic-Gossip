@@ -1,0 +1,70 @@
+\documentclass[12pt,a4paper]{article}
+\input{latexmacros.tex}
+
+\title{Functional Programming Project:\\ Symbolic Gossip Model Checker}
+\author{Wouter Smit, Joris Galema, Djanira dos Santos Gomes, Madeleine Gignoux}
+\date{ }
+\hypersetup{pdfauthor={}, pdftitle={My Report}}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project Proposal}
+The Gossip Problem is the problem of sharing information in a network. An explicit model checker for Gossip called GoMoChe exists \cite{gattinger2023gomoche}. Explicit model checkers are generally less efficient than symbolic ones, and GoMoChe too is computationally limited to small examples. On the other hand, SMCDEL is a symbolic model checker for dynamic epistemic logic and contains symbolic representations for various logics.
+
+The goal of this project is to implement a symbolic model checker for gossip models. Ultimately, this model checker could replace GoMoChe's explicit model checking functionality and extend the SMCDEL library.
+
+Many variants of the gossip problem exist, each with their own computational challenges. Most notably, there is a distinction between synchronous and asynchronous gossip models, where synchronicity means the presence of a global clock tick with each call made. Due to both the mathematical and computational complexity of the asynchronous models, this project focuses mainly on the standard example in a synchronous setting. In order to achieve this, we start by developing a symbolic representation capable of handling so-called transparent models, where each call is visible to all agents.
+
+\section{Method}
+We will first extend the SMCDEL project with a knowledge structure for (transparent) Gossip models and a call free language. Initially, this approach aims to reuse as many of the existing SMCDEL modules as possible.
+
+After providing a minimal viable product in this way, we will aim to expand the knowledge structure of the symbolic model checker in order to enable synchronous models. Additionally, a formula rewriting procedure based on the call reduction axioms in \cite{van_ditmarsch_logic_2020} might enable evaluation of formulae in the full language.
+
+Based on the performance of the symbolic model checker at each stage, it may be desirable to improve its performance by implementing more specific implementations that leverage characteristics of the gossip models.
+
+\section{Project Goals}
+The specifications of the project are defined as follows.
+
+\textbf{Must Have}
+\begin{enumerate}
+    \item Provide symbolic knowledge structure to represent the gossip problem
+    \item Implement a symbolic model checker using the existing SMCDEL functionalities
+    \item Implement transparent model semantics
+    \item Evaluate call-free formulae at call sequences
+\end{enumerate}
+
+\textbf{Nice to Have}
+\begin{enumerate}
+    \item Implement synchronous model semantics
+    \item Implement a call reduction procedure from any formula to a call-free formula
+\end{enumerate}
+
+\textbf{Could Have}
+\begin{enumerate}
+    \item Implement asynchronous model semantics
+    \item Include the notion of phone numbers
+    \item Enable arbitrary initial states of the gossip problem
+    \item Replace parts of the SMCDEL utilities with custom version optimised for gossip models.
+\end{enumerate}
+
+\textbf{Won't Have}
+\begin{enumerate}
+    \item Protocol dependent knowledge operators
+    \item Merge-then-inspect call semantics
+    \item Non-symmetric call semantics
+\end{enumerate}
+
+\section*{References}
+\begin{itemize}
+    \item \cite{gattinger2023gomoche}
+    \item \cite{vanditmarsch2019strengthening}
+    \item \cite{GattingerThesis2018}
+\end{itemize}
+
+\bibliographystyle{alpha}
+\bibliography{references.bib}
+
+
+\end{document}
