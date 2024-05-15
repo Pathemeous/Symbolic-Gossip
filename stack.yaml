@@ -1,1 +1,8 @@
 resolver: lts-21.25
+
+packages:
+- '.'
+
+extra-deps:
+  - git: https://github.com/jrclogic/SMCDEL
+    commit: c17bbef46e2d48a9f8279b67ffe6adac06f9dabe
