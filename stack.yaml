@@ -4,5 +4,7 @@ packages:
 - '.'
 
 extra-deps:
-  - git: https://github.com/jrclogic/SMCDEL
-    commit: c17bbef46e2d48a9f8279b67ffe6adac06f9dabe
+- git: https://github.com/jrclogic/SMCDEL
+  commit: c17bbef46e2d48a9f8279b67ffe6adac06f9dabe
+- HasCacBDD-0.2.0.0@sha256:14bcfba6c2b64626cff99673b351547bda115d59124847dd1898ea56a075a29c,1772
+- decision-diagrams-0.2.0.0@sha256:9f82d39f7331f6836784fa89354986e436a4d62d810b8fb2b44dd10c6a0beb85,3415

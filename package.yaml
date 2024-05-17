@@ -11,6 +11,7 @@ dependencies:
   - base
   - random
   - QuickCheck
+  - smcdel
 
 library:
   source-dirs: lib
