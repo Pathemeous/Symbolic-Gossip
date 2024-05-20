@@ -42,3 +42,22 @@ callTransparent n (a,b) = (callTrfTransparent n a b, [thisCallProp (a,b)])
 
 doCallTransparent :: KnowScene -> (Int,Int) -> KnowScene
 doCallTransparent start (a,b) = start `update` callTransparent (length $ agentsOf start) (a,b)
+
+afterTransparent :: Int -> [(Int,Int)] -> KnowScene
+afterTransparent n = foldl doCallTransparent (gossipInit n)
+
+isSuccessTransparent :: Int -> [(Int,Int)] -> Bool
+isSuccessTransparent n cs = evalViaBdd (afterTransparent n cs) (allExperts n)
+
+whoKnowsMeta :: KnowScene -> [(Int,[(Int,String)])]
+whoKnowsMeta scn = [ (k, map (meta k) [0..maxid] ) | k <- [0..maxid] ] where
+  n = length (agentsOf scn)
+  maxid = n - 1
+  meta x y = (y, map (knowsAbout x y) [0..maxid])
+  knowsAbout x y i
+    | y == i = 'X'
+    | evalViaBdd scn (      K (show x) $       PrpF (hasSof n y i)) = 'Y'
+    | evalViaBdd scn (Neg $ K (show x) $ Neg $ PrpF (hasSof n y i)) = '?'
+    | evalViaBdd scn (      K (show x) $ Neg $ PrpF (hasSof n y i)) = '_'
+    | otherwise                                                     = 'E'
+
