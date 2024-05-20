@@ -17,7 +17,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                  (Conj [(Neg (PrpF $ thisCallProp (i,j))) | i <- gossipers n
                                                    , j <- gossipers n 
                                                    , not ((i == a && j == b) || (i == b && j == a))
-                                                   , i /= j ])]
+                                                   , i < j ])]
   changelaws =
     [(hasSof n i j, boolBddOf $              -- after a call, i has the secret of j iff
         Disj [ has n i j                     -- i already knew j, or
