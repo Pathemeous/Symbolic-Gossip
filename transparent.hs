@@ -34,5 +34,11 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   -- changelog
         -- thisCallHappens
         -- isInCallForm
-        -- evenProps
+        -- eventProps
         -- eventobs should be the same or implement a,b
+
+callTransparent :: Int -> (Int,Int) -> Event 
+callTransparent n (a,b) = (callTrfTransparent n a b, [thisCallProp (a,b)])
+
+doCallTransparent :: KnowScene -> (Int,Int) -> KnowScene
+doCallTransparent start (a,b) = start `update` callTransparent (length $ agentsOf start) (a,b)
