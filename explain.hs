@@ -26,5 +26,7 @@ kSProps (KnS voc sLaw obs) n offset = do
    putStrLn "vocab: "
    mapM_ (putStrLn . ((++) " --  ") . (explainPrp n offset)) voc
    putStrLn "State Law: "
+   -- Translate BDS back to formula. 
    putStrLn "Observables: "
+   mapM_ (putStrLn . ((++) " --  ") . (\ x -> (fst x) ++ ":  " ++ show (snd x) )) obs
 
