@@ -9,11 +9,11 @@ callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
 callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   -- allCalls = [ (i,j) | i <- gossipers n, j <- gossipers n, i < j ]
   isInCallForm k = Disj $ [ PrpF $ thisCallProp (a,k), PrpF $ thisCallProp (k,b) ]
-  thisCallHappens = PrpF $ thisCallProp (a,b)
+  thisCallHappens = thisCallProp (a,b)
   callPropsWith k = [ thisCallProp (i,k) | i <- gossipers n, i < k ]
         ++ [ thisCallProp (k,j) | j <- gossipers n, k < j ]
-  eventprops = thisCallHappens
-  eventlaw = Conj [thisCallHappens, 
+  eventprops = [thisCallHappens]
+  eventlaw = Conj [PrpF $ thisCallHappens, 
                  (Conj [(Neg (PrpF $ thisCallProp (i,j))) | i <- gossipers n
                                                    , j <- gossipers n 
                                                    , not ((i == a && j == b) || (i == b && j == a))
