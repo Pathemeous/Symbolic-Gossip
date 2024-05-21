@@ -29,8 +29,7 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps "")
       secretDecoder k secrets r' |  k >= n*(n-1) + n = []
                                  |  otherwise = ("S_{"++ show i ++ "}"++ show j ++ r') : secretDecoder (k + 1) secrets r'
          where 
-            i = k `quot` n
-            j = k `rem` n
+            (i,j) = (k `quot` n, k `rem` n)
       callDecoder :: Int -> [Prp] -> String -> [String]
       callDecoder k calls r' | k >= div (n*(n-1)) 2 = []
                              | null calls = []
