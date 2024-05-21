@@ -28,7 +28,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                            | k <- gossipers n \\ [j]]]
              ])
     | i <- gossipers n, j <- gossipers n, i /= j ] 
-  eventobs = [(show k, callPropsWith k) | k <- gossipers n]
+  eventobs = [(show k, thisCallHappens)]
 
 
   -- check out PrpF
@@ -36,7 +36,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
         -- thisCallHappens
         -- isInCallForm 
         -- eventProps
-        -- should eventobs be the same or tailored to ab?
+        -- should eventobs be the same or tailored to ab? currently: tailored to ab
 
 callTransparent :: Int -> (Int,Int) -> Event 
 callTransparent n (a,b) = (callTrfTransparent n a b, [thisCallProp (a,b)])
