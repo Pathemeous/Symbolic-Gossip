@@ -17,7 +17,7 @@ explainPrp n (P prop) | i < n && j < n && i /= j = "S_{"++ show i ++ "}"++ show 
                               j = prop `rem` n
                               otherProp :: Int -> Prp -> String
                               otherProp n' (P prop') = show $ prop' - (n'* n' -n' )
-
+                              
 
 prpLibrary :: [Prp] -> Int -> [(Prp,String)]
 prpLibrary prps n = zip prps (prpLibraryHelper prps "")
