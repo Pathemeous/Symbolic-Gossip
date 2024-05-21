@@ -5,6 +5,7 @@ import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
 import Test.QuickCheck
+import Data.Maybe
 
 -- in  : number of gossipers (Int), offset that distinguishes "secret" props from "call" props (Int), and the actual prop to decipher (Prp).
 -- out : String containing meaning of proposition (String)
@@ -18,17 +19,30 @@ explainPrp n (P prop) | i < n && j < n && i /= j = "S_{"++ show i ++ "}"++ show 
                               otherProp n' (P prop') = show $ prop' - (n'* n' -n' )
 
 
-explainPrpNew :: [Prp] -> Int -> [String]
-explainPrpNew prps n = secretDecoder 0 (take (n^2-n) prps) ++ callDecoder (take (div (factorial n) 2) (drop (n^2-n) prps)) ++ explainPrpNew drop (n^2-n+(div (factorial n) 2)) prps
+prpLibrary :: [Prp] -> Int -> [(Prp,String)]
+prpLibrary prps n = zip prps (prpLibraryHelper prps "")
    where 
-      secretDecoder :: Int -> [Prp] -> [String]
-      secretDecoder k secrets |  k >= n^2 + n = []
-                                 otherwise = "S_{"++ show i ++ "}"++ show j ++ (secretDecoder (k + 1) secrets)
+      prpLibraryHelper :: [Prp]  -> String -> [String]
+      prpLibraryHelper [] _ = []
+      prpLibraryHelper prps' r = secretDecoder 0 (take (n*(n-1)) prps') r ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps')) r ++ prpLibraryHelper (drop (div (3*n*(n-1)) 2) prps') (r ++ "'")
+      secretDecoder :: Int -> [Prp] -> String -> [String]
+      secretDecoder k secrets r' |  k >= n*(n-1) + n = []
+                                 |  otherwise = ("S_{"++ show i ++ "}"++ show j ++ r') : secretDecoder (k + 1) secrets r'
          where 
-            i = prop `quot` n
-            j = prop `rem` n
-      callDecoder :: Int -> [Prp] -> String
-      callDecoder = 
+            i = k `quot` n
+            j = k `rem` n
+      callDecoder :: Int -> [Prp] -> String -> [String]
+      callDecoder k calls r' | k >= div (n*(n-1)) 2 = []
+                             | null calls = []
+                             | otherwise = ("q" ++ show i ++ show j ++ r') : callDecoder (k + 1) calls r'
+         where 
+            (i, j) = getCNums k 0
+            getCNums :: Int -> Int -> (Int,Int)
+            getCNums k' r'' | (k'+1) < n = (r'',k'+1)
+                            | otherwise = getCNums (k'-n+2+r'') (r''+1)
+         
+explainPrps :: Prp -> [(Prp,String)] -> String
+explainPrps (P x) prpLib = fromJust (lookup (P x) prpLib)
 
 -- Alright so the case with offset does not yet work. This is because the update structure may contain propositions of this form
 -- But after the update the propositions just turn into a list of propositions increasing (+1) in order. 
