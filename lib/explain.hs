@@ -10,16 +10,25 @@ import Test.QuickCheck
 -- out : String containing meaning of proposition (String)
 explainPrp :: Int -> Prp -> String
 explainPrp n (P prop) | i < n && j < n && i /= j = "S_{"++ show i ++ "}"++ show j
-                             | otherwise = otherProp n (P prop)
-                           --   | prop > offset = "Agent " ++ (show i) ++ " called with agent " ++ (show j)
-                           --   | otherwise     = "S_{"++(show i') ++ "}"++ (show j')
+                      | otherwise = otherProp n (P prop)
                               where 
-                              -- i  = (prop - offset) `quot` 10
-                              -- j  = (prop - offset) `rem` 10
                               i = prop `quot` n
                               j = prop `rem` n
                               otherProp :: Int -> Prp -> String
                               otherProp n' (P prop') = show $ prop' - (n'* n' -n' )
+
+
+explainPrpNew :: [Prp] -> Int -> [String]
+explainPrpNew prps n = secretDecoder 0 (take (n^2-n) prps) ++ callDecoder (take (div (factorial n) 2) (drop (n^2-n) prps)) ++ explainPrpNew drop (n^2-n+(div (factorial n) 2)) prps
+   where 
+      secretDecoder :: Int -> [Prp] -> [String]
+      secretDecoder k secrets |  k >= n^2 + n = []
+                                 otherwise = "S_{"++ show i ++ "}"++ show j ++ (secretDecoder (k + 1) secrets)
+         where 
+            i = prop `quot` n
+            j = prop `rem` n
+      callDecoder :: Int -> [Prp] -> String
+      callDecoder = 
 
 -- Alright so the case with offset does not yet work. This is because the update structure may contain propositions of this form
 -- But after the update the propositions just turn into a list of propositions increasing (+1) in order. 
@@ -57,4 +66,3 @@ gsi (ks, s) n = do
    if null s then putStrLn " --  Nothing is true" 
       else 
       mapM_ (putStrLn . (++) " --  " . explainPrp n) s
-
