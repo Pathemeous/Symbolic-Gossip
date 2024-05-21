@@ -79,3 +79,21 @@ gsi (ks, s) n = do
    if null s then putStrLn " --  Nothing is true" 
       else 
       mapM_ (putStrLn . (++) " --  " . explainPrp n) s
+
+
+data Tree a = T a [Tree a]
+   deriving(Show)
+
+-- explainScene :: KnowScene -> Int -> KnowScene
+-- explainScene (KnS voc sLaw obs, s) n = KnS ()
+
+-- explainGossip :: Int -> Int -> Tree KnowScene
+-- explainGossip n depth = T (gossipInit n) []
+
+gossipTree :: Int -> Int -> Tree KnowScene
+gossipTree n depth = T (gossipInit n) (gossipBranches (gossipInit n) n depth)   
+   where 
+      gossipBranches :: KnowScene -> Int -> Int -> [Tree KnowScene]
+      gossipBranches _ _ 0 = []
+      gossipBranches ks n' depth' = [ T (doCall ks (i,j)) (gossipBranches (doCall ks (i,j)) n' (depth'-1)) | i <- gossipers n, j <- gossipers n, i < j ]  
+
