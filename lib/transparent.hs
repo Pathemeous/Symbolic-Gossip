@@ -5,7 +5,7 @@ import SMCDEL.Language
 import SMCDEL.Symbolic.S5
 import Data.List
 
-import Debug.Trace
+--import Debug.Trace
 
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
 callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
