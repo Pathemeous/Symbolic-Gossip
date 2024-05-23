@@ -191,16 +191,16 @@ bddOf kns (PubAnnounceW form1 form2) =
 
 -- Simple Transformers with factual change
 bddOf kns (Dia (Dyn dynLabel d) f) | isJust (fromDynamic d :: Maybe StwfEvent) =
-    -- TODO  relabelWith copyrelInverse              -- 4. Copy back changeProps V_-^o to V_-
-      simulateActualEvents                    -- 3. Simulate actual event(s) [see below]
+      relabelWith copyrelInverse              -- 4. Copy back changeProps V_-^o to V_-
+    . simulateActualEvents                    -- 3. Simulate actual event(s) [see below]
     . substitSimul [ (k, changeLaw ! p)       -- 2. Replace changeProps V_ with postcons
                    | p@(P k) <- changeProps]  --    (no "relabelWith copyrel", undone in 4)
     . bddOf (kns `update` trf)                -- 1. boolean equivalent wrt new struct
     $ f
   where
     changeProps = map fst changeLaw
-    --copychangeProps = [(freshp $ vocabOf kns ++ addProps)..]
-    --copyrelInverse  = zip copychangeProps changeProps
+    copychangeProps = [(freshp $ vocabOf kns ++ addProps)..]
+    copyrelInverse  = zip copychangeProps changeProps
     trf@(SimTrfWithF addProps changeLaw _trfObs) = trfUnshifted -- TODO shiftPrepare kns
     (trfUnshifted,simulateActualEvents) =
       case fromDynamic d of
