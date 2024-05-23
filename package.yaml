@@ -13,6 +13,9 @@ dependencies:
   - QuickCheck
   - smcdel
   - HasCacBDD
+  - tagged
+  - directory 
+  - process
 
 library:
   source-dirs: lib
