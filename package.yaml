@@ -12,6 +12,7 @@ dependencies:
   - random
   - QuickCheck
   - smcdel
+  - HasCacBDD
 
 library:
   source-dirs: lib
