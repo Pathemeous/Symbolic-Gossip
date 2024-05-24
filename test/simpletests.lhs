@@ -12,6 +12,8 @@ import Basics
 
 import Test.Hspec
 import Test.QuickCheck
+
+import qualified SimpleTransformerSpec
 \end{code}
 
 The following uses the HSpec library to define different tests.
@@ -28,6 +30,7 @@ main = hspec $ do
       property (\n -> n > 0 ==> funnyfunction n > 0)
     it "myreverse: using it twice gives back the same list" $
       property $ \str -> myreverse (myreverse str) == (str::String)
+    describe "SimpleTransformer" SimpleTransformerSpec.spec
 \end{code}
 
 To run the tests, use \verb|stack test|.
