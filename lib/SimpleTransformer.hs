@@ -2,6 +2,8 @@ module SimpleTransformer where
 
 import HaitianS5
 import SMCDEL.Examples.GossipS5
+import SMCDEL.Language
+import Data.List ((\\))
 
 
 simpleGossipInit :: Int -> KnowScene
