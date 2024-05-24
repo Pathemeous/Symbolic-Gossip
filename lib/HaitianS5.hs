@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module HaitianS5 where
 
@@ -28,6 +29,9 @@ import SMCDEL.Internal.TaggedBDD
 import SMCDEL.Internal.TexDisplay
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
+
+
+import SMCDEL.Examples.GossipS5
 
 boolBddOf :: Form -> Bdd
 boolBddOf Top           = top
@@ -659,14 +663,20 @@ instance HasPrecondition StwfEvent where
 
 instance Update KnowStruct SimpleTransformerWithFactual where
   checks = [haveSameAgents]
+  unsafeUpdate :: KnowStruct -> SimpleTransformerWithFactual -> KnowStruct
   unsafeUpdate kns@KnS {} (SimTrfWithF _ _ trfObs) = KnS newprops newlaw newobs where
     KnS newprops newlaw newobs = unsafeUpdate kns (SimTrfNoF trfObs)
 
+
+-- Will Modify to be specific to Gossip Calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
-  unsafeUpdate (kns@KnS {},s) (stwf@(SimTrfWithF _ thetaminus _),x) = (newkns, news) where
-    newkns = unsafeUpdate kns stwf
-    news = sort ((s \\ map fst thetaminus) ++ filter (\ p -> bddEval (s ++ x) (thetaminus ! p)) (map fst thetaminus))
+  unsafeUpdate (KnS v th obs,s) (SimTrfWithF _ thetaminus trfObs,x) = (newkns, newstate) where
+    -- Compute special observable management for Gossip
+    -- intersecrets O+ of an agent with the new state (e.g. only true secrets)
+    newobs = sort [ (ag, nub (ob ++ intersect newstate (fst (trfObs ! ag))) \\ snd (trfObs ! ag)) | (ag,ob) <- obs ]
+    newkns = KnS v th newobs -- keep V and Theta but changes obs
+    newstate = sort ((s \\ map fst thetaminus) ++ filter (\ p -> bddEval (s ++ x) (thetaminus ! p)) (map fst thetaminus))
 -- check line 368-373 code above and the corresponding definition pp.65 of Malvin's thesis
 
 instance HasAgents SimpleTransformerWithFactual where
