@@ -36,8 +36,6 @@ import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
 
 
-import SMCDEL.Examples.GossipS5
-
 boolBddOf :: Form -> Bdd
 boolBddOf Top           = top
 boolBddOf Bot           = bot
