@@ -7,6 +7,11 @@ module HaitianS5 where
 This file is the copy of the SMCDEL fork of Symbolic/S5.hs from Haitian
 Modifications:
 - Added pattern match for `eval` and `BddOf` for `Dk` and Dkw` (from SMCDEL main)
+- Modify the Update instance of Simple Transformers. By definition now the observables are mutated differently:
+  O' = O ++ (O+ intersect S) \\ O-
+  where S is the newly computed state
+  This aims to only add observables when the secret atom is already true,
+  which is impossible in the transformer definition
 
 -}
 
@@ -668,7 +673,7 @@ instance Update KnowStruct SimpleTransformerWithFactual where
     KnS newprops newlaw newobs = unsafeUpdate kns (SimTrfNoF trfObs)
 
 
--- Will Modify to be specific to Gossip Calls
+-- Modified to be specific to Gossip Calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
   unsafeUpdate (KnS v th obs,s) (SimTrfWithF _ thetaminus trfObs,x) = (newkns, newstate) where
