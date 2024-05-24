@@ -5,6 +5,7 @@ module HaitianS5 where
 {-
 This file is the copy of the SMCDEL fork of Symbolic/S5.hs from Haitian
 Modifications:
+- Added pattern match for `eval` and `BddOf` for `Dk` and Dkw` (from SMCDEL main)
 
 -}
 
@@ -114,6 +115,12 @@ eval (kns,s) (Ck ags form)  = all (\s' -> eval (kns,s') form) theres where
   theres = [ s' | (s0,s') <- comknow kns ags, s0 == s ]
 eval (kns,s) (Ckw ags form)  = alleqWith (\s' -> eval (kns,s') form) theres where
   theres = [ s' | (s0,s') <- comknow kns ags, s0 == s ]
+eval (kns@(KnS _ _ obs),s) (Dk ags form) = all (\s' -> eval (kns,s') form) theres where
+  theres = filter (\s' -> seteq (s' `intersect` oi) (s `intersect` oi)) (statesOf kns)
+  oi = nub $ concat [obs ! i | i <- ags]
+eval (kns@(KnS _ _ obs),s) (Dkw ags form) = alleqWith (\s' -> eval (kns,s') form) theres where
+  theres = filter (\s' -> seteq (s' `intersect` oi) (s `intersect` oi)) (statesOf kns)
+  oi = nub $ concat [obs ! i | i <- ags]
 eval scn (PubAnnounce form1 form2) =
     not (eval scn form1) || eval (update scn form1) form2
 eval (kns,s) (PubAnnounceW form1 form2) =
@@ -165,6 +172,14 @@ bddOf kns@(KnS allprops lawbdd obs) (Ck ags form) = gfp lambda where
   lambda z = conSet $ bddOf kns form : [ forallSet (otherps i) (imp lawbdd z) | i <- ags ]
   otherps i = map (\(P n) -> n) $ allprops \\ obs ! i
 bddOf kns (Ckw ags form) = dis (bddOf kns (Ck ags form)) (bddOf kns (Ck ags (Neg form)))
+bddOf kns@(KnS allprops lawbdd obs) (Dk ags form) =
+  forallSet otherps (imp lawbdd (bddOf kns form)) where
+    otherps = map (\(P n) -> n) $ allprops \\ uoi
+    uoi = nub (concat [obs ! i | i <- ags])
+bddOf kns@(KnS allprops lawbdd obs) (Dkw ags form) =
+  disSet [ forallSet otherps (imp lawbdd (bddOf kns f)) | f <- [form, Neg form] ] where
+    otherps = map (\(P n) -> n) $ allprops \\ uoi
+    uoi = nub (concat [obs ! i | i <- ags])
 bddOf kns@(KnS props _ _) (Announce ags form1 form2) =
   imp (bddOf kns form1) (restrict bdd2 (k,True)) where
     bdd2  = bddOf (announce kns ags form1) form2
