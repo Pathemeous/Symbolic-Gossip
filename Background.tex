@@ -1,19 +1,19 @@
 \section{Background}
 
-For the language and syntax of gossip, please refer to CITE. We will shortly discuss how the gossip problem is approached in SMCDEL. For an in-depth explanation, please refer to CITE.
+For the language and syntax of Gossip, please refer to (CITE). We will shortly discuss how The Gossip Problem is approached by (CITE). For an in-depth explanation, please refer to CITE.
 
-The Gossip Problem models the flow of information called secrets. We begin in an initial state before any information has been shared. At this point, each agent knows only their own secret. We describe this state using so-called \textit{vocabulary}, \textit{laws}, and \textit{observations}. The vocabulary $V$ expresses all current atomic propositions, which in this case is the secrets. We let $S_ij$ denote agent $i$ knowing agent $j$'s secret. Next is the law $\Theta$, this refers to the common-knowledge of the agents, which in this case is that nobody knows anyone else's secret and everyone knows their own. Finally, the observations $O_i$ contain which propositional variables agent $i$ observes. 
+The Gossip Problem models the flow of information called secrets. We begin at an initial state before any information has been shared. At this point, each agent knows only their own secret. We describe this state using so-called \textit{vocabulary}, \textit{laws}, and \textit{observations}. The vocabulary $V$ expresses all current atomic propositions, which in this case is the secrets. We let $S_ij$ denote agent $i$ knowing agent $j$'s secret. Next is the law $\Theta$, this refers to the common-knowledge of the agents, which in this case is that nobody knows anyone else's secret and everyone knows their own. Finally, the observations $O_i$ contain which propositional variables agent $i$ observes, to begin with, each agent only observes their own secret. 
 
-For the sake of simplicity, we can remove notions of knowing one's own secret completely. This means the initial problem looks as follows. 
+For the sake of simplicity, we can remove notions of knowing one's own secret completely. This makes the initial problem look as follows. Again, all credit goes to (CITE).
 
-$$$$ 
+$$F_{init} = (V = {S_ij | i, j \text{ Agents }, i \neq j}, \Theta =\bigwedge_{i\neq j} \lnot Si_j , O_i = \empty)$$ 
 
-Now we must have a notion of how to transform the model after a call happens. To do so, we use a Knowledge Transformer. The crux of this paper involves changing the knowledge transformer for the synchronous Gossip problem to fit out needs. 
+Now we must have a notion of how to transform the model after a call happens. To do so, we use a Knowledge Transformer. The crux of this paper involves changing the Knowledge Transformer for the Synchronous Gossip Problem provided in SMCDEL to fit out needs. 
 
-The Knowledge Transformer explains how we should change the vocabulary, laws, and observations after an arbitrary call. In simple, the vocabulary is extended with propositional variables $q_{ij}$ which express that agent $i$ called agent $j$. Recalling that we are dealing with the synchronous Gossip Problem, where agents only know a call occured, but not who called, we express this with two laws $\Theta^+$ and $\Theta^-$ which express that exactly one call happened, and that $i$ will know $j$'s secret if $i$ knew $j$'s secret already, $i$ and $j$ called, or $i$ spoke with some other agent $k$ who previously spoke with $j$. Finally, in this transformer, each agent $i$ observes the calls it participated in, which we denote $O^+_i$. 
+The Knowledge Transformer explains how we should change the vocabulary, laws, and observations after an arbitrary call. In simple, the vocabulary is extended with propositional variables $q_{ij}$ which express that agent $i$ called agent $j$. Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occured, but not who called, we express this with two laws $\Theta^+$ and $\Theta^-$ which express that exactly one call happened, and the conditions under which agent $i$ can learn agent $j$'s secret. Finally, each agent $i$ observes the calls it participated in, which we denote $O^+_i$. 
 
-Again, referring to CITE, the knowledge transformer for the synchronous gossip problem is defined as follows. 
+Again, referring to CITE, the Knowledge Transformer for The Synchronous Gossip Problem is defined as follows. 
 
-$$$$
+$$\Chi_\text{call}=(V^+,\Theta^+,V_-,\Theta_-,O^+)$$
 
-With this background on how to model gossip symbolically, we can write our own transformers for modelling other Gossip Problems. However, we first must understand how this framework is implemented in SMCDEL.
+With this background on how to model Gossip symbolically, we can write our own transformers for modelling other Gossip problems. However, first we must understand how this framework is implemented in SMCDEL's code, and we write some functions to help us understand what is happening better.
