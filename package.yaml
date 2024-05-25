@@ -1,8 +1,8 @@
-name: report
+name: SYMBOLIC-GOSSIP
 version: 0.1.0.0
-synopsis: My Haskell project
+synopsis: Functional Programming 2024 - Symbolic Gossip Project
 description: See report.pdf
-maintainer: My Name <my.email@example.com>
+maintainer: Wouter Smit <pathemeous@gmail.com>
 category: Logic
 
 ghc-options: -Wall
@@ -25,13 +25,13 @@ executables:
     main: Main.lhs
     source-dirs: exec
     dependencies:
-      - report
+      - SYMBOLIC-GOSSIP
 
 tests:
   simpletests:
     main: simpletests.lhs
     source-dirs: test
     dependencies:
-      - report
+      - SYMBOLIC-GOSSIP
       - QuickCheck
       - hspec
