@@ -1,0 +1,31 @@
+\section{Introduction}
+
+The \textit{Gossip Problem} is the problem of sharing information in a network.
+Many variants of the gossip problem exist, each with their own computational challenges. 
+Most notably, a distinction is made between the situation where agents know which agents share 
+information and when, known as the \textit{transparent} Gossip Problem and when agents only know that 
+information is shared, known as the \textit{synchronous} Gossip Problem.
+
+For simulating the Gossip Problem, an explicit model checker for Gossip called GoMoChe exists \cite{gattinger2023gomoche}.
+Explicit model checkers are generally less efficient than symbolic ones, which aim to cut down on computation time.
+GoMoChe too is therefore computationally limited to small examples. On the other hand, a symbolic model checker for dynamic 
+epistemic logic called SMCDEL exists, and contains symbolic representations for various logics, including the \textit{synchronous} Gossip Problem (CITE).
+This tool is much more general, and can be used for many logic problems and puzzles, however in terms of the Gossip Problem, 
+only a symbolic model checker for the synchonous gossip problem exists, and due to keeping track of the 
+higher-order logic and distinctions between calling and secrets, this implementation can take a simple model and 
+blow it up to check simple formulas. 
+
+This project expands on SMCDEL's functionality. To begin with, in Section X we start by implementing
+some functions for interpretting the current state which makes Gossip Problems in SMCDEL, as well as
+our future work, easier to interpret. Next, in Section Y we use the definition of knowledge transformers provided in SMCDEL to create
+knowledge transformers for the \textit{transparent} Gossip Problem. 
+
+Finally, in Section Z we make a simpler knowledge transformer, which cuts down on the complexity of 
+computing the synchronous gossip problem, with the tradeoff of losing higher-order knowledge.  
+
+-- explain  
+-- transparent
+-- simple
+
+
+\section{Background}
