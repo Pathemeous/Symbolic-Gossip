@@ -16,15 +16,18 @@ import Data.List ((\\))
 \end{code}
 
 The model is initialized by the \texttt{simpleGossipInit} function, which is based on the \texttt{gossipInit} function in the GossipS5 file. 
-The initial vocabulary contains all propositions describing that agent $i$ knows the secret of agent $j$, for all agents $i,j$. 
+The initial vocabulary contains all propositions of the form "$i$ knows the secret of agent $j$", for all agents $i,j$. 
 Whereas the original state law described the situation in which agents only know their own secrets, this definition is too restrictive
 for the simple implementation: it prevents the learning of secrets, since the actual state should obey the
 state law throughout the computation. Thus, in order not to exclude any possible later states, we chose the law to be simply $\top$.
 
 The observables for agent $i$ - which equal the empty set in the classic implementation - now include the proposition "$i$ knows the secret of $j$"
-for each agent $j$. Conceptually, these are the propositions that $i$ can observe the truth value of these propositions at any point in the model; factual change does not 
+for each agent $j$. Conceptually, these are the propositions that $i$ can observe the truth value of these propositions at any point in the model: factual change does not 
 influence the ability of $i$ to observe them. This is only true for propositions involving $i$ itself; for example, even if Alice can "observe" that 
 Bob doesn't know Charles' secret in the initial model, she can't know this fact with certainty after a first call has occurred. 
+
+Analogous to the classic implementation, \texttt{actual} is initially empty, as it describes all true propositions of the form "$i$ knows the secret of agent $j$" (note that 
+we don't include encodings of $i$ knowing their own secret in the model). 
 
 \begin{code}
 simpleGossipInit :: Int -> KnowScene
@@ -33,8 +36,16 @@ simpleGossipInit n = (KnS vocab law obs, actual) where
     law    = boolBddOf Top
     obs    = [ (show i, allSecretsOf n i) | i <- gossipers n ]
     actual = [ ]
+\end{code}
 
+The simple transformer is defined on a specific call $ab$ (TODO: so it's transparent now?) between agents $a$ and $b$. 
+% ??? This automatically makes it transparent, since all agents know by definition which transformer is applied to the model at every step. 
+The function \texttt{simpleGossipTransformer} is indeed similar to the transparent transformer \texttt{callTrfTransparent} from \ref{sec:Transparent}.
 
+The new vocabulary contains all fresh variables needed to describe the transformation and are not added to $V$, unlike the classic implementation. 
+Since 
+  
+\begin{code}
 simpleGossipTransformer :: Int -> Int -> Int -> SimpleTransformerWithFactual
 simpleGossipTransformer n a b = SimTrfWithF eventprops changelaws changeobs where
     thisCallHappens (i,j) = PrpF $ thisCallProp (i,j)
