@@ -25,5 +25,5 @@ spec = do
             eval (afterSimple 3 [(0,1),(1,2)]) (K "2" $ has 3 0 1) `shouldBe` False
 \end{code}
 
-Note in particular the test \code{SmpTrf: higher-order knowledge fails}, which returns false. 
+Note in particular the test \texttt{SmpTrf: higher-order knowledge fails}, which returns false. 
 However, the tested formula $K_2 S_01$ should be true after calls $01;12$: after the second call, agent $2$ should be able to infer that the prior call was between agents $0$ and $1$ and conclude that their secrets were exchanged.
