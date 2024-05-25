@@ -6,17 +6,8 @@ We will now use the library in a program.
 \begin{code}
 module Main where
 
-import Basics
-
 main :: IO ()
-main = do
-  putStrLn "Hello!"
-  print somenumbers
-  print (map funnyfunction somenumbers)
-  myrandomnumbers <- randomnumbers
-  print myrandomnumbers
-  print (map funnyfunction myrandomnumbers)
-  putStrLn "GoodBye"
+main = undefined
 \end{code}
 
 We can run this program with the commands:
