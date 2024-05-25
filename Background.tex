@@ -6,14 +6,12 @@ The Gossip Problem models the flow of information called secrets. We begin at an
 
 For the sake of simplicity, we can remove notions of knowing one's own secret completely. This makes the initial problem look as follows. Again, all credit goes to (CITE).
 
-$$F_{init} = (V = {S_ij | i, j \text{ Agents }, i \neq j}, \Theta =\bigwedge_{i\neq j} \lnot Si_j , O_i = \empty)$$ 
+$$F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents }, i \neq j\}, \Theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)$$ 
 
 Now we must have a notion of how to transform the model after a call happens. To do so, we use a Knowledge Transformer. The crux of this paper involves changing the Knowledge Transformer for the Synchronous Gossip Problem provided in SMCDEL to fit out needs. 
 
 The Knowledge Transformer explains how we should change the vocabulary, laws, and observations after an arbitrary call. In simple, the vocabulary is extended with propositional variables $q_{ij}$ which express that agent $i$ called agent $j$. Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occured, but not who called, we express this with two laws $\Theta^+$ and $\Theta^-$ which express that exactly one call happened, and the conditions under which agent $i$ can learn agent $j$'s secret. Finally, each agent $i$ observes the calls it participated in, which we denote $O^+_i$. 
 
-Again, referring to CITE, the Knowledge Transformer for The Synchronous Gossip Problem is defined as follows. 
+Putting this all together, the Knowledge Transformer for The Synchronous Gossip Problem is the quintuple $\chi_\text{call}=(V^+,\Theta ^+,V_-,\Theta _-,O^+)$ (see (CITE) for the exact encoding).
 
-$$\Chi_\text{call}=(V^+,\Theta^+,V_-,\Theta_-,O^+)$$
-
-With this background on how to model Gossip symbolically, we can write our own transformers for modelling other Gossip problems. However, first we must understand how this framework is implemented in SMCDEL's code, and we write some functions to help us understand what is happening better.
+With this background on how to model Gossip symbolically, we can write our own transformers for modelling other variants of The Gossip Problem. However, first we must understand how this framework is implemented in SMCDEL's code, and we write some functions to help us decode the state from these variables, laws, and observations.
