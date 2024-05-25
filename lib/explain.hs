@@ -5,21 +5,60 @@ import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
 import Test.QuickCheck
+import Data.Maybe
+
+import Debug.Trace
 
 -- in  : number of gossipers (Int), offset that distinguishes "secret" props from "call" props (Int), and the actual prop to decipher (Prp).
 -- out : String containing meaning of proposition (String)
 explainPrp :: Int -> Prp -> String
 explainPrp n (P prop) | i < n && j < n && i /= j = "S_{"++ show i ++ "}"++ show j
-                             | otherwise = otherProp n (P prop)
-                           --   | prop > offset = "Agent " ++ (show i) ++ " called with agent " ++ (show j)
-                           --   | otherwise     = "S_{"++(show i') ++ "}"++ (show j')
+                      | otherwise = otherProp n (P prop)
                               where 
-                              -- i  = (prop - offset) `quot` 10
-                              -- j  = (prop - offset) `rem` 10
                               i = prop `quot` n
                               j = prop `rem` n
                               otherProp :: Int -> Prp -> String
                               otherProp n' (P prop') = show $ prop' - (n'* n' -n' )
+                              
+
+prpLibrary :: [Prp] -> Int -> [(Prp,String)]
+prpLibrary prps n = zip prps (prpLibraryHelper prps "")
+   where 
+      prpLibraryHelper :: [Prp]  -> String -> [String]
+      prpLibraryHelper [] _ = []
+      prpLibraryHelper prps' r = let 
+                                    a = secretDecoder 0 (take (n*(n-1)) prps') r ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps')) r 
+                                    -- a = secretDecoder 0 (take (n*(n-1)) prps') r 
+                                    -- b = callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps')) r 
+                                       in 
+                                       a 
+                                       -- ++ trace "##### Copy ######" concat ( replicate (trace "l1:" (length (drop (div (3*n*(n-1)) 2) prps')) `quot` trace "l2:" (length (a ++ b))) (a ++ b))
+                                       ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
+                                 --  ++ trace "##### Copy #####" prpLibraryHelper (drop (div (3*n*(n-1)) 2) prps') (r ++ "'")
+      secretDecoder :: Int -> [Prp] -> String -> [String]
+      secretDecoder _ [] _ = []
+      secretDecoder k ((P p):ps) r' |  k >= n*(n-1) + n = []
+                                    |  otherwise = ("S_{"++ show i ++ "}"++ show j ++ r') : secretDecoder (k+1) ps r'
+         where (i, j) = (p `quot` n, p `rem` n)
+      -- secretDecoder k secrets r' |  k >= n*(n-1) + n = []
+      --                            |  otherwise = ("S_{"++ show i ++ "}"++ show j ++ r') : secretDecoder (k + 1) secrets r'
+      --    where 
+      --       (i,j) = ((secrets !! k) `quot` n, k `rem` n)
+      callDecoder :: Int -> [Prp] -> String -> [String]
+      callDecoder k calls r' | k >= div (n*(n-1)) 2 = []
+                             | null calls = []
+                             | otherwise = ("q" ++ show i ++ show j ++ r') : callDecoder (k + 1) calls r'
+         where 
+            (i, j) = getCNums k 0
+            getCNums :: Int -> Int -> (Int,Int)
+            getCNums k' r'' | (k'+1) < n = (r'',k'+1)
+                            | otherwise = getCNums (k'-n+2+r'') (r''+1)
+      copyDecoder :: [Prp] -> [String] -> String -> [String]
+      copyDecoder [] _ _ = []
+      copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
+         
+explainPrps :: Prp -> [(Prp,String)] -> String
+explainPrps (P x) prpLib = fromJust (lookup (P x) prpLib)
 
 -- Alright so the case with offset does not yet work. This is because the update structure may contain propositions of this form
 -- But after the update the propositions just turn into a list of propositions increasing (+1) in order. 
@@ -57,4 +96,21 @@ gsi (ks, s) n = do
    if null s then putStrLn " --  Nothing is true" 
       else 
       mapM_ (putStrLn . (++) " --  " . explainPrp n) s
+
+
+data Tree a = T a [Tree a]
+   deriving(Show)
+
+-- explainScene :: KnowScene -> Int -> KnowScene
+-- explainScene (KnS voc sLaw obs, s) n = KnS ()
+
+-- explainGossip :: Int -> Int -> Tree KnowScene
+-- explainGossip n depth = T (gossipInit n) []
+
+gossipTree :: Int -> Int -> Tree KnowScene
+gossipTree n depth = T (gossipInit n) (gossipBranches (gossipInit n) n depth)  
+
+gossipBranches :: KnowScene -> Int -> Int -> [Tree KnowScene]
+gossipBranches _ _ 0 = []
+gossipBranches ks n' depth' = [ T (doCall ks (i,j)) (gossipBranches (doCall ks (i,j)) n' (depth'-1)) | i <- gossipers n', j <- gossipers n', i < j ]  
 
