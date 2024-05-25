@@ -40,10 +40,10 @@ simpleGossipInit n = (KnS vocab law obs, actual) where
 
 The simple transformer is defined on a specific call $ab$ (TODO: so it's transparent now?) between agents $a$ and $b$. 
 % ??? This automatically makes it transparent, since all agents know by definition which transformer is applied to the model at every step. 
-The function \texttt{simpleGossipTransformer} is indeed similar to the transparent transformer \texttt{callTrfTransparent} from \ref{sec:Transparent}.
+% The function \texttt{simpleGossipTransformer} is indeed similar to the transparent transformer \texttt{callTrfTransparent} from \ref{sec:Transparent}.
 
 The new vocabulary contains all fresh variables needed to describe the transformation and are not added to $V$, unlike the classic implementation. 
-Since 
+Since the agents don't know which call actually happens, the vocabulary describes all possible calls.
   
 \begin{code}
 simpleGossipTransformer :: Int -> Int -> Int -> SimpleTransformerWithFactual
@@ -52,16 +52,11 @@ simpleGossipTransformer n a b = SimTrfWithF eventprops changelaws changeobs wher
     isInCallForm k = Disj $ [ thisCallHappens (i,k) | i <- gossipers n \\ [k], i < k ]
                         ++ [ thisCallHappens (k,j) | j <- gossipers n \\ [k], k < j ]
     allCalls = [ (i,j) | i <- gossipers n, j <- gossipers n, i < j ]
-    -- V+ Event props stay the same as classical transformer
+    
+    -- V+ event props stay the same as classical transformer
     eventprops = map thisCallProp allCalls
-    -- How do we implement the event law? --
-    -- Below the law from Classic CallTrf from GossipS5
-    --   eventlaw = simplify $
-    --     Conj [ Disj (map thisCallHappens allCalls)
-    --          -- some call must happen, but never two at the same time:
-    --          , Neg $ Disj [ Conj [thisCallHappens c1, thisCallHappens c2]
-    --                       | c1 <- allCalls, c2 <- allCalls \\ [c1] ] ]
-    -- Theta- Change law stays same as Classic Transformer
+    
+    -- Theta- change law stays same as Classic Transformer
     changelaws =
       [(hasSof n i j, boolBddOf $              -- after a call, i has the secret of j iff
           Disj [ has n i j                     -- i already knew j, or
@@ -71,16 +66,28 @@ simpleGossipTransformer n a b = SimTrfWithF eventprops changelaws changeobs wher
                             | k <- gossipers n \\ [j] ] ]
               ])
       | i <- gossipers n, j <- gossipers n, i /= j ]
-      -- set O+ = all the other's secrets for agents a,b and empty for all others
-      -- Interleaves the agents a,b to keep the correct ordering of the agents,
-      -- which is required for the update-checks (checks agent lists are the same inc order)
+      
+    -- set O+ = all the other's secrets for agents a,b and empty for all others
+    -- Interleaves the agents a,b to keep the correct ordering of the agents,
+    -- which is required for the update-checks (checks agent lists are the same inc order)
     changeobs :: [(Agent, ([Prp], [Prp]))]
     changeobs = [(show k, ([], [])) | k <- gossipers n, k < a ]        ++
                 [(show a, (allSecretsOf n b, []))]                     ++
                 [(show k, ([], [])) | k <- gossipers n, k > a, k < b ] ++
                 [(show b, (allSecretsOf n a, []))]                     ++
                 [(show k, ([], [])) | k <- gossipers n, k > b ]
+\end{code}
 
+% commented out issue from function above: 
+%   -- how do we implement the event law? --
+%     -- below the law from Classic CallTrf from GossipS5
+%     --   eventlaw = simplify $
+%     --     Conj [ Disj (map thisCallHappens allCalls)
+%     --          -- some call must happen, but never two at the same time:
+%     --          , Neg $ Disj [ Conj [thisCallHappens c1, thisCallHappens c2]
+%     --                       | c1 <- allCalls, c2 <- allCalls \\ [c1] ] ]
+
+\begin{code}
 simpleCall :: Int -> (Int,Int) -> StwfEvent
 simpleCall n (a,b) = (simpleGossipTransformer n a b, [thisCallProp (a,b)])
 
