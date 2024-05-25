@@ -38,12 +38,21 @@ simpleGossipInit n = (KnS vocab law obs, actual) where
     actual = [ ]
 \end{code}
 
-The simple transformer is defined on a specific call $ab$ (TODO: so it's transparent now?) between agents $a$ and $b$. 
-% ??? This automatically makes it transparent, since all agents know by definition which transformer is applied to the model at every step. 
-% The function \texttt{simpleGossipTransformer} is indeed similar to the transparent transformer \texttt{callTrfTransparent} from \ref{sec:Transparent}.
+The simple transformer is defined on a specific call $ab$ between agents $a$ and $b$. 
+% ??? This automatically makes it transparent, since all agents know by definition which transformer is applied to the model at every step? 
+Technically all agents know which transformer is applied to the model at every step, which raises the question if this implementation of the 
+simple transformer doesn't induce a transparent update. However, the definition of the new observables (\texttt{changeobs}) prevents this from happening. 
+The observables in this implementation actually force the transformer to be defined on a specific call, as otherwise we can't store which agents learn 
+new secrets after a specific update has happened.
+The function \texttt{simpleGossipTransformer} is the simple analogue of the classic transformer \texttt{callTrf} and the transparent variant 
+\texttt{callTrfTransparent} from \ref{sec:Transparent}.
 
 The new vocabulary contains all fresh variables needed to describe the transformation and are not added to $V$, unlike the classic implementation. 
-Since the agents don't know which call actually happens, the vocabulary describes all possible calls.
+Since the agents don't know which call actually happens, the vocabulary describes all possible calls. Note the absence of the event law: it's not part of 
+the transformer as it's fixed throughout the model. The \texttt{changelaws} are defined as in the classic transformer, since the preconditions for agent $a$
+to know agent $b$'s secret haven't changed. 
+
+
   
 \begin{code}
 simpleGossipTransformer :: Int -> Int -> Int -> SimpleTransformerWithFactual
@@ -53,10 +62,10 @@ simpleGossipTransformer n a b = SimTrfWithF eventprops changelaws changeobs wher
                         ++ [ thisCallHappens (k,j) | j <- gossipers n \\ [k], k < j ]
     allCalls = [ (i,j) | i <- gossipers n, j <- gossipers n, i < j ]
     
-    -- V+ event props stay the same as classical transformer
+    -- V+ event props stay the same as classic transformer
     eventprops = map thisCallProp allCalls
     
-    -- Theta- change law stays same as Classic Transformer
+    -- Theta- change law stays same as classic transformer
     changelaws =
       [(hasSof n i j, boolBddOf $              -- after a call, i has the secret of j iff
           Disj [ has n i j                     -- i already knew j, or
@@ -77,15 +86,6 @@ simpleGossipTransformer n a b = SimTrfWithF eventprops changelaws changeobs wher
                 [(show b, (allSecretsOf n a, []))]                     ++
                 [(show k, ([], [])) | k <- gossipers n, k > b ]
 \end{code}
-
-% commented out issue from function above: 
-%   -- how do we implement the event law? --
-%     -- below the law from Classic CallTrf from GossipS5
-%     --   eventlaw = simplify $
-%     --     Conj [ Disj (map thisCallHappens allCalls)
-%     --          -- some call must happen, but never two at the same time:
-%     --          , Neg $ Disj [ Conj [thisCallHappens c1, thisCallHappens c2]
-%     --                       | c1 <- allCalls, c2 <- allCalls \\ [c1] ] ]
 
 \begin{code}
 simpleCall :: Int -> (Int,Int) -> StwfEvent
