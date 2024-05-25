@@ -11,6 +11,7 @@ import Test.Hspec
 
 import qualified SimpleTransformerSpec
 import qualified ClassicTransformerSpec
+import qualified ExplainTestsSpec
 \end{code}
 
 We test the implementations using hspec. We verify that the 
@@ -20,6 +21,7 @@ main :: IO ()
 main = hspec $ do
     describe "SimpleTransformer" SimpleTransformerSpec.spec
     describe "ClassicTransformer" ClassicTransformerSpec.spec
+    describe "Explain" ExplainTestsSpec.spec
 \end{code}
 
 

@@ -3,6 +3,9 @@
 This section explains some functions that we use to make sense of knowledge scenes of gossip. 
 (Works for transformers that copy the entire vocab)
 
+
+Imports: 
+
 \begin{code}
 module Explain where
    
@@ -10,10 +13,9 @@ import SMCDEL.Examples.GossipS5
 import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
-import Test.QuickCheck
 import Data.Maybe
 
-import Debug.Trace
+--import Debug.Trace
 
 \end{code}
 
@@ -73,9 +75,16 @@ gsi (KnS voc stl obs, s) n = do
 
 \end{code}
 
+Visualize Translated BDD: 
+
+\begin{code}
+
+-- Here a function that takes a BDD or a form and makes a BDD picture.
+
+\end{code}
 
 
-
+Showing how calls transform a knowledge scene: 
 
 \begin{code}
 
