@@ -1,12 +1,8 @@
-
 \section{Transparent Transformer}\label{sec:Transparent}
 
-This module describes a transparent (also: observable) implementation of the classic transformer (TODO: cite malvin?). 
-The transformer is tailored to the actual call that happens, which makes sure that 
-whenever a call happens, all agents know this and also know which agents participate. 
+This section describes how we wrote an implementation of the classic Knowledge Transformer for the Transparent Gossip Problem. This transformer is tailored to the actual call that happens, which makes sure that whenever a call happens, all agents know this and also know which agents participate. 
 
-The module imports the GossipS5 and Symbolic.S5 modules from SMCDEL, which define the synchronous classic transformer,
-and the Language module. 
+We begin by importing the \texttt{GossipS5} and \texttt{Symbolic.S5} modules from SMCDEL, which define the synchronous classic transformer, and the \texttt{Language} module. 
  
 \begin{code}
 module Transparent where
@@ -17,17 +13,16 @@ import SMCDEL.Symbolic.S5
 import Data.List
 \end{code}
 
-Because the transparent transformer is a variant of the synchronous transformer, we chose to 
-adapt the existing function \texttt{callTrf} from GossipS5. Instead of \texttt{Int -> KnowTransformer}, the function 
-is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$ are arguments for the transformer 
-for call ab. 
+We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$ are arguments for the transformer for call ab. 
 
-\texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, is now not a 
-disjunction of possible calls, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined
-for the agents performing the actual call. The \texttt{eventlaw} (which originally stated that only one 
-call happens at a time) is simplified to describe that only call ab happens. The \texttt{changelaws} are 
-identical to those of the synchronous variant. 
-The \texttt{eventobs} (a list of tuples describing which events each agent can observe) is also simplified to call ab.
+As seen in Section \ref{sec:Background}, we must figure out how to update the vocabulary, law, and observations of the agemt. 
+
+ To begin with, the vocabulary $V^+$, called \texttt{thisCallHappens}, is simply now the call between agents $a$ ane $b$, we do not need to add other new call variables as in the synchronous case, as all agents know exactly which two agents call.
+
+We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, which is now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
+
+The \texttt{eventlaw} $\Theta^+$ (which originally stated that only one 
+call happens at a time) is simplified to describe that only one call between $a$ and $b$ happens. Moreover, \texttt{changelaws} $\Theta^-$ are identical to those of the synchronous variant. The \texttt{eventobs} $O_k^+$ is also simplified to call between $a$ and $b$, as every agent observes the call.
 
 \begin{code}
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
@@ -59,8 +54,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   eventobs = [(show k, [thisCallHappens]) | k <- gossipers n]
 \end{code}
 
-Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. 
-The following functions were adapted to perform the transparent update:
+Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. The following functions were adapted to perform the transparent update:
 
 \begin{code}
 callTransparent :: Int -> (Int,Int) -> Event
