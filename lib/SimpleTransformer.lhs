@@ -1,10 +1,21 @@
 \section{Simple Transformer}\label{sec:Simple}
 
+%% fixme: If you can connect this to Background.tex a bit more by using the symbols 
+%% (V^+, \Theta^+,\Theta_-,O_k^+) I think it would help with the flow of the paper by 
+%% letting the reader see how these things change. I would do it as I did it in Transparent.lhs 
+%% but I don't want to mess it up since I'm not as familiar with SimpleTransformer
+
 This module describes an implementation of the simple transformer as defined by Daniel Reifsteck in his master's thesis (TODO: cite daniel? how?). 
 The simple transformer aims to avoid the exponential blowup of variables that occurs in the classic transformer by copying propositions at each update
 and storing the "history" of events in the state law. 
 The simple transformer does not change the initial state law throughout the computation. Instead, it directly applies factual change to 
 the actual state. 
+
+%% For example, perhaps we could add above, "As we have seen, the even vocabulary $V^+$ instantiates new 
+%% variables which remain as copies in the model, as well as updating the law $\Theta$ with huge formulas
+%% $\Theta^+$ and $\Theta_-$ encoding the factual change." I'm not sure this is correct, but it would 
+%% connect things with what we have done way more :D
+
 
 \begin{code}
 module SimpleTransformer where
