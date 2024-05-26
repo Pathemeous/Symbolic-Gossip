@@ -5,7 +5,7 @@
 %% letting the reader see how these things change. I would do it as I did it in Transparent.lhs 
 %% but I don't want to mess it up since I'm not as familiar with SimpleTransformer
 
-This module describes an implementation of the simple transformer as defined by Daniel Reifsteck in his master's thesis \cite{danielMasterThesis} (Note: this Thesis is not publically available). 
+This module describes an implementation of the simple transformer as defined by Daniel Reifsteck in his master's thesis \cite{danielMasterThesis} (Note: this thesis is not publically available). 
 The simple transformer aims to avoid the exponential blowup of variables that occurs in the classic transformer by copying propositions at each update
 and storing the "history" of events in the state law. 
 The simple transformer does not change the initial state law throughout the computation. Instead, it directly applies factual change to 
@@ -32,6 +32,7 @@ The initial vocabulary contains all propositions of the form "$i$ knows the secr
 Whereas the original state law described the situation in which agents only know their own secrets, this definition is too restrictive
 for the simple implementation: it prevents the learning of secrets, since the actual state should obey the
 state law throughout the computation. Thus, in order not to exclude any possible later states, we chose the law to be simply $\top$.
+
 
 The observables for agent $i$ - which equal the empty set in the classic implementation - now include the proposition "$S_i j$ for all agents $j$.
 Conceptually, these are the propositions that $i$ can observe the truth value of these propositions at any point in the model: factual change does not 
