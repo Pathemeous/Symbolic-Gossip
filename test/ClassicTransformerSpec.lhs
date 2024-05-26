@@ -14,8 +14,10 @@ We can verify that $K_2 S_01$ is indeed true after the calls $01;12$ in the clas
 spec :: Spec
 spec = do
     describe "ClassicTransformer" $ do
-        it "clsTrf: higher-order knowledge works" $ do
+        it "clsTrf: second call shares secrets of other agents" $ do
             eval (after 3 [(0,1),(1,2)]) (K "2" $ has 3 0 1) `shouldBe` True
+        it "clsTrf: 3 agents 1 call should infer knowledge" $ do
+            eval (after 3 [(0,1)]) (K "2" $ has 3 0 1) `shouldBe` True
 \end{code}
 
 Indeed this test passes, highlighting the limitations of our earlier simple transformer.
