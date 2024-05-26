@@ -15,14 +15,14 @@ import Data.List
 
 We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$ are arguments for the transformer for call ab. 
 
-As seen in Section \ref{sec:Background}, we must figure out how to update the vocabulary, law, and observations of the agemt. 
+As in Section \ref{sec:Background}, we redefine how to update the vocabulary, law, and observations of each agent. 
 
- To begin with, the vocabulary $V^+$, called \texttt{thisCallHappens}, is simply now the call between agents $a$ ane $b$, we do not need to add other new call variables as in the synchronous case, as all agents know exactly which two agents call.
+First, the vocabulary $V^+$, called \texttt{thisCallHappens}, is now simply the call between agents $a$ and $b$; as opposed to the synchronous case, we do not need to add any other new call variables, as all agents know exactly which call happens.
 
-We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, which is now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
+We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, and is now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
 
-The \texttt{eventlaw} $\Theta^+$ (which originally stated that only one 
-call happens at a time) is simplified to describe that only one call between $a$ and $b$ happens. Moreover, \texttt{changelaws} $\Theta^-$ are identical to those of the synchronous variant. The \texttt{eventobs} $O_k^+$ is also simplified to call between $a$ and $b$, as every agent observes the call.
+The \texttt{eventlaw} $\theta^+$ (which originally stated that only one 
+call happens at a time) is simplified to describe that only one call between $a$ and $b$ happens. Moreover, \texttt{changelaws} $\theta^-$ are identical to those of the synchronous variant. The \texttt{eventobs} $O_k^+$ are also simplified to the call between $a$ and $b$, as every agent observes the call.
 
 \begin{code}
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
@@ -54,7 +54,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   eventobs = [(show k, [thisCallHappens]) | k <- gossipers n]
 \end{code}
 
-Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. The following functions were adapted to perform the transparent update:
+Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. The following functions were adapted from the original implementation to perform the transparent update:
 
 \begin{code}
 callTransparent :: Int -> (Int,Int) -> Event

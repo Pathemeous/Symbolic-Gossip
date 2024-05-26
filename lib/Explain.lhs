@@ -15,9 +15,10 @@ import Data.Maybe
 One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions. This means that in any given transformation, there will be a propositional variable representing a secret, as well as a copy of said variable. 
 
 %% fixme: add an explanation of why the secrets are copied 
-%% Djanira: added explanation to background
+%% Djanira: added copying explanation to background
 
-The first thing we did was beginning by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets. The function works by taking in the vocabulary, as well as the number of agents, and returns the library. We also write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning. 
+%The first thing we did was beginning 
+We started by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets. The function works by taking in the vocabulary, as well as the number of agents, and returns the library. We also write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning. 
 
 \begin{code}
 prpLibrary :: [Prp] -> Int -> [(Prp,String)]
@@ -84,6 +85,8 @@ gsi s1 3
 which outputs the following 
 
 \eval{gsi (gossipInit 3) 3 ; gsi (doCall (gossipInit 3) (0,1)) 3}
+
+%% fixme: latex doesn't understand the eval command
 
 In the future, we hope to also show the law as its BDD using the tool graphviz. 
 
