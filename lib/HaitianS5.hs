@@ -670,17 +670,41 @@ instance Update KnowStruct SimpleTransformerWithFactual where
   unsafeUpdate kns@KnS {} (SimTrfWithF _ _ trfObs) = KnS newprops newlaw newobs where
     KnS newprops newlaw newobs = unsafeUpdate kns (SimTrfNoF trfObs)
 
-
 -- Modified to be specific to Gossip Calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
-  unsafeUpdate (KnS v th obs,s) (SimTrfWithF _ thetaminus trfObs,x) = (newkns, newstate) where
+  unsafeUpdate (KnS v th obs,s) (SimTrfWithF _ thetaminus _,x) = (newkns, newstate) where
+    -- copy of gossip helper functions
+    -- to be able to find the current two agents in the call
+    thisCallProp :: (Int,Int) -> Prp
+    thisCallProp (i,j) | i < j     = P (100 + 10*i + j)
+                      | otherwise = error $ "wrong call: " ++ show (i,j)
+    n = length obs
+    gossipers :: [Int]
+    gossipers = [0..(n-1)]
+
+    allCalls = [ (i,j) | i <- gossipers, j <- gossipers, i < j ]
+    allCallprops = map thisCallProp allCalls
+    callPropResolver = zip allCallprops allCalls
+
+    -- the transformation state x contains only 1 call proposition
+    inThisCall :: (Int, Int)
+    inThisCall = callPropResolver ! head x
+
     -- Compute special observable management for Gossip
-    -- intersecrets O+ of an agent with the new state (e.g. only true secrets)
-    newobs = sort [ (ag, nub (ob ++ intersect newstate (fst (trfObs ! ag))) \\ snd (trfObs ! ag)) | (ag,ob) <- obs ]
+    -- Calling agents get their own original observables O_i plus 
+    -- the intersection of the other agent's observables with the state (their known true secrets)
+    -- Note that the transformer observables are ignored fully.
+    newobs = [ (show i,obs ! show i) | i <- gossipers, i < fst inThisCall ] ++
+             [ (show (fst inThisCall) , obs ! show (fst inThisCall) ++ intersect newstate (obs ! show (snd inThisCall))) ] ++
+             [ (show i,obs ! show i) | i <- gossipers, i > fst inThisCall, i < snd inThisCall ] ++
+             [ (show (snd inThisCall) , obs ! show (snd inThisCall) ++ intersect newstate (obs ! show (fst inThisCall))) ] ++
+             [ (show i,obs ! show i) | i <- gossipers, i > snd inThisCall  ]
+
+    
     newkns = KnS v th newobs -- keep V and Theta but changes obs
     newstate = sort ((s \\ map fst thetaminus) ++ filter (\ p -> bddEval (s ++ x) (thetaminus ! p)) (map fst thetaminus))
--- check line 368-373 code above and the corresponding definition pp.65 of Malvin's thesis
+
 
 instance HasAgents SimpleTransformerWithFactual where
   agentsOf (SimTrfWithF _ _ trfObs) = map fst trfObs
