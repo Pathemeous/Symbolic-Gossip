@@ -1,3 +1,6 @@
+\subsection{Simple Transformer} \label{ssec:SimpleTests}
+
+
 \begin{code}
 module SimpleTransformerSpec where
 

@@ -1,3 +1,5 @@
+\subsection{Gossip Scene Investigation}\label{ssec:ExplainTests}
+
 \begin{code}
 module ExplainTestsSpec where
 
