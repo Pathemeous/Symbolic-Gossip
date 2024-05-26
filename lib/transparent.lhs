@@ -23,7 +23,7 @@ is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$
 for call ab. 
 
 \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, is now not a 
-disjunction of possible calls, but requires $k$ to be either $a$ or $b$. \textittt{thisCallHappens} is only defined
+disjunction of possible calls, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined
 for the agents performing the actual call. The \texttt{eventlaw} (which originally stated that only one 
 call happens at a time) is simplified to describe that only call ab happens. The \texttt{changelaws} are 
 identical to those of the synchronous variant. 
