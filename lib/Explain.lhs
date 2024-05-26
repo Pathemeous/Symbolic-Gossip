@@ -20,23 +20,22 @@ The first thing we did was beginning by writing \texttt{prpLibrary} to decode pr
 
 \begin{code}
 prpLibrary :: [Prp] -> Int -> [(Prp,String)]
-prpLibrary prps n = zip prps (prpLibraryHelper prps "")
+prpLibrary prps n = zip prps (prpLibraryHelper prps)
    where 
-      prpLibraryHelper :: [Prp]  -> String -> [String]
-      prpLibraryHelper [] _ = []
-      prpLibraryHelper prps' r = let 
-                                    a = secretDecoder 0 (take (n*(n-1)) prps') r ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps')) r 
-                                       in 
-                                       a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
-      secretDecoder :: Int -> [Prp] -> String -> [String]
-      secretDecoder _ [] _ = []
-      secretDecoder k ((P p):ps) r' |  k >= n*(n-1) + n = []
-                                    |  otherwise = ("S_{"++ show i ++ "}"++ show j ++ r') : secretDecoder (k+1) ps r'
+      prpLibraryHelper :: [Prp]  -> [String]
+      prpLibraryHelper [] = []
+      prpLibraryHelper prps' = let 
+                                 a = secretDecoder (take (n*(n-1)) prps') ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
+                                    in 
+                                    a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
+      secretDecoder ::  [Prp] -> [String]
+      secretDecoder [] = []
+      secretDecoder ((P p):ps)  = ("S_{"++ show i ++ "}"++ show j) : secretDecoder ps
          where (i, j) = (p `quot` n, p `rem` n)
-      callDecoder :: Int -> [Prp] -> String -> [String]
-      callDecoder k calls r' | k >= div (n*(n-1)) 2 = []
+      callDecoder :: Int -> [Prp] -> [String]
+      callDecoder k calls | k >= div (n*(n-1)) 2 = []
                              | null calls = []
-                             | otherwise = ("q" ++ show i ++ show j ++ r') : callDecoder (k + 1) calls r'
+                             | otherwise = ("q" ++ show i ++ show j) : callDecoder (k + 1) calls
          where 
             (i, j) = getCNums k 0
             getCNums :: Int -> Int -> (Int,Int)
@@ -52,7 +51,7 @@ explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 
 We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a state, the number of agents, and uses \texttt{explainPrp} to make sense of the vocabulary and observations. Further work must be done to make sense of the state law. 
 \begin{code}
--- Gossip Scene Investigation: GSI. ...like the tv show but with less crime nd more gossip. 
+-- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
 gsi :: KnowScene -> Int -> IO ()
 gsi (KnS voc stl obs, s) n = do 
    putStrLn "Vocabulary: "
@@ -72,7 +71,18 @@ gsi (KnS voc stl obs, s) n = do
       lib = prpLibrary voc n
 \end{code}
 
-%% fixme: demonstate the output of using gsi?? 
+We can then run the following 
+
+\begin{verbatim}
+s0 = gossipInit 3
+gsi s0 3
+s1 = doCall s0 (0,1)
+gsi s1 3
+\end{verbatim}
+
+which outputs the following 
+
+\eval{gsi (gossipInit 3) 3 ; gsi (doCall (gossipInit 3) (0,1)) 3}
 
 In the future, we hope to also show the law as its BDD using the tool graphviz. 
 
