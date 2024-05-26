@@ -1,17 +1,29 @@
 \section{Background}\label{sec:Background}
 
-For the language and syntax of Gossip, please refer to \cite{gattinger2023gomoche}. We will shortly discuss how The Gossip Problem is approached in SMCDEL using \cite{GattingerThesis2018}. For an in-depth explanation, please refer to the aforementioned source.
+For the language and syntax of Gossip, please refer to \cite{gattinger2023gomoche}. We will shortly discuss how the Gossip Problem is approached in SMCDEL using \cite{GattingerThesis2018}. For an in-depth explanation, please refer to the aforementioned source.
 
-The Gossip Problem models the flow of information called secrets. The problem begins at an initial state before any information has been shared. At this point, each agent knows only their own secret. We describe this state using so-called \textit{vocabulary}, \textit{laws}, and \textit{observations}. The vocabulary $V$ expresses all current atomic propositions, which in this case is the secrets. We let $S_ij$ denote agent $i$ knowing agent $j$'s secret. Next, the law $\Theta$ refers to the common-knowledge of the agents, which in this case is that nobody knows anyone else's secret and everyone knows their own. Finally, the observations $O_i$ contain which propositional variables agent $i$ observes, to begin with, each agent only observes their own secret. 
+The Gossip Problem models the flow of information called secrets. The problem begins at an initial state before any information has been shared. At this point, each agent knows only their own secret. We describe this state using so-called \textit{vocabulary}, \textit{laws}, and \textit{observations}. The vocabulary $V$ expresses all current atomic propositions, which in this case are the secrets. We let $S_ij$ denote agent $i$ knowing agent $j$'s secret. Next, the law $\theta$ refers to the common knowledge of the agents, which in this case is that nobody knows anyone else's secret and everyone knows their own. Finally, the observations $O_i$ contain which propositional variables agent $i$ observes; initially, the observations are empty for all agents. Throughout the run of the model, propositions are added to the observables, which encode which calls each agent can observe.
+%to begin with, each agent only observes their own secret. 
 
-For the sake of simplicity, the notions of knowing one's own secret are completely removed. This makes the initial problem look as follows \cite{GattingerThesis2018}.
+For the sake of simplicity, the notions of knowing one's own secret are completely removed. The initial problem is then defined as follows \cite{GattingerThesis2018}.
 
-$$F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents }, i \neq j\}, \Theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)$$ 
+$$F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents }, i \neq j\}, \theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)$$ 
 
 Now we must have a notion of how to transform the model after a call happens. To do so, we use a Knowledge Transformer. The crux of this paper involves changing the Knowledge Transformer for the Synchronous Gossip Problem provided in SMCDEL to fit our needs. 
 
-The Knowledge Transformer explains how we should change the state after an arbitrary call. In simple, the vocabulary is extended with propositional variables $q_{ij}$ which express that agent $i$ called agent $j$. Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occured, but not who called, we express this with two laws $\Theta^+$ and $\Theta^-$ which express that exactly one call happened, and the conditions under which agent $i$ can learn agent $j$'s secret. Finally, each agent $i$ observes the calls it participated in, which we denote $O^+_i$. 
+The Knowledge Transformer explains how we should change the state after an arbitrary call. The vocabulary is extended with propositional variables $q_{ij}$, which express that agent $i$ called agent $j$. Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occurred, but not which two agents called, we encode this into two laws $\theta^+$ and $\theta_-$, which express that exactly one call happened, and the conditions under which agent $i$ can learn agent $j$'s secret. Finally, each agent $i$ observes only calls they participate in, which we describe in $O^+_i$. 
 
-Putting this all together, the Knowledge Transformer for The Synchronous Gossip Problem is the quintuple $\chi_\text{call}=(V^+,\Theta ^+,V_-,\Theta _-,O^+)$ (see \cite{GattingerThesis2018} for the exact encoding).
+%Putting this all together
+In short, the Knowledge Transformer for The Synchronous Gossip Problem is the quintuple $\chi_\text{call}=(V^+,\theta ^+,V_-,\theta _-,O^+)$ (see \cite{GattingerThesis2018} for the exact encoding).
 
-With this background on how to model Gossip symbolically, we can write our own transformers for modelling other variants of The Gossip Problem. However, first we must understand how this framework is implemented in SMCDEL's code, and we write some functions to help us decode the state from these variables, laws, and observations.
+% About the copying of secrets
+The design of the Knowledge Transformer allows it to encode and check higher-order knowledge, but it also poses a problem in the form of exponential blowup. The state law (also called $\theta$) keeps track of the updates in the model and is itself updated using $\theta^+$ and $\theta_-$. Essentially, the state law  after the final update forms a conjunction of the original state law with event laws ($\theta^+$, which encodes preconditions for each event) for each update and \texttt{changelaws} ($\theta_-$, which encodes postconditions of each event), such that the validity of a logical formula on a given Knowledge Structure can be evaluated by solely checking if it's implied by the state law. 
+
+However, it is possible for an update to create states that previously were excluded by the state law. In order to allow this type of flexibility, each update causes all propositional variables that were true in the previous state to be copied and labelled in the state law. For example, a call proposition $q_{a,b}$ stating that Alice has just called Bob will not be true anymore after the latest update stating that Bob has called Charles. All occurrences of $q_{a,b}$ are then flagged (denoted by $(q_{a,b})^o$) to indicate that it is an "old" proposition. The existing implementation (\cite{GattingerThesis2018}) includes optimization functions that discard the redundant propositions (by checking which propositional variables are equivalent), but this optimization is only implemented to be run after running the model and is therefore not optimal. 
+
+With this background on how to model Gossip symbolically, we write our own transformer for modelling the transparant variant of The Gossip Problem, implement an adapted optimization that runs in between updates, and a simple transformer based on Daniel Reifsteck's master thesis. 
+%However, first we must understand how this framework is implemented in SMCDEL's code, and we write some functions to help us decode the state from these variables, laws, and observations.
+
+
+%% Fixed by Djanira: lowercase theta's, added copying theory
+%% Fixme: maybe subsections? 

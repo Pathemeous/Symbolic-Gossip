@@ -12,9 +12,10 @@ import SMCDEL.Other.BDD2Form
 import Data.Maybe
 \end{code}
 
-One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions. This means in any given transformation, there will be a propositional variable representating a secret, as well as a copy of said variable. 
+One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions. This means that in any given transformation, there will be a propositional variable representing a secret, as well as a copy of said variable. 
 
 %% fixme: add an explanation of why the secrets are copied 
+%% Djanira: added explanation to background
 
 The first thing we did was beginning by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets. The function works by taking in the vocabulary, as well as the number of agents, and returns the library. We also write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning. 
 
