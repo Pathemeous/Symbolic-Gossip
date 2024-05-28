@@ -46,8 +46,8 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                  -- | otherwise = Bot
                  
   thisCallHappens = thisCallProp (a,b)
-  -- * eventprops = [thisCallHappens]
-  eventprops = []  -- Malvin claims that this can be empty
+  -- the only event proposition is the current call
+  eventprops = [thisCallHappens]
 
   -- call ab takes place and no other calls happen
   eventlaw = Conj [PrpF thisCallHappens,
