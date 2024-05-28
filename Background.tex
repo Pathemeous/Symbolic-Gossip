@@ -55,7 +55,14 @@ In order to allow this type of flexibility, each update causes all propositional
 to be copied and labelled in the state law. For example, suppose Alice learns Bob's secret during update $n$. 
 Any occurrence of the corresponding proposition $S_ab$ in the state law need to be flagged in update $n+1$, just in case 
 Alice would \textit{forget} Bob's secret in some future update. A copy of $S_ab$ is added and now exists alongside the 
-flagged version (denoted by $(S_ab)^o$ to indicate that it is an "old" proposition). 
+flagged version (denoted by $(S_ab)^o$ to indicate that it is an "old" proposition). Even for a small number of agents and 
+calls (say, 4 agents and 3 calls), the blowup of the state law is as such that it's unfeasible to print an example of the representation
+of the resulting Knowledge Structure.
+
+% TODO add image of what the BDD looks like? 
+% if so, include explanation of BDDs
+
+
 The possibility of the truth value $S_ab$ to change back to false is an unrealistic hypothetical in Gossip, as in this situation 
 agents aren't modelled to forget any secrets. However, SMCDEL is implemented for a wide range of logical problems, which prevents it 
 from making such assumptions. 
@@ -66,5 +73,4 @@ model and is therefore not optimal.
 
 With this background on how to model Gossip symbolically, we write our own transformer for modelling the transparant variant 
 of The Gossip Problem, implement an adapted optimization that runs in between updates, and a simple transformer based on Daniel 
-Reifsteck's master thesis. 
-
+Reifsteck's master's thesis. 
