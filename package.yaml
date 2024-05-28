@@ -28,8 +28,8 @@ executables:
       - SYMBOLIC-GOSSIP-FP
 
 tests:
-  simpletests:
-    main: simpletests.lhs
+  testsuite:
+    main: Spec.hs
     source-dirs: test
     dependencies:
       - SYMBOLIC-GOSSIP-FP
