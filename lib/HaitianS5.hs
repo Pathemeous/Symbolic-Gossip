@@ -12,7 +12,6 @@ Modifications:
   where S is the newly computed state
   This aims to only add observables when the secret atom is already true,
   which is impossible in the transformer definition
-
 -}
 
 import Control.Arrow (first,second,(***))
