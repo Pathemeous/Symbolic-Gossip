@@ -115,6 +115,51 @@ gsi s1 3
 
 which outputs the following  TODO
 
+\begin{verbatim}
+Vocabulary: 
+ --  s01
+ --  s02
+ --  s10
+ --  s12
+ --  s20
+ --  s21
+State Law: 
+"(~s01 & ~s02 & ~s10 & ~s12 & ~s20 & ~s21)"
+Observables: 
+ --  0:  []
+ --  1:  []
+ --  2:  []
+Actual state: 
+ --  Nobody knows about any other secret
+
+Vocabulary: 
+ --  s01
+ --  s02
+ --  s10
+ --  s12
+ --  s20
+ --  s21
+ --  q01
+ --  q02
+ --  q12
+ --  s01'
+ --  s02'
+ --  s10'
+ --  s12'
+ --  s20'
+ --  s21'
+State Law: 
+"((s01 & ~s02 & s10 & ~s12 & ~s20 & ~s21 & q01 & ~q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') | (~s01 & ((s02 & ~s10 & ~s12 & s20 & ~s21 & ~q01 & q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') | (~s02 & ~s10 & s12 & ~s20 & s21 & ~q01 & ~q02 & q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21'))))"
+Observables: 
+ --  0:  ["q01","q02"]
+ --  1:  ["q01","q12"]
+ --  2:  ["q02","q12"]
+Actual state: 
+ --  s01
+ --  s10
+ --  q01
+\end{verbatim}
+
 % \eval{gsi (gossipInit 3) 3}
 % \eval{gsi (doCall (gossipInit 3) (0,1)) 3}
 
