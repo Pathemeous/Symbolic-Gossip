@@ -9,7 +9,7 @@ import SimpleTransformer
 import Test.Hspec hiding ( after )
 import SMCDEL.Examples.GossipS5
 import SMCDEL.Language
-import HaitianS5
+import SmpTrfS5
 \end{code}
 
 We test the implementation of the Simple Transformer with the following tests.

@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module HaitianS5 where
+module SmpTrfS5 where
 
 {-
 This file is the copy of the SMCDEL fork of Symbolic/S5.hs from Haitian
@@ -703,7 +703,6 @@ instance Update KnowScene StwfEvent where
     
     newkns = KnS v th newobs -- keep V and Theta but changes obs
     newstate = sort ((s \\ map fst thetaminus) ++ filter (\ p -> bddEval (s ++ x) (thetaminus ! p)) (map fst thetaminus))
-
 
 instance HasAgents SimpleTransformerWithFactual where
   agentsOf (SimTrfWithF _ _ trfObs) = map fst trfObs
