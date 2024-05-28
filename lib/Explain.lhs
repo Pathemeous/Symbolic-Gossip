@@ -14,10 +14,6 @@ import Data.Maybe
 
 One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions. This means that in any given transformation, there will be a propositional variable representing a secret, as well as a copy of said variable. 
 
-%% fixme: add an explanation of why the secrets are copied 
-%% Djanira: added copying explanation to background
-
-%The first thing we did was beginning 
 We started by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets. The function works by taking in the vocabulary, as well as the number of agents, and returns the library. We also write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning. 
 
 \begin{code}
@@ -26,18 +22,18 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
    where 
       prpLibraryHelper :: [Prp]  -> [String]
       prpLibraryHelper [] = []
-      prpLibraryHelper prps' = let 
-                                 a = secretDecoder (take (n*(n-1)) prps') ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
-                                    in 
-                                    a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
+      prpLibraryHelper prps' = a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
+         where 
+            a =    secretDecoder (take (n*(n-1)) prps') 
+                ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
       secretDecoder ::  [Prp] -> [String]
       secretDecoder [] = []
-      secretDecoder ((P p):ps)  = ("S_{"++ show i ++ "}"++ show j) : secretDecoder ps
+      secretDecoder ((P p):ps)  = ("s"++ show i ++ show j) : secretDecoder ps
          where (i, j) = (p `quot` n, p `rem` n)
       callDecoder :: Int -> [Prp] -> [String]
       callDecoder k calls | k >= div (n*(n-1)) 2 = []
-                             | null calls = []
-                             | otherwise = ("q" ++ show i ++ show j) : callDecoder (k + 1) calls
+                          | null calls = []
+                          | otherwise = ("q" ++ show i ++ show j) : callDecoder (k + 1) calls
          where 
             (i, j) = getCNums k 0
             getCNums :: Int -> Int -> (Int,Int)
@@ -51,22 +47,20 @@ explainPrp :: Prp -> [(Prp,String)] -> String
 explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 \end{code}
 
-We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a state, the number of agents, and uses \texttt{explainPrp} to make sense of the vocabulary and observations. Further work must be done to make sense of the state law. 
+We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene, the number of agents, and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
 \begin{code}
 -- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
+-- 
 gsi :: KnowScene -> Int -> IO ()
 gsi (KnS voc stl obs, s) n = do 
    putStrLn "Vocabulary: "
    mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) voc
    putStrLn "State Law: "
-   -- Translate BDDS back to formula. 
-   -- Can be made a bit nicer, maybe make it latex or smth. 
-   -- Still needs the propositions in the formula translated/explained
-   print (formOf stl)
+   print (ppFormWith (`explainPrp` lib) (formOf stl))
    putStrLn "Observables: "
    mapM_ (putStrLn . (++) " --  " . (\ x -> fst x ++ ":  " ++ show (map (`explainPrp` lib) (snd x)) )) obs
    putStrLn "Actual state: "
-   if null s then putStrLn " --  Nothing is true" 
+   if null s then putStrLn " --  Nobody knows about any other secret" 
       else 
       mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
    where
@@ -84,7 +78,8 @@ gsi s1 3
 
 which outputs the following 
 
-%% \eval{gsi (gossipInit 3) 3 ; gsi (doCall (gossipInit 3) (0,1)) 3}
+\eval{gsi (gossipInit 3) 3}
+\eval{gsi (doCall (gossipInit 3) (0,1)) 3}
 
 %% fixme: latex doesn't understand the eval command
 
