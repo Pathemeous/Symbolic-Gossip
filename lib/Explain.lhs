@@ -17,7 +17,7 @@ import Data.Maybe
 One remarkable property of the SMCDEL implementation \cite{GattingerThesis2018} is how the transformer updates the vocabulary 
 by copying all of the secret propositions.
 This means that in any given transformation, there will be a propositional variable representing a secret 
-$S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_ij$. 
+$S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_{ij}$. 
 In order to prevent overlap between the several groups of variables, a unique value is computed for each propositional variable. 
 A propositional variable is of the form $P i$, where $i$ is generated using one of the following functions (\cite{GattingerThesis2018}):
 
