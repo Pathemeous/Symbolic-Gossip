@@ -14,6 +14,18 @@ import HaitianS5
 
 We test the implementation of the Simple Transformer with the following tests.
 
+simple checks: -> should also work for simple
+- for agents a,b: after call ab, a knows b's secret 
+- for agents a,b,c: after call sequence [ab,bc], c knows a's secret 
+- for agents a,b,c: after one call, c should not be an expert 
+- for agents a,b,c: after call sequence [ab,bc,ca], everyone should be an expert
+ 
+higher-order knowledge checks: -> might not work for simple 
+- for agents a,b,c: after call ab, c knows that a knows b's secret (inference from possible calls)
+- for agents a,b: after call ab, b knows that a knows b's secret 
+- for agents a,b,c,d: after call sequence [ab,bc,cd,ca], a knows that d knows a's secret 
+
+
 \begin{code}
 spec :: Spec
 spec = do

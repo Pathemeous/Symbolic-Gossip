@@ -12,7 +12,8 @@ import Test.Hspec
 
 \end{code}
 
-Tests: \\
+Tests: 
+
 \begin{itemize}
     \item secret propositions are translated correctly 
     \item the vocabulary has correct length 
