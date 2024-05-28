@@ -10,7 +10,6 @@ module Transparent where
 import SMCDEL.Examples.GossipS5
 import SMCDEL.Language
 import SMCDEL.Symbolic.S5
-import Data.List
 \end{code}
 
 We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$ are arguments for the transformer for call ab. 
@@ -28,9 +27,9 @@ call happens at a time) is simplified to describe that only one call between $a$
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
 callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   -- agent k is in the call ab if a calls k (so k==b) or k calls b (so k==a)
-  isInCallForm k | k == a = Top 
-                 | k == b = Top 
-                 | otherwise = Bot
+  -- isInCallForm k | k == a = Top 
+                 -- | k == b = Top 
+                 -- | otherwise = Bot
                  
   thisCallHappens = thisCallProp (a,b)
   -- * eventprops = [thisCallHappens]

@@ -73,10 +73,6 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
       copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
 \end{code}
 
-% fixme
-For example : 
-TODO: EXAMPLE 
-
 Note that this only works for unoptimized knowscenes since the code relies on the 
 vocabulary being exactly copied. 
 
@@ -119,18 +115,20 @@ s1 = doCall s0 (0,1)
 gsi s1 3
 \end{verbatim}
 
-which outputs the following 
+which outputs the following  TODO
 
 % \eval{gsi (gossipInit 3) 3}
 % \eval{gsi (doCall (gossipInit 3) (0,1)) 3}
 
-%% fixme: latex doesn't understand the eval command, let's change to verbatim. 
+%% fixme: latex doesn't understand the eval command, let's change to verbatim. !!
 
-In the future, we hope to also show the law as its BDD using the tool graphviz. 
+In the future, we hope to also show the law as its BDD (Binary Decision Diagram
+\footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
+of logic problems.}) using the tool graphviz. 
 
-\begin{code}
--- Here a function that takes a BDD or a form and makes a BDD picture.
-\end{code}
+% \begin{code}
+% -- Here a function that takes a BDD or a form and makes a BDD picture.
+% \end{code}
 
 Taking a higher-level view of Gossip, we can see how from an initial state, there are branches depending on which calls are made, leading to a tree. We write now some code to store these states in a tree. Since an infinite amount of calls can be made, we limit the size of the tree using a \texttt{depth} parameter.
 
