@@ -33,7 +33,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                  | otherwise = Bot
                  
   thisCallHappens = thisCallProp (a,b)
-  -- eventprops = [thisCallHappens]
+  -- * eventprops = [thisCallHappens]
   eventprops = []  -- Malvin claims that this can be empty
 
   -- call ab takes place and no other calls happen
@@ -52,6 +52,17 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
     [(hasSof n a b, boolBddOf Top)] ++ [(hasSof n b a, boolBddOf Top)] ++ 
       -- case i is b, j is not a: synonymous to above
     [(hasSof n b j, boolBddOf $ Disj [ has n b j , has n a j ]) | j <- gossipers n, b /= j ]
+
+--   *** changelaws =
+--    [(hasSof n i j, boolBddOf $             
+--        Disj [ has n i j                     
+--             , Conj (map isInCallForm [i,j]) 
+--             , Conj [ isInCallForm i         
+--                    , Disj [ Conj [ isInCallForm k, has n k j ] 
+--                           | k <- gossipers n \\ [j], a<k && k<b ]]
+--             ])
+--    | i <- gossipers n, j <- gossipers n, i /= j ]
+
 
   eventobs = [(show k, [thisCallHappens]) | k <- gossipers n]
 \end{code}
