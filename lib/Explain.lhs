@@ -97,8 +97,8 @@ gsi s1 3
 
 which outputs the following 
 
-\eval{gsi (gossipInit 3) 3}
-\eval{gsi (doCall (gossipInit 3) (0,1)) 3}
+% \eval{gsi (gossipInit 3) 3}
+% \eval{gsi (doCall (gossipInit 3) (0,1)) 3}
 
 %% fixme: latex doesn't understand the eval command, let's change to verbatim. 
 
