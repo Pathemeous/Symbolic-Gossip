@@ -1,6 +1,8 @@
 \section{Gossip Scene Investigation}\label{sec:Explain}
 
-This section explains functions that we created to make sense of the current state of a given gossip problem, i.e. gossip scene investigation. We begin with the following imports.
+This section explains functions that we created to make sense of the current state of a given gossip problem, i.e. gossip scene investigation.
+
+First of all, the code makes use of the following imports:
 
 \begin{code}
 module Explain where
@@ -12,9 +14,14 @@ import SMCDEL.Other.BDD2Form
 import Data.Maybe
 \end{code}
 
-One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions. This means that in any given transformation, there will be a propositional variable representing a secret, as well as a copy of said variable. 
+% Difference between SMCDEL and SMCDEL? 
+One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions.
+This means that in any given transformation, there will be a propositional variable representing a secret ($S_ij$), as well as a copy of said variable ($S_ij'$). 
 
-We started by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets. The function works by taking in the vocabulary, as well as the number of agents, and returns the library. We also write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning. 
+Moreover, we also have propositions for calls ($q_ij$). 
+
+To write a function that could translate an (encoded?) proposition we started by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets.
+The function works by taking in the vocabulary, as well as the number of agents, and returns the library from which we can decipher propositions in our gossip setCloseOnExec.
 
 \begin{code}
 prpLibrary :: [Prp] -> Int -> [(Prp,String)]
@@ -42,6 +49,17 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
       copyDecoder :: [Prp] -> [String] -> String -> [String]
       copyDecoder [] _ _ = []
       copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
+
+\end{code}
+
+For example : 
+EXAMPLE 
+
+Note that this only works for unoptimized (As in optimized SMCDEL knowscenes) knowscenes since the code relies on the vocabulary being exactly copied. 
+
+We can then write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning (as String). 
+
+\begin{code}
          
 explainPrp :: Prp -> [(Prp,String)] -> String
 explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
@@ -67,9 +85,10 @@ gsi (KnS voc stl obs, s) n = do
       lib = prpLibrary voc n
 \end{code}
 
-We can then run the following 
+We can then run the following (Make sure you can import SMCDEL, do stack build maybe)
 
 \begin{verbatim}
+import SMCDEL.Examples.GossipS5
 s0 = gossipInit 3
 gsi s0 3
 s1 = doCall s0 (0,1)
@@ -81,7 +100,7 @@ which outputs the following
 \eval{gsi (gossipInit 3) 3}
 \eval{gsi (doCall (gossipInit 3) (0,1)) 3}
 
-%% fixme: latex doesn't understand the eval command
+%% fixme: latex doesn't understand the eval command, let's change to verbatim. 
 
 In the future, we hope to also show the law as its BDD using the tool graphviz. 
 
