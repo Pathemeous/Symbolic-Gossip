@@ -6,7 +6,7 @@ First of all, the code makes use of the following imports:
 \begin{code}
 module Explain where
    
-import SMCDEL.Examples.GossipS5
+--import SMCDEL.Examples.GossipS5      <-- fixme: redundant import acc. to vscode?
 import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
@@ -130,22 +130,24 @@ of logic problems.}) using the tool graphviz.
 % -- Here a function that takes a BDD or a form and makes a BDD picture.
 % \end{code}
 
-Taking a higher-level view of Gossip, we can see how from an initial state, there are branches depending on which calls are made, leading to a tree. We write now some code to store these states in a tree. Since an infinite amount of calls can be made, we limit the size of the tree using a \texttt{depth} parameter.
+% Taking a higher-level view of Gossip, we can see how from an initial state, there are branches depending on which 
+% calls are made, leading to a tree. We write now some code to store these states in a tree. Since an infinite amount of 
+% calls can be made, we limit the size of the tree using a \texttt{depth} parameter.
 
-\begin{code}
-data Tree a = T a [Tree a]
-   deriving(Show)
+% \begin{code}
+% data Tree a = T a [Tree a]
+%    deriving(Show)
 
--- explainScene :: KnowScene -> Int -> KnowScene
--- explainScene (KnS voc sLaw obs, s) n = KnS ()
+% -- explainScene :: KnowScene -> Int -> KnowScene
+% -- explainScene (KnS voc sLaw obs, s) n = KnS ()
 
--- explainGossip :: Int -> Int -> Tree KnowScene
--- explainGossip n depth = T (gossipInit n) []
+% -- explainGossip :: Int -> Int -> Tree KnowScene
+% -- explainGossip n depth = T (gossipInit n) []
 
-gossipTree :: Int -> Int -> Tree KnowScene
-gossipTree n depth = T (gossipInit n) (gossipBranches (gossipInit n) n depth)  
+% gossipTree :: Int -> Int -> Tree KnowScene
+% gossipTree n depth = T (gossipInit n) (gossipBranches (gossipInit n) n depth)  
 
-gossipBranches :: KnowScene -> Int -> Int -> [Tree KnowScene]
-gossipBranches _ _ 0 = []
-gossipBranches ks n' depth' = [ T (doCall ks (i,j)) (gossipBranches (doCall ks (i,j)) n' (depth'-1)) | i <- gossipers n', j <- gossipers n', i < j ]  
-\end{code}
+% gossipBranches :: KnowScene -> Int -> Int -> [Tree KnowScene]
+% gossipBranches _ _ 0 = []
+% gossipBranches ks n' depth' = [ T (doCall ks (i,j)) (gossipBranches (doCall ks (i,j)) n' (depth'-1)) | i <- gossipers n', j <- gossipers n', i < j ]  
+% \end{code}
