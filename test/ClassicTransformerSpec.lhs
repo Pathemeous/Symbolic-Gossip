@@ -39,7 +39,6 @@ We can verify that $K_2 S_01$ is indeed true after the calls $01;12$ in the clas
 \begin{code}
 spec :: Spec
 spec = do
-    describe "ClassicTransformer" $ do
         it "clsTrf: second call shares secrets of other agents" $ do
             eval (after 3 [(0,1),(1,2)]) (K "2" $ has 3 0 1) `shouldBe` True
         it "clsTrf: second call shares secrets of other agents" $ do
