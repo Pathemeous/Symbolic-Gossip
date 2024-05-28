@@ -87,8 +87,8 @@ and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
 \begin{code}
 -- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
 -- 
-gsi :: KnowScene -> Int -> IO ()
-gsi (KnS voc stl obs, s) n = do 
+gsi :: KnowScene -> IO ()
+gsi kns@(KnS voc stl obs, s) = do
    putStrLn "Vocabulary: "
    mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) voc
    putStrLn "State Law: "
@@ -100,22 +100,14 @@ gsi (KnS voc stl obs, s) n = do
       else 
       mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
    where
-      lib = prpLibrary voc n
+      lib = prpLibrary voc (length $ agentsOf kns)
 \end{code}
 
 We can then run the following:
 
 \begin{verbatim}
 import SMCDEL.Examples.GossipS5
-s0 = gossipInit 3
-gsi s0 3
-s1 = doCall s0 (0,1)
-gsi s1 3
-\end{verbatim}
-
-which outputs the following  TODO
-
-\begin{verbatim}
+ghci> gsi $ gossipInit 3
 Vocabulary: 
  --  s01
  --  s02
@@ -132,6 +124,7 @@ Observables:
 Actual state: 
  --  Nobody knows about any other secret
 
+ghci> gsi $ doCall (gossipInit 3) (0,1)
 Vocabulary: 
  --  s01
  --  s02
@@ -160,10 +153,6 @@ Actual state:
  --  q01
 \end{verbatim}
 
-% \eval{gsi (gossipInit 3) 3}
-% \eval{gsi (doCall (gossipInit 3) (0,1)) 3}
-
-%% fixme: latex doesn't understand the eval command, let's change to verbatim. !!
 
 In the future, we hope to also show the law as its BDD (Binary Decision Diagram
 \footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
