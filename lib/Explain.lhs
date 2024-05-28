@@ -1,7 +1,8 @@
 \section{Gossip Scene Investigation}\label{sec:Explain}
 
-This section explains the functions that we created to make sense of the current state of a given gossip problem, i.e. gossip scene investigation.
-First of all, the code makes use of the following imports:
+This section explains the functions that we created to make sense of the current state of a given gossip problem, 
+i.e. gossip scene investigation. The functions only work on the unoptimized, Classic Transformer, since the code relies on the 
+exact vocabulary being copied. First of all, the code makes use of the following imports:
 
 \begin{code}
 module Explain where
@@ -72,9 +73,6 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
       copyDecoder [] _ _ = []
       copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
 \end{code}
-
-Note that this only works for unoptimized knowscenes since the code relies on the 
-vocabulary being exactly copied. 
 
 Additionally, we wrote the (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, 
 to return its meaning (as String). 
