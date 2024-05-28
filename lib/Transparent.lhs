@@ -1,8 +1,8 @@
 \section{Transparent Transformer}\label{sec:Transparent}
 
-This section describes how we wrote an implementation of the classic Knowledge Transformer for the Transparent Gossip Problem. This transformer is tailored to the actual call that happens, which makes sure that whenever a call happens, all agents know this and also know which agents participate. 
-
-We begin by importing the \texttt{GossipS5} and \texttt{Symbolic.S5} modules from SMCDEL, which define the synchronous classic transformer, and the \texttt{Language} module. 
+This section describes a variant of the Classic Knowledge Transformer that is implemented for the Transparent Gossip Problem. 
+This transformer is tailored to the actual call that happens, which makes sure that whenever a call happens, all agents 
+know this and also know which agents participate. 
  
 \begin{code}
 module Transparent where
@@ -12,17 +12,31 @@ import SMCDEL.Language
 import SMCDEL.Symbolic.S5
 \end{code}
 
-We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that agents $a$ and $b$ are arguments for the transformer for call ab. 
-
+We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip 
+Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that 
+agents $a$ and $b$ are arguments for the transformer for call ab. 
 As in Section \ref{sec:Background}, we redefine how to update the vocabulary, law, and observations of each agent. 
 
-First, the vocabulary $V^+$, called \texttt{thisCallHappens}, is now simply the call between agents $a$ and $b$; as opposed to the synchronous case, we do not need to add any other new call variables, as all agents know exactly which call happens.
+First, the vocabulary $V^+$, called \texttt{thisCallHappens}, is now simply the call between agents $a$ and $b$; 
+as opposed to the synchronous case, we do not need to add any other new call variables, as all agents know exactly which 
+call happens. The \texttt{eventprops} are now empty, since we don't need extra vocabulary anymore to describe the possible 
+calls that could be happening. 
 
-We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, and is now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
+% We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, and is
+% now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. 
+% \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
 
 The \texttt{eventlaw} $\theta^+$ (which originally stated that only one 
-call happens at a time) is simplified to describe that only one call between $a$ and $b$ happens. Moreover, \texttt{changelaws} $\theta^-$ are identical to those of the synchronous variant. The \texttt{eventobs} $O_k^+$ are also simplified to the call between $a$ and $b$, as every agent observes the call.
+call happens at a time) is simplified to describe that only the specified call between $a$ and $b$ happens. 
+The \texttt{changelaws} $\theta^-$ are quite different from those in the Classic Transformer TODO 
+% fixme: explain changelaws when callTrfTransparent works 
 
+
+% Moreover, \texttt{changelaws} $\theta^-$ are identical to those of the synchronous variant.  -- old version
+
+The \texttt{eventobs} $O_k^+$ are also simplified to the call between $a$ and $b$, as every agent observes the call.
+
+% fixme test this 
 \begin{code}
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
 callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
@@ -43,8 +57,8 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                                                        , i < j ]]
   changelaws =
   -- i has secret of j 
-      -- case: i is not a or b: then i can not have learned the secret unless it already knew it (has n i j)
-    [(hasSof n i j, boolBddOf $ has n i j) | i <- gossipers n, j <- gossipers n, i /= j, i /= a || i /= b] ++
+      -- case: i is not a or i is not b: then i can not have learned the secret unless it already knew it (has n i j)
+    [(hasSof n i j, boolBddOf $ has n i j) | i <- gossipers n, j <- gossipers n, i /= j, i /= a, i /= b] ++
       -- case: i is a, j is not b: then i learned the secret if it already knew it, or b knew the secret of j
     [(hasSof n a j, boolBddOf $ Disj [ has n a j , has n b j ]) | j <- gossipers n, a /= j ] ++
       -- case: i is a, j is b: then Top (also: i is b, j is a)
@@ -66,7 +80,8 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   eventobs = [(show k, [thisCallHappens]) | k <- gossipers n]
 \end{code}
 
-Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. The following functions were adapted from the original implementation to perform the transparent update:
+Since the transparent transformer has the same type as the synchronous variant, we inherited its update function. 
+The following functions were adapted from the original implementation to perform the transparent update:
 
 \begin{code}
 callTransparent :: Int -> (Int,Int) -> Event
