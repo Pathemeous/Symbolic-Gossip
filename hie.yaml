@@ -1,13 +1,13 @@
 cradle:
   stack:
     - path: "./lib"
-      component: "SYMBOLIC-GOSSIP:lib"
+      component: "SYMBOLIC-GOSSIP-FP:lib"
 
     - path: "./exec/Main.lhs"
-      component: "SYMBOLIC-GOSSIP:exe:myprogram"
+      component: "SYMBOLIC-GOSSIP-FP:exe:myprogram"
 
     - path: "./exec/Paths_report.hs"
-      component: "SYMBOLIC-GOSSIP:exe:myprogram"
+      component: "SYMBOLIC-GOSSIP-FP:exe:myprogram"
 
     - path: "./test"
-      component: "SYMBOLIC-GOSSIP:test:simpletests"
+      component: "SYMBOLIC-GOSSIP-FP:test:simpletests"

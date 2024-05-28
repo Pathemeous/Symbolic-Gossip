@@ -1,7 +1,6 @@
 \section{Gossip Scene Investigation}\label{sec:Explain}
 
-This section explains functions that we created to make sense of the current state of a given gossip problem, i.e. gossip scene investigation.
-
+This section explains the functions that we created to make sense of the current state of a given gossip problem, i.e. gossip scene investigation.
 First of all, the code makes use of the following imports:
 
 \begin{code}
@@ -14,29 +13,50 @@ import SMCDEL.Other.BDD2Form
 import Data.Maybe
 \end{code}
 
-% Difference between SMCDEL and SMCDEL? 
-One of the differences between SMCDEL and \cite{GattingerThesis2018} is how the transformer updates the vocabulary by copying all of the secret propositions.
-This means that in any given transformation, there will be a propositional variable representing a secret ($S_ij$), as well as a copy of said variable ($S_ij'$). 
+One remarkable property of the SMCDEL implementation \cite{GattingerThesis2018} is how the transformer updates the vocabulary 
+by copying all of the secret propositions.
+This means that in any given transformation, there will be a propositional variable representing a secret 
+$S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_ij$. 
+In order to prevent overlap between the several groups of variables, a unique value is computed for each propositional variable. 
+A propositional variable is of the form $P i$, where $i$ is generated using one of the following functions (\cite{GattingerThesis2018}):
 
-Moreover, we also have propositions for calls ($q_ij$). 
+\begin{verbatim}
+   -- a has the secret of b
+   hasSof :: Int -> Int -> Int -> Prp
+   hasSof n a b | a == b    = error "Let's not even talk about that."
+                | otherwise = toEnum (n * a + b)
 
-To write a function that could translate an (encoded?) proposition we started by writing \texttt{prpLibrary} to decode propositions into whether they were secrets, call propositions, or copies of secrets.
-The function works by taking in the vocabulary, as well as the number of agents, and returns the library from which we can decipher propositions in our gossip setCloseOnExec.
+   -- a calls b
+   thisCallProp :: (Int,Int) -> Prp
+   thisCallProp (i,j) | i < j     = P (100 + 10*i + j)
+                      | otherwise = error $ "wrong call: " ++ show (i,j)
+\end{verbatim}
+
+In order to make the description of a Knowledge Structure human-readable, we defined the following functions to translate the
+encoded propositions: \texttt{prpLibrary} checks whether a proposition denotes a secret, call proposition, or copy of a secret.
+The function takes the vocabulary as input, as well as the number of agents, and returns the library from which we can 
+decipher propositions in our gossip scene investigation.
 
 \begin{code}
 prpLibrary :: [Prp] -> Int -> [(Prp,String)]
 prpLibrary prps n = zip prps (prpLibraryHelper prps)
    where 
+      -- assign the propositions to secrets, calls, and copies of secrets
+      -- and decode each with the appropriate decoder
       prpLibraryHelper :: [Prp]  -> [String]
       prpLibraryHelper [] = []
       prpLibraryHelper prps' = a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
          where 
             a =    secretDecoder (take (n*(n-1)) prps') 
                 ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
+      
+      -- decode secrets
       secretDecoder ::  [Prp] -> [String]
       secretDecoder [] = []
       secretDecoder ((P p):ps)  = ("s"++ show i ++ show j) : secretDecoder ps
          where (i, j) = (p `quot` n, p `rem` n)
+      
+      -- decode calls
       callDecoder :: Int -> [Prp] -> [String]
       callDecoder k calls | k >= div (n*(n-1)) 2 = []
                           | null calls = []
@@ -46,26 +66,30 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
             getCNums :: Int -> Int -> (Int,Int)
             getCNums k' r'' | (k'+1) < n = (r'',k'+1)
                             | otherwise = getCNums (k'-n+2+r'') (r''+1)
+      
+      -- decode copies
       copyDecoder :: [Prp] -> [String] -> String -> [String]
       copyDecoder [] _ _ = []
       copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
-
 \end{code}
 
+% fixme
 For example : 
-EXAMPLE 
+TODO: EXAMPLE 
 
-Note that this only works for unoptimized (As in optimized SMCDEL knowscenes) knowscenes since the code relies on the vocabulary being exactly copied. 
+Note that this only works for unoptimized knowscenes since the code relies on the 
+vocabulary being exactly copied. 
 
-We can then write an (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, to return its meaning (as String). 
+Additionally, we wrote the (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, 
+to return its meaning (as String). 
 
-\begin{code}
-         
+\begin{code} 
 explainPrp :: Prp -> [(Prp,String)] -> String
 explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 \end{code}
 
-We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene, the number of agents, and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
+We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and the number of agents, 
+and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
 \begin{code}
 -- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
 -- 
@@ -85,7 +109,7 @@ gsi (KnS voc stl obs, s) n = do
       lib = prpLibrary voc n
 \end{code}
 
-We can then run the following (Make sure you can import SMCDEL, do stack build maybe)
+We can then run the following:
 
 \begin{verbatim}
 import SMCDEL.Examples.GossipS5

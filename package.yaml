@@ -1,4 +1,4 @@
-name: SYMBOLIC-GOSSIP
+name: SYMBOLIC-GOSSIP-FP
 version: 0.1.0.0
 synopsis: Functional Programming 2024 - Symbolic Gossip Project
 description: See report.pdf
@@ -25,13 +25,13 @@ executables:
     main: Main.lhs
     source-dirs: exec
     dependencies:
-      - SYMBOLIC-GOSSIP
+      - SYMBOLIC-GOSSIP-FP
 
 tests:
   simpletests:
     main: simpletests.lhs
     source-dirs: test
     dependencies:
-      - SYMBOLIC-GOSSIP
+      - SYMBOLIC-GOSSIP-FP
       - QuickCheck
       - hspec
