@@ -16,6 +16,7 @@ dependencies:
   - tagged
   - directory
   - process
+  - criterion
 
 library:
   source-dirs: lib
