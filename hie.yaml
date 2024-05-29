@@ -10,4 +10,4 @@ cradle:
       component: "SYMBOLIC-GOSSIP-FP:exe:myprogram"
 
     - path: "./test"
-      component: "SYMBOLIC-GOSSIP-FP:test:simpletests"
+      component: "SYMBOLIC-GOSSIP-FP:test:testsuite"
