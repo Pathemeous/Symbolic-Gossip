@@ -1,19 +1,19 @@
 \section{Simple Transformer}\label{sec:Simple}
 
-%% fixme: If you can connect this to Background.tex a bit more by using the symbols 
-%% (V^+, \Theta^+,\Theta_-,O_k^+) I think it would help with the flow of the paper by 
-%% letting the reader see how these things change. I would do it as I did it in Transparent.lhs 
+%% fixme: If you can connect this to Background.tex a bit more by using the symbols
+%% (V^+, \Theta^+,\Theta_-,O_k^+) I think it would help with the flow of the paper by
+%% letting the reader see how these things change. I would do it as I did it in Transparent.lhs
 %% but I don't want to mess it up since I'm not as familiar with SimpleTransformer
 
 This module describes an implementation of the simple transformer as defined by Daniel Reifsteck in his master's thesis \cite{danielMasterThesis}.
 The simple transformer aims to avoid the exponential blowup of variables that occurs in the classic transformer by copying propositions at each update
-and storing the "history" of events in the state law. 
-The simple transformer does not change the initial state law throughout the computation. Instead, it directly applies factual change to 
-the actual state. 
+and storing the "history" of events in the state law.
+The simple transformer does not change the initial state law throughout the computation. Instead, it directly applies factual change to
+the actual state.
 
-%% For example, perhaps we could add above, "As we have seen, the even vocabulary $V^+$ instantiates new 
+%% For example, perhaps we could add above, "As we have seen, the even vocabulary $V^+$ instantiates new
 %% variables which remain as copies in the model, as well as updating the law $\Theta$ with huge formulas
-%% $\Theta^+$ and $\Theta_-$ encoding the factual change." I'm not sure this is correct, but it would 
+%% $\Theta^+$ and $\Theta_-$ encoding the factual change." I'm not sure this is correct, but it would
 %% connect things with what we have done way more :D
 
 
@@ -21,13 +21,14 @@ the actual state.
 module SimpleTransformer where
 
 import SmpTrfS5
+import SMCDEL.Symbolic.S5
 import SMCDEL.Examples.GossipS5
 import SMCDEL.Language
 import Data.List ((\\))
 \end{code}
 
-The model is initialized by the \texttt{simpleGossipInit} function, which is based on the \texttt{gossipInit} function in the GossipS5 file. 
-The initial vocabulary contains all propositions of the form "$i$ knows the secret of agent $j$", for all agents $i,j$. 
+The model is initialized by the \texttt{simpleGossipInit} function, which is based on the \texttt{gossipInit} function in the GossipS5 file.
+The initial vocabulary contains all propositions of the form "$i$ knows the secret of agent $j$", for all agents $i,j$.
 
 Whereas the original state law described the situation in which agents only know their own secrets, this definition is too restrictive
 for the simple implementation: it prevents the learning of secrets, since the actual state should obey the
@@ -35,9 +36,9 @@ state law throughout the computation. Thus, in order not to exclude any possible
 
 
 The observables for agent $i$ - which equal the empty set in the classic implementation - now include the proposition "$S_i j$ for all agents $j$.
-Conceptually, these are the propositions that $i$ can observe the truth value of these propositions at any point in the model: factual change does not 
-influence the ability of $i$ to observe them. This is only true for propositions involving $i$'s own knowledge. For example, even if Alice can "observe" that 
-Bob does not know Charles' secret in the initial model, she cannot know this fact with certainty after a first call has occurred. 
+Conceptually, these are the propositions that $i$ can observe the truth value of these propositions at any point in the model: factual change does not
+influence the ability of $i$ to observe them. This is only true for propositions involving $i$'s own knowledge. For example, even if Alice can "observe" that
+Bob does not know Charles' secret in the initial model, she cannot know this fact with certainty after a first call has occurred.
 
 Analogous to the classic implementation, the state \texttt{actual} is initially empty, as it describes all true propositions of the form "$i$ knows the secret of agent $j$".
 While agents do know their own secrets, these are not encoded by propositions and therefore not mentioned in the state.
@@ -61,7 +62,7 @@ The state law $\Theta_-$ (\texttt{changelaws}) is similarly defined as in the cl
 
 The transformation observables in this transformer are empty, as we will show that the specific update function will only need the observables in the original knowledge structure.
 
-The function \texttt{simpleGossipTransformer} is the simple analogue of the classic transformer \texttt{callTrf} and the transparent variant 
+The function \texttt{simpleGossipTransformer} is the simple analogue of the classic transformer \texttt{callTrf} and the transparent variant
 \texttt{callTrfTransparent} from \ref{sec:Transparent}.
 
 \begin{code}
@@ -72,10 +73,10 @@ simpleGossipTransformer n = SimTrfWithF eventprops changelaws changeobs where
     isInCallForm k = Disj $ [ thisCallHappens (i,k) | i <- gossipers n \\ [k], i < k ]
                         ++ [ thisCallHappens (k,j) | j <- gossipers n \\ [k], k < j ]
     allCalls = [ (i,j) | i <- gossipers n, j <- gossipers n, i < j ]
-    
+
     -- V+ event props stay the same as classic transformer
     eventprops = map thisCallProp allCalls
-    
+
     -- Theta- change law stays same as classic transformer
     changelaws =
       [(hasSof n i j, boolBddOf $              -- after a call, i has the secret of j iff
@@ -90,7 +91,7 @@ simpleGossipTransformer n = SimTrfWithF eventprops changelaws changeobs where
     -- Change obs are empty as they are not used
     changeobs    = [ (show i, ([],[])) | i <- gossipers n ]
 \end{code}
- 
+
 The following functions are analogues of those in \texttt{GossipS5.hs} and instead use the simple transformer.
 
 \begin{code}
