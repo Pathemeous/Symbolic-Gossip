@@ -1,3 +1,5 @@
+\section{Benchmarks}
+
 \begin{code}
 module Bench.TrfBenchmarks where
 
