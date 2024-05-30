@@ -1,4 +1,4 @@
-module Benchmarks.TrfBenchmarks where
+module Bench.TrfBenchmarks where
 
 import Criterion.Main
 import SimpleTransformer
@@ -16,7 +16,7 @@ import SMCDEL.Language
     * Runnng the Benchmark
     To run the benchmark, do `stack build`. Then run
 
-        stack ghci lib/Benchmarks/TrfBenchmarks.hs
+        stack ghci bench/TrfBenchmarks.hs
 
     When in the ghci, run:
 
