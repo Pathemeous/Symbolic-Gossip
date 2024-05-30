@@ -19,32 +19,6 @@ import SMCDEL.Internal.Help
 import SMCDEL.Language
 import SMCDEL.Symbolic.S5
 
-
-{-
-    Simple transformer without factual change
--}
-
-newtype SimpleTransformerWithoutFactual = SimTrfNoF
-  [(Agent,([Prp],[Prp]))]  -- O+ and O- for each agent
-  deriving (Eq,Show)
-
-
-instance HasAgents SimpleTransformerWithoutFactual where
-  agentsOf (SimTrfNoF obs) = map fst obs
-
-instance HasPrecondition SimpleTransformerWithoutFactual where
-  preOf _ = Top
-
-instance Update KnowStruct SimpleTransformerWithoutFactual where
-  checks = [haveSameAgents]
-  unsafeUpdate (KnS v theta obs) (SimTrfNoF trfObs) = KnS v theta newobs
-    where newobs = [ (ag, nub (ob ++ fst (trfObs ! ag)) \\ snd (trfObs ! ag)) | (ag,ob) <- obs ]
-
-instance Update KnowScene SimpleTransformerWithoutFactual where
-  checks = [haveSameAgents]
-  unsafeUpdate (kns,s) sTNF = (unsafeUpdate kns sTNF,s)
-
-
 {-
     Simple transformer with factual change
 -}
@@ -60,15 +34,9 @@ type StwfEvent = (SimpleTransformerWithFactual,State)
 instance HasPrecondition StwfEvent where
   preOf _ = Top
 
-instance Update KnowStruct SimpleTransformerWithFactual where
-  checks = [haveSameAgents]
-  unsafeUpdate :: KnowStruct -> SimpleTransformerWithFactual -> KnowStruct
-  unsafeUpdate kns@KnS {} (SimTrfWithF _ _ trfObs) = KnS newprops newlaw newobs where
-    KnS newprops newlaw newobs = unsafeUpdate kns (SimTrfNoF trfObs)
-
 -- The following instance is modified from Haitian's implementation of the
 -- general simple transformer definition
--- It is -only- sound for synchronous Gossip calls
+-- It is *only* sound for synchronous Gossip calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
   unsafeUpdate kns@(KnS v th obs,s) (SimTrfWithF _ thetaminus _,x) = (newkns, newstate) where
