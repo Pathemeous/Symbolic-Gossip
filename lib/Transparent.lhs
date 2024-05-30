@@ -46,8 +46,8 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                  -- | otherwise = Bot
                  
   thisCallHappens = thisCallProp (a,b)
-  -- * eventprops = [thisCallHappens]
-  eventprops = []  -- Malvin claims that this can be empty
+  -- the only event proposition is the current call
+  eventprops = [thisCallHappens]
 
   -- call ab takes place and no other calls happen
   eventlaw = Conj [PrpF thisCallHappens,
@@ -60,11 +60,11 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
       -- case: i is not a or i is not b: then i can not have learned the secret unless it already knew it (has n i j)
     [(hasSof n i j, boolBddOf $ has n i j) | i <- gossipers n, j <- gossipers n, i /= j, i /= a, i /= b] ++
       -- case: i is a, j is not b: then i learned the secret if it already knew it, or b knew the secret of j
-    [(hasSof n a j, boolBddOf $ Disj [ has n a j , has n b j ]) | j <- gossipers n, a /= j ] ++
+    [(hasSof n a j, boolBddOf $ Disj [ has n a j , has n b j ]) | j <- gossipers n, a /= j, b /= j ] ++
       -- case: i is a, j is b: then Top (also: i is b, j is a)
     [(hasSof n a b, boolBddOf Top)] ++ [(hasSof n b a, boolBddOf Top)] ++ 
       -- case i is b, j is not a: synonymous to above
-    [(hasSof n b j, boolBddOf $ Disj [ has n b j , has n a j ]) | j <- gossipers n, b /= j ]
+    [(hasSof n b j, boolBddOf $ Disj [ has n b j , has n a j ]) | j <- gossipers n, a /= j, b /= j ]
 
 --   *** changelaws =
 --    [(hasSof n i j, boolBddOf $             
