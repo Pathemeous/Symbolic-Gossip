@@ -1,3 +1,4 @@
+\begin{code}
 module Bench.TrfBenchmarks where
 
 import Criterion.Main
@@ -43,27 +44,28 @@ benchClsTrf a c = evalViaBdd (after a $ take c callsequence) (K "0" $ allExperts
 main :: IO ()
 main = defaultMain [
   bgroup "SmpTrf - 3 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 3) 1
-                                , bench "2 calls"  $ whnf (benchSmpTrf 3) 2
                                 , bench "3 calls"  $ whnf (benchSmpTrf 3) 3
-                                ],
-  bgroup "SmpTrf - 4 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 4) 1
-                                , bench "2 calls"  $ whnf (benchSmpTrf 4) 2
-                                , bench "3 calls"  $ whnf (benchSmpTrf 4) 3
+                                , bench "5 calls"  $ whnf (benchSmpTrf 3) 5
                                 ],
   bgroup "SmpTrf - 5 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 5) 1
-                                , bench "2 calls"  $ whnf (benchSmpTrf 5) 2
-                                , bench "3 calls"  $ whnf (benchSmpTrf 5) 3
+                                , bench "3 calls"  $ whnf (benchSmpTrf 5) 2
+                                , bench "5 calls"  $ whnf (benchSmpTrf 5) 3
+                                ],
+  bgroup "SmpTrf - 7 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 7) 1
+                                , bench "3 calls"  $ whnf (benchSmpTrf 7) 2
+                                , bench "5 calls"  $ whnf (benchSmpTrf 7) 3
                                 ],
   bgroup "ClsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchClsTrf 3) 1
-                                , bench "2 calls"  $ whnf (benchClsTrf 3) 2
-                                , bench "3 calls"  $ whnf (benchClsTrf 3) 3
-                                ],
-  bgroup "ClsTrf - 4 agents"    [ bench "1 call"   $ whnf (benchClsTrf 4) 1
-                                , bench "2 calls"  $ whnf (benchClsTrf 4) 2
-                                , bench "3 calls"  $ whnf (benchClsTrf 4) 3
+                                , bench "3 calls"  $ whnf (benchClsTrf 3) 2
+                                , bench "5 calls"  $ whnf (benchClsTrf 3) 3
                                 ],
   bgroup "ClsTrf - 5 agents"    [ bench "1 call"   $ whnf (benchClsTrf 5) 1
-                                , bench "2 calls"  $ whnf (benchClsTrf 5) 2
-                                , bench "3 calls"  $ whnf (benchClsTrf 5) 3
+                                , bench "3 calls"  $ whnf (benchClsTrf 5) 2
+                                , bench "5 calls"  $ whnf (benchClsTrf 5) 3
+                                ],
+  bgroup "ClsTrf - 7 agents"    [ bench "1 call"   $ whnf (benchClsTrf 7) 1
+                                , bench "3 calls"  $ whnf (benchClsTrf 7) 2
+                                , bench "5 calls"  $ whnf (benchClsTrf 7) 3
                                 ]
   ]
+\end{code}
