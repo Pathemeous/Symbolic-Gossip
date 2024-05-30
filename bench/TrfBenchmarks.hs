@@ -4,6 +4,7 @@ import Criterion.Main
 import SimpleTransformer
 import SMCDEL.Symbolic.S5
 import SMCDEL.Examples.GossipS5
+import SMCDEL.Language
 
 {-
     This module benchmarks the various transformers.
@@ -30,11 +31,13 @@ callsequence :: [(Int, Int)]
 callsequence  = [(0,1),(1,2),(0,2)]
 
 -- The function we're benchmarking.
-benchSmpTrf :: Int -> Int -> KnowScene
-benchSmpTrf a c = afterSimple a $ take c callsequence
+-- Simple Transformer
+benchSmpTrf :: Int -> Int -> Bool
+benchSmpTrf a c = evalViaBdd (afterSimple a $ take c callsequence) (K "0" $ allExperts a)
 
-benchClsTrf :: Int -> Int -> KnowScene
-benchClsTrf a c = after a $ take c callsequence
+-- Classic Transformer
+benchClsTrf :: Int -> Int -> Bool
+benchClsTrf a c = evalViaBdd (after a $ take c callsequence) (K "0" $ allExperts a)
 
 -- Our benchmark harness.
 main :: IO ()
