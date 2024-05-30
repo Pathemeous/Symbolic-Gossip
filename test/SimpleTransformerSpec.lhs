@@ -16,7 +16,8 @@ import SMCDEL.Language
 \end{code}
 
 We test the implementation of the Simple Transformer with the following tests. As with the transparent variant, 
-the first five tests encode the basic requirements of a transformer for a Gossip problem. 
+the first five tests encode the basic requirements of a transformer for a Gossip problem. The following tests 
+describe instances of higher-order knowledge and aren't all satisfied by the Simple Transformer, even though they should be. 
 
 \begin{enumerate}
     \item For agents $a,b$: in the initial model, $a$ knows that $b$ doesn't know $a$'s secret 
@@ -25,9 +26,10 @@ the first five tests encode the basic requirements of a transformer for a Gossip
     \item For agents $a,b,c$: after one call, there should be no experts
     \item For agents $a,b,c$: after call sequence [$ab,bc,ca$], everyone should be an expert
 
-    \item For agents $a,b,c$: after call $ab$, $c$ knows that $a$ knows $b$'s secret 
-    \item For agents $a,b,c,d$: after call sequence [$ab,bc$], $d$ knows that $c$ knows $a$'s secret 
-    \item For agents $a,b,c$: after call sequence [$ab,bc,ca$], everyone should know that everyone's an expert 
+    \item For agents $a,b,c,d$: after call sequence [$ab,bc$], $c$ knows that $a$ knows that 
+    $b$ knows $a$'s secret 
+    \item For agents $a,b,c$: after call sequence [$ab$], $a$ knows that $c$ doesn't know $b$'s secret 
+    \item For agents $a,b,c$: after call sequence [$ab,bc,ca,ab,bc,ca$], everyone should know that everyone's an expert 
 
     \item For agents $a,b$: after call $ab$, $b$ knows that $a$ knows $b$'s secret 
     \item For agents $a,b,c,d$: after call sequence [$ab,bc,cd,ca$], $a$ knows that $d$ knows $a$'s secret
@@ -50,39 +52,26 @@ spec = do
             isSuccessSimple 3 [(0,1),(1,2),(2,0)] `shouldBe` True
 
         -- simple-trf-specific tests: these might fail but we'd like them to be true -- CHECK THIS 
-        it "simpTrf 6: call is observed by other agents" $ do 
-            eval (afterTransparent 3 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` True 
-        it "simpTrf 7: call sequence is observed by other agents" $ do 
-            eval (afterTransparent 4 [(0,1),(1,2)]) (K "3" (has 3 2 0)) `shouldBe` True 
+        it "simpTrf 7: agents can reason about other agents' knowledge" $ do 
+            eval (afterSimple 4 [(0,1),(1,2)]) (K "3" (has 3 2 0)) `shouldBe` True
+        it "simpTrf 6: agents can reason about the limits of other agents' knowledge" $ do 
+            eval (afterSimple 3 [(0,1)]) (K "0" (Neg (has 3 2 1))) `shouldBe` True 
         it "simpTrf 8: all agents know that all are experts after the correct call sequence" $ do 
-            eval (afterTransparent 3 [(0,1),(1,2),(2,0)]) (Conj [ K (show i) (allExperts 3) 
+            eval (afterSimple 3 [(0,1),(1,2),(2,0),(0,1),(1,2),(2,0)]) (Conj [ K (show i) (allExperts 3) 
                                                                 | i <- [(0::Int)..3] ]) `shouldBe` True
-        -- general higher-order knowledge tests
+        -- other general higher-order knowledge tests (same tests as those for the transparent implementation)
         it "simpTrf 9: higher-order knowledge after one call" $ do 
-            eval (afterTransparent 3 [(0,1)]) (K "1" (has 3 0 1)) `shouldBe` True 
+            eval (afterSimple 3 [(0,1)]) (K "1" (has 3 0 1)) `shouldBe` True 
         it "simpTrf 10: higher-order knowledge after call sequence" $ do
-            eval (afterTransparent 3 [(0,1),(1,2),(2,3),(2,0)]) (K "0" $ Conj [has 3 3 0, K "3" (has 3 2 0)]) `shouldBe` True
+            eval (afterSimple 3 [(0,1),(1,2),(2,3),(2,0)]) (K "0" $ Conj [has 3 3 0, K "3" (has 3 2 0)]) `shouldBe` True
 \end{code}
 
+% fixme: 
+% - run these tests 
+% - change ones that fail to "should be false" and make a comment above those
+% - and write a sentence or two about them here
 
-\begin{code}
-spec :: Spec
-spec = do
-        it "after same result as individual calls" $ do
-            afterSimple 3 [(0,1),(1,2)] `shouldBe` doSimpleCall (doSimpleCall (simpleGossipInit 3) (0,1)) (1,2)
-        it "secret was received after 1 call" $ do
-            eval (afterSimple 3 [(0,1),(1,2)]) (K "0" $ has 3 0 1) `shouldBe` True
-        it "a knows that b now knows their secret" $ do
-            eval (afterSimple 3 [(0,1),(1,2)]) (K "0" $ has 3 1 0) `shouldBe` True
-        it "secret learnt in first was exchanged in second call" $ do
-            eval (afterSimple 3 [(0,1),(1,2)]) (K "2" $ has 3 2 0) `shouldBe` True
-        it "SmpTrf: second call shares secrets of other agents" $ do
-            eval (afterSimple 3 [(0,1),(1,2)]) (K "2" $ has 3 0 1) `shouldBe` True
-        it "SmpTrf: 3 agents 1 call should infer knowledge but fails" $ do
-            eval (afterSimple 3 [(0,1)]) (K "2" $ has 3 0 1) `shouldBe` False
-        it "SmpTrf: higher-order knowledge True" $ do
-            eval (afterSimple 3 [(0,1),(1,2)]) (K "2" $ has 3 2 1) `shouldBe` True
-\end{code}
-
-Note in particular the test \texttt{SmpTrf: higher-order knowledge fails}, which returns false.
-However, the tested formula $K_2 S_01$ should be true after calls $01;12$: after the second call, agent $2$ should be able to infer that the prior call was between agents $0$ and $1$ and conclude that their secrets were exchanged.
+% old text: 
+% Note in particular the test \texttt{SmpTrf: higher-order knowledge fails}, which returns false.
+% However, the tested formula $K_2 S_01$ should be true after calls $01;12$: after the second call, 
+% agent $2$ should be able to infer that the prior call was between agents $0$ and $1$ and conclude that their secrets were exchanged.
