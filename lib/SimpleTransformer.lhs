@@ -110,4 +110,7 @@ afterSimple n = foldl doSimpleCall (simpleGossipInit n)
 -- Some helper functions
 allSecretsOf :: Int -> Int -> [Prp]
 allSecretsOf n x = [ hasSof n x j | j <- gossipers n, j /= x ]
+
+isSuccessSimple :: Int -> [(Int,Int)] -> Bool
+isSuccessSimple n cs = evalViaBdd (afterSimple n cs) (allExperts n)
 \end{code}
