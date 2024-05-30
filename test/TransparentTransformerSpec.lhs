@@ -40,9 +40,11 @@ We run the following tests, in this order:
     \item For agents $a,b,c$: after call sequence [$ab,bc$], $c$ knows $a$'s secret 
     \item For agents $a,b,c$: after one call, there should be no experts
     \item For agents $a,b,c$: after call sequence [$ab,bc,ca$], everyone should be an expert
+
     \item For agents $a,b,c$: after call $ab$, $c$ knows that $a$ knows $b$'s secret 
     \item For agents $a,b,c,d$: after call sequence [$ab,bc$], $d$ knows that $c$ knows $a$'s secret 
     \item For agents $a,b,c$: after call sequence [$ab,bc,ca$], everyone should know that everyone's an expert 
+    
     \item For agents $a,b$: after call $ab$, $b$ knows that $a$ knows $b$'s secret 
     \item For agents $a,b,c,d$: after call sequence [$ab,bc,cd,ca$], $a$ knows that $d$ knows $a$'s secret
     and that $d$ knows that $c$ knows $a$'s secret 
