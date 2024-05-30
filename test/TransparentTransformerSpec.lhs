@@ -1,3 +1,5 @@
+\subsection{Transparent Transformer} \label{ssec:TransparentTests}
+
 We execute the following tests on the transparent variant of the Classic Transformer. 
 The simple checks also apply to the Classic Transformer and encode the basic requirements of a transformer for a Gossip problem. 
 However, some of the higher-order knowledge (for instance, after a call $ab$, agent $c$ should know that $a$ knows $b$'s secret, 
