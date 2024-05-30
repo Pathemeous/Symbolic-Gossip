@@ -28,11 +28,11 @@ calls that could be happening.
 
 The \texttt{eventlaw} $\theta^+$ (which originally stated that only one 
 call happens at a time) is simplified to describe that only the specified call between $a$ and $b$ happens. 
-The \texttt{changelaws} $\theta^-$ are quite different from those in the Classic Transformer TODO 
+The \texttt{changelaws} $\theta_-$ are quite different from those in the Classic Transformer TODO 
 % fixme: explain changelaws when callTrfTransparent works 
 
 
-% Moreover, \texttt{changelaws} $\theta^-$ are identical to those of the synchronous variant.  -- old version
+% Moreover, \texttt{changelaws} $\theta_-$ are identical to those of the synchronous variant.  -- old version
 
 The \texttt{eventobs} $O_k^+$ are also simplified to the call between $a$ and $b$, as every agent observes the call.
 
