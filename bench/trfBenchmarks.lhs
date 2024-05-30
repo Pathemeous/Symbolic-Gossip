@@ -1,7 +1,7 @@
 \section{Benchmarks}
 
 \begin{code}
-module Bench.TrfBenchmarks where
+module Main where
 
 import Criterion.Main
 import SimpleTransformer
@@ -17,16 +17,7 @@ import SMCDEL.Language
     The program runs updates in various settings (3,4,5 agents and 1,2,3 calls)
 
     * Runnng the Benchmark
-    To run the benchmark, do `stack build`. Then run
-
-        stack ghci bench/TrfBenchmarks.hs
-
-    When in the ghci, run:
-
-        main --time-limit=60
-
-    The time limit parameter is a Criterion CLI argument
-    that is required because the benchmarks otherwise are shorted after 1 second
+    To run the benchmark, execute `stack bench` from the root of the project
 -}
 
 -- The call sequence we apply
