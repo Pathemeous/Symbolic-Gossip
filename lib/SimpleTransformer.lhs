@@ -1,7 +1,7 @@
 \section{Simple Transformer}\label{sec:Simple}
 
 %% fixme: If you can connect this to Background.tex a bit more by using the symbols
-%% (V^+, \Theta^+,\Theta_-,O_k^+) I think it would help with the flow of the paper by
+%% (V^+, \theta^+,\theta_-,O_k^+) I think it would help with the flow of the paper by
 %% letting the reader see how these things change. I would do it as I did it in Transparent.lhs
 %% but I don't want to mess it up since I'm not as familiar with SimpleTransformer
 
@@ -12,8 +12,8 @@ The simple transformer does not change the initial state law throughout the comp
 the actual state.
 
 %% For example, perhaps we could add above, "As we have seen, the even vocabulary $V^+$ instantiates new
-%% variables which remain as copies in the model, as well as updating the law $\Theta$ with huge formulas
-%% $\Theta^+$ and $\Theta_-$ encoding the factual change." I'm not sure this is correct, but it would
+%% variables which remain as copies in the model, as well as updating the law $\theta$ with huge formulas
+%% $\theta^+$ and $\theta_-$ encoding the factual change." I'm not sure this is correct, but it would
 %% connect things with what we have done way more :D
 
 
@@ -58,7 +58,7 @@ This allows the transformer to be synchronous (rather than transparent): agents 
 The event vocabulary $V^+$ contains all fresh variables needed to describe the transformation, just like in the classical transformer.
 Contrary to the clasiscal case, $V^+$ not to $V$, which avoids a quick growth of the vocabulary with each call.
 
-The state law $\Theta_-$ (\texttt{changelaws}) is similarly defined as in the classic transformer, allowing the update to compute the factual change $V_-$ and modify the state.
+The state law $\theta_-$ (\texttt{changelaws}) is similarly defined as in the classic transformer, allowing the update to compute the factual change $V_-$ and modify the state.
 
 The transformation observables in this transformer are empty, as we will show that the specific update function will only need the observables in the original knowledge structure.
 
@@ -107,10 +107,10 @@ doSimpleCall start (a,b) = start `update` simpleCall (length $ agentsOf start) (
 afterSimple :: Int -> [(Int, Int)] -> KnowScene
 afterSimple n = foldl doSimpleCall (simpleGossipInit n)
 
--- Some helper functions
-allSecretsOf :: Int -> Int -> [Prp]
-allSecretsOf n x = [ hasSof n x j | j <- gossipers n, j /= x ]
-
 isSuccessSimple :: Int -> [(Int,Int)] -> Bool
 isSuccessSimple n cs = evalViaBdd (afterSimple n cs) (allExperts n)
+
+-- a helper function
+allSecretsOf :: Int -> Int -> [Prp]
+allSecretsOf n x = [ hasSof n x j | j <- gossipers n, j /= x ]
 \end{code}
