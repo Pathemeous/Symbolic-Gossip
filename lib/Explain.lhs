@@ -103,7 +103,7 @@ gsi kns@(KnS voc stl obs, s) = do
       lib = prpLibrary voc (length $ agentsOf kns)
 \end{code}
 
-We can then run the following:
+We can then run the following:  % fixme: overfull hbox
 
 \begin{verbatim}
 import SMCDEL.Examples.GossipS5
@@ -141,8 +141,10 @@ Vocabulary:
  --  s12'
  --  s20'
  --  s21'
-State Law: 
-"((s01 & ~s02 & s10 & ~s12 & ~s20 & ~s21 & q01 & ~q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') | (~s01 & ((s02 & ~s10 & ~s12 & s20 & ~s21 & ~q01 & q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') | (~s02 & ~s10 & s12 & ~s20 & s21 & ~q01 & ~q02 & q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21'))))"
+State Law:  
+"((s01 & ~s02 & s10 & ~s12 & ~s20 & ~s21 & q01 & ~q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
+   | (~s01 & ((s02 & ~s10 & ~s12 & s20 & ~s21 & ~q01 & q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
+   | (~s02 & ~s10 & s12 & ~s20 & s21 & ~q01 & ~q02 & q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21'))))"
 Observables: 
  --  0:  ["q01","q02"]
  --  1:  ["q01","q12"]

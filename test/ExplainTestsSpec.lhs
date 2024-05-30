@@ -16,9 +16,9 @@ import Test.Hspec hiding (after)
 Tests: 
 
 \begin{itemize}
-    \item secret propositions are translated correctly 
-    \item the vocabulary has correct length 
-    \item after a call the state is updated correct
+    \item Secret propositions are translated correctly 
+    \item The vocabulary has correct length 
+    \item After a call the state is updated correctly
 \end{itemize}
 
 \begin{code}
