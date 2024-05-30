@@ -3,7 +3,7 @@ cradle:
     - path: "./lib"
       component: "SYMBOLIC-GOSSIP-FP:lib"
 
-    - path: "./exec/Main.lhs"
+    - path: "./exec/Main.hs"
       component: "SYMBOLIC-GOSSIP-FP:exe:myprogram"
 
     - path: "./exec/Paths_report.hs"
