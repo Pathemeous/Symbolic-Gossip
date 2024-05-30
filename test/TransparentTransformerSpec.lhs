@@ -44,7 +44,7 @@ We run the following tests, in this order:
     \item For agents $a,b,c$: after call $ab$, $c$ knows that $a$ knows $b$'s secret 
     \item For agents $a,b,c,d$: after call sequence [$ab,bc$], $d$ knows that $c$ knows $a$'s secret 
     \item For agents $a,b,c$: after call sequence [$ab,bc,ca$], everyone should know that everyone's an expert 
-    
+
     \item For agents $a,b$: after call $ab$, $b$ knows that $a$ knows $b$'s secret 
     \item For agents $a,b,c,d$: after call sequence [$ab,bc,cd,ca$], $a$ knows that $d$ knows $a$'s secret
     and that $d$ knows that $c$ knows $a$'s secret 
@@ -63,7 +63,7 @@ spec = do
         it "trsTrf 4: no faulty experts" $ do 
             eval (afterTransparent 3 [(0,1)]) (Disj [expert 3 i | i <- [0..3]]) `shouldBe` False 
         it "trsTrf 5: all are experts after the correct call sequence" $ do 
-            isSuccessTransparent 3 [(0,1),(1,2),(2,0)] `shouldBe` True
+            isSuccessTransparent 3 [(0,1),(1,2),(0,2)] `shouldBe` True
 
         -- transparent-specific tests
         it "trsTrf 6: call is observed by other agents" $ do 
@@ -71,13 +71,13 @@ spec = do
         it "trsTrf 7: call sequence is observed by other agents" $ do 
             eval (afterTransparent 4 [(0,1),(1,2)]) (K "3" (has 3 2 0)) `shouldBe` True 
         it "trsTrf 8: all agents know that all are experts after the correct call sequence" $ do 
-            eval (afterTransparent 3 [(0,1),(1,2),(2,0)]) (Conj [ K (show i) (allExperts 3) 
+            eval (afterTransparent 3 [(0,1),(1,2),(0,2)]) (Conj [ K (show i) (allExperts 3) 
                                                                 | i <- [(0::Int)..3] ]) `shouldBe` True
         -- general higher-order knowledge tests
         it "trsTrf 9: higher-order knowledge after one call" $ do 
             eval (afterTransparent 3 [(0,1)]) (K "1" (has 3 0 1)) `shouldBe` True 
         it "trsTrf 10: higher-order knowledge after call sequence" $ do
-            eval (afterTransparent 3 [(0,1),(1,2),(2,3),(2,0)]) (K "0" $ Conj [has 3 3 0, K "3" (has 3 2 0)]) `shouldBe` True
+            eval (afterTransparent 3 [(0,1),(1,2),(2,3),(0,2)]) (K "0" $ Conj [has 3 3 0, K "3" (has 3 2 0)]) `shouldBe` True
 \end{code}
 
 % fixme: test if these actually pass and maybe write a sentence or two about it 
