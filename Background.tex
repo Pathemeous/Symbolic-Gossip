@@ -17,12 +17,12 @@ variables agent $i$ observes; following \cite{GattingerThesis2018}, the observat
 Throughout the run of the model, propositions are added to the observables, which encode which calls each agent can observe.
 
 For the sake of simplicity, the notions of knowing one's own secret are completely removed. 
-Equation \ref{init} (from \cite{GattingerThesis2018}) 
-shows the tuple describing the initial Knowledge Structure.
+Equation \ref{init} (from \cite{GattingerThesis2018}, page 194) 
+shows the tuple describing the initial Knowledge Structure $F_\text{init}$.
 
 \begin{equation}
 \label{init}
-    F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents }, i \neq j\}, \theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)
+    F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents}, i \neq j\}, \theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)
 \end{equation}
 
 In order to transform the model after a call happens, we use a Knowledge Transformer. The crux of this paper involves changing 
@@ -43,7 +43,7 @@ $\chi_\text{call}=(V^+,\theta ^+,V_-,\theta _-,O^+)$ (see \cite{GattingerThesis2
 
 % About the copying of secrets
 The design of the Knowledge Transformer allows it to encode and check higher-order knowledge, but it 
-also poses a problem in the form of exponential blowup. The state law ($\theta$) keeps track 
+also poses a problem in the form blowup. The state law ($\theta$) keeps track 
 of the updates in the model and is itself updated using $\theta^+$ and $\theta_-$. Essentially, the state law 
 after the final update forms a conjunction of the original state law with event laws ($\theta^+$) for each update and 
 \texttt{changelaws} ($\theta_-$), 
@@ -67,7 +67,7 @@ The possibility of the truth value $S_ab$ to change back to false is an unrealis
 agents aren't modelled to forget any secrets. However, SMCDEL is implemented for a wide range of logical problems, which prevents it 
 from making such assumptions. 
 
-The existing implementation (\cite{GattingerThesis2018}) includes optimization functions that discard the redundant propositions 
+The existing implementation in SMCDEL includes optimization functions that discard the redundant propositions 
 (by checking which propositional variables are equivalent), but this optimization is only implemented to be run after running the 
 model and is therefore not optimal. 
 

@@ -14,14 +14,14 @@ import SMCDEL.Symbolic.S5
 
 We chose to adapt the existing function \texttt{callTrf} from GossipS5, which is the call transformer for the Synchronous Gossip 
 Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt{Int -> Int -> Int -> KnowTransformer}, so that 
-agents $a$ and $b$ are arguments for the transformer for call ab. 
+agents $a$ and $b$ are arguments for the transformer for call $ab$. 
 As in Section \ref{sec:Background}, we redefine how to update the vocabulary, law, and observations of each agent. 
 
 First, the vocabulary $V^+$ (the \texttt{eventprops}), now simply consists of the call between agents $a$ and $b$.
 As opposed to the synchronous case, we don't need extra vocabulary to describe all possible calls that could be happening: all agents know exactly which call happens.  
 
 The \texttt{eventlaw}, $\theta^+$ (which originally stated that only one 
-call happens at a time), is simplified to describe that only the specified call between $a$ and $b$ happens. 
+call happens at a time but not which), is simplified to be the call between agents $a$ and $b$. 
 The \texttt{changelaws}, $\theta_-$, are quite different from those in the Classic Transformer: the conditions for the proposition $S_ij$ to be true after \textit{some} call happens, are simplified to the conditions $S_ij$ to be true after the \textit{actual} call $ab$ happens. 
 
 For instance, if $i$ is agent $a$, then $i$ knows $j$'s secret after call $ab$ if either 
@@ -31,7 +31,7 @@ For instance, if $i$ is agent $a$, then $i$ knows $j$'s secret after call $ab$ i
   \item $b$ told $i$ the secret of $j$ during their call. 
 \end{enumerate}
 
-Finally, the \texttt{eventobs}, $O_k^+$ for each agent $k$, are also simplified to call $ab$, since there is only one possible event happening and every agent observes it.
+Finally, the \texttt{eventobs}, $O_i^+$ for each agent $i$, are also simplified to call $ab$, since there is only one possible event happening and every agent observes it.
 
 \begin{code}
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer

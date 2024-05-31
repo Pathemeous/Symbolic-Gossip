@@ -20,13 +20,10 @@ We extend the interpretability of output from SMCDEL's Knowledge Scenes for The 
 
 \clearpage
 
-% We include one file for each section. The ones containing code should
-% be called something.lhs and also mentioned in the .cabal file.
-
-\input{Intro.tex} %% finished by MADELEINE
-\input{Background.tex} %% finished by MADElEinE
-\input{lib/Explain.lhs} %% finished by JORIS
-\input{lib/Transparent.lhs} %% finished by DJANIRA
+\input{Intro.tex} 
+\input{Background.tex} 
+\input{lib/Explain.lhs} 
+\input{lib/Transparent.lhs} 
 
 \input{Optimization}
 \input{lib/OptimizedTransformer.lhs}
@@ -35,12 +32,17 @@ We extend the interpretability of output from SMCDEL's Knowledge Scenes for The 
 \section{Testing}
 \input{test/ExplainTestsSpec.lhs}
 \input{test/TransparentTransformerSpec.lhs}
-\input{test/SimpleTransformerSpec.lhs} %% ?
+\input{test/SimpleTransformerSpec.lhs} 
 
 \input{bench/trfBenchmarks.lhs}
 \input{bench/BenchmarkResults.tex} 
 
-\input{Conclusion.tex} %% later
+\input{Conclusion.tex} 
+
+\appendix
+
+\input{Appendix.tex}
+
 
 \addcontentsline{toc}{section}{Bibliography}
 \bibliographystyle{alpha}
