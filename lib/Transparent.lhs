@@ -41,11 +41,8 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
   eventprops = [thisCallHappens]
 
   -- call ab takes place and no other calls happen
-  eventlaw = Conj [PrpF thisCallHappens,
-                 Conj [Neg (PrpF $ thisCallProp (i,j)) | i <- gossipers n
-                                                       , j <- gossipers n
-                                                       , not ((i == a && j == b) || (i == b && j == a))
-                                                       , i < j ]]
+  eventlaw = PrpF thisCallHappens
+  
   changelaws =
   -- i has secret of j 
       -- case: i is not a and i is not b: then i can not have learned the secret unless it already knew it (has n i j)
