@@ -46,7 +46,7 @@ spec = do
                                                                 | i <- [(0::Int)..2] ]) `shouldBe` True
         -- simple tests (same tests as those for the transparent implementation)
         it "simpTrf 5: knowledge of initial state" $ do
-            eval (simpleGossipInit 2) (K "0" (Neg (has 2 1 0))) `shouldBe` True
+            eval (gossipInitSimple 2) (K "0" (Neg (has 2 1 0))) `shouldBe` True
         it "simpTrf 6: call shares secrets between agents" $ do
             eval (afterSimple 2 [(0,1)]) (Conj [has 2 1 0, has 2 0 1]) `shouldBe` True
         it "simpTrf 7: call sequence shares secrets between agents" $ do
