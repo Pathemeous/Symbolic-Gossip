@@ -37,8 +37,7 @@ mainHelperT n ks = do
     response <- getLine 
     if response == "Q"
         then putStrLn "Exiting..."
-        else if response == "R" then main else 
-            if response == "Q" then putStrLn "Quitting" 
+        else if response == "R" then main 
             else do putStrLn "Input which two agents call"
                     putStr   "First agent: "
                     line <- getLine  
@@ -69,8 +68,7 @@ mainHelperS n ks = do
     response <- getLine 
     if response == "Q"
         then putStrLn "Exiting..."
-        else if response == "R" then main else 
-            if response == "Q" then putStrLn "Quitting" 
+        else if response == "R" then main 
             else do putStrLn "Input which two agents call"
                     putStr   "First agent: "
                     line <- getLine  
@@ -101,8 +99,7 @@ mainHelperSi n ks = do
     response <- getLine 
     if response == "Q"
         then putStrLn "Exiting..."
-        else if response == "R" then main else 
-            if response == "Q" then putStrLn "Quitting" 
+        else if response == "R" then main  
             else do putStrLn "Input which two agents call"
                     putStr   "First agent: "
                     line <- getLine  
