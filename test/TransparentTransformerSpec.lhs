@@ -54,7 +54,7 @@ We run the following tests, in this order:
 spec :: Spec
 spec = do
         -- simple tests
-        it "trsTrf 1: no faulty knowledge in initial model" $ do
+        it "trsTrf 1: knowledge of initial state" $ do
             eval (gossipInit 2) (K "0" (Neg (has 2 1 0))) `shouldBe` True
         it "trsTrf 2: call shares secrets between agents" $ do
             eval (afterTransparent 2 [(0,1)]) (Conj [has 2 1 0, has 2 0 1]) `shouldBe` True

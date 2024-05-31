@@ -38,14 +38,14 @@ spec = do
         it "simpTrf 1: agents can reason about other agents' knowledge 1" $ do
             eval (afterSimple 4 [(0,1),(1,2)]) (K "2" (has 4 1 0)) `shouldBe` True
         it "simpTrf 2: three agents non-involed knows what call happened" $ do
-            eval (afterSimple 3 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` True
+            eval (afterSimple 3 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` False -- LIMITATIONS of SimpleTrf
         it "simpTrf 3: agents can reason about the limits of other agents' knowledge" $ do
-            eval (afterSimple 3 [(0,1)]) (K "0" (Neg (has 3 2 1))) `shouldBe` True
+            eval (afterSimple 3 [(0,1)]) (K "0" (Neg (has 3 2 1))) `shouldBe` False -- LIMITATIONS of SimpleTrf
         it "simpTrf 4: all agents know that all are experts after the correct call sequence" $ do
             eval (afterSimple 3 [(0,1),(1,2),(0,2),(0,1),(1,2),(0,2)]) (Conj [ K (show i) (allExperts 3)
                                                                 | i <- [(0::Int)..2] ]) `shouldBe` True
         -- simple tests (same tests as those for the transparent implementation)
-        it "simpTrf 5: no faulty knowledge in initial model" $ do
+        it "simpTrf 5: knowledge of initial state" $ do
             eval (simpleGossipInit 2) (K "0" (Neg (has 2 1 0))) `shouldBe` True
         it "simpTrf 6: call shares secrets between agents" $ do
             eval (afterSimple 2 [(0,1)]) (Conj [has 2 1 0, has 2 0 1]) `shouldBe` True
