@@ -7,11 +7,12 @@ exact vocabulary being copied. First of all, the code makes use of the following
 \begin{code}
 module Explain where
    
---import SMCDEL.Examples.GossipS5      <-- fixme: redundant import acc. to vscode?
 import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
 import Data.Maybe
+
+-- import Debug.Trace
 \end{code}
 
 One remarkable property of the SMCDEL implementation \cite{GattingerThesis2018} is how the transformer updates the vocabulary 
@@ -39,7 +40,14 @@ The function takes the vocabulary as input, as well as the number of agents, and
 decipher propositions in our gossip scene investigation.
 
 \begin{code}
-prpLibrary :: [Prp] -> Int -> [(Prp,String)]
+
+-- decode secrets
+secretDecoder ::  [Prp] -> Int -> [String]
+secretDecoder [] _ = []
+secretDecoder ((P p):ps) n = ("s"++ show i ++ show j) : secretDecoder ps n
+      where (i, j) = (p `quot` n, p `rem` n)
+
+prpLibrary :: [Prp] -> Int  -> [(Prp,String)]
 prpLibrary prps n = zip prps (prpLibraryHelper prps)
    where 
       -- assign the propositions to secrets, calls, and copies of secrets
@@ -48,14 +56,7 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
       prpLibraryHelper [] = []
       prpLibraryHelper prps' = a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
          where 
-            a =    secretDecoder (take (n*(n-1)) prps') 
-                ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
-      
-      -- decode secrets
-      secretDecoder ::  [Prp] -> [String]
-      secretDecoder [] = []
-      secretDecoder ((P p):ps)  = ("s"++ show i ++ show j) : secretDecoder ps
-         where (i, j) = (p `quot` n, p `rem` n)
+            a = secretDecoder (take (n*(n-1)) prps') n ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
       
       -- decode calls
       callDecoder :: Int -> [Prp] -> [String]
@@ -72,6 +73,19 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
       copyDecoder :: [Prp] -> [String] -> String -> [String]
       copyDecoder [] _ _ = []
       copyDecoder props lib r = map (++r) lib ++ copyDecoder (drop (length lib) props) lib (r++"'")
+
+
+prpLibraryTr :: [Prp] -> Int -> [(Int, Int)] -> [(Prp, String)]
+prpLibraryTr prps n calls = zip prps (decSec ++ callsNcopies (drop nS prps) calls "'")
+   where 
+      nS = (n-1)*n
+      decSec = secretDecoder (take nS prps) n
+      -- decode calls and append a decoded Secrets primed (copies)
+      callsNcopies :: [Prp] -> [(Int, Int)] -> String -> [String]
+      callsNcopies [] _ _ = []
+      callsNcopies _ [] s = map (++s) decSec
+      callsNcopies (_:ps) ((a,b):c) s = ["q"++show a++show b++tail s] ++ map (++s) decSec ++ callsNcopies (drop nS ps) c (s++"'")
+
 \end{code}
 
 Additionally, we wrote the (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, 
@@ -87,20 +101,53 @@ and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
 \begin{code}
 -- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
 -- 
-gsi :: KnowScene -> IO ()
-gsi kns@(KnS voc stl obs, s) = do
+
+gsiVoc :: KnowScene -> IO()
+gsiVoc kns@(KnS voc _ _, _) = do
    putStrLn "Vocabulary: "
    mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) voc
+      where
+      lib = prpLibrary voc (length $ agentsOf kns)
+
+gsiStLaw :: KnowScene -> IO()
+gsiStLaw kns@(KnS voc stl _ ,_) = do 
    putStrLn "State Law: "
    print (ppFormWith (`explainPrp` lib) (formOf stl))
+      where
+      lib = prpLibrary voc (length $ agentsOf kns) 
+
+gsiObs :: KnowScene -> IO()
+gsiObs kns@(KnS voc _ obs ,_) = do 
    putStrLn "Observables: "
    mapM_ (putStrLn . (++) " --  " . (\ x -> fst x ++ ":  " ++ show (map (`explainPrp` lib) (snd x)) )) obs
+      where
+      lib = prpLibrary voc (length $ agentsOf kns)
+
+gsiState :: KnowScene -> IO()
+gsiState kns@(KnS voc _ _,s) = do 
    putStrLn "Actual state: "
    if null s then putStrLn " --  Nobody knows about any other secret" 
       else 
       mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
-   where
+         where
       lib = prpLibrary voc (length $ agentsOf kns)
+
+
+gsi :: KnowScene -> Maybe [(Int, Int)] -> IO ()
+gsi kns@(KnS voc stl obs, s) calls = do
+    putStrLn "Vocabulary: "
+    mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) voc
+    putStrLn "State Law: "
+    print (ppFormWith (`explainPrp` lib) (formOf stl))
+    putStrLn "Observables: "
+    mapM_ (putStrLn . (++) " --  " . (\ x -> fst x ++ ":  " ++ show (map (`explainPrp` lib) (snd x)) )) obs
+    putStrLn "Actual state: "
+    if null s then putStrLn " --  Nobody knows about any other secret" 
+      else 
+      mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
+   where
+      lib | isNothing calls = prpLibrary voc (length $ agentsOf kns)
+          | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 \end{code}
 
 We can then run the following:  % fixme: overfull hbox
@@ -162,29 +209,3 @@ Actual state:
 In the future, we hope to also show the law as its BDD (Binary Decision Diagram
 \footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
 of logic problems.}) using the tool graphviz. 
-
-% \begin{code}
-% -- Here a function that takes a BDD or a form and makes a BDD picture.
-% \end{code}
-
-% Taking a higher-level view of Gossip, we can see how from an initial state, there are branches depending on which 
-% calls are made, leading to a tree. We write now some code to store these states in a tree. Since an infinite amount of 
-% calls can be made, we limit the size of the tree using a \texttt{depth} parameter.
-
-% \begin{code}
-% data Tree a = T a [Tree a]
-%    deriving(Show)
-
-% -- explainScene :: KnowScene -> Int -> KnowScene
-% -- explainScene (KnS voc sLaw obs, s) n = KnS ()
-
-% -- explainGossip :: Int -> Int -> Tree KnowScene
-% -- explainGossip n depth = T (gossipInit n) []
-
-% gossipTree :: Int -> Int -> Tree KnowScene
-% gossipTree n depth = T (gossipInit n) (gossipBranches (gossipInit n) n depth)  
-
-% gossipBranches :: KnowScene -> Int -> Int -> [Tree KnowScene]
-% gossipBranches _ _ 0 = []
-% gossipBranches ks n' depth' = [ T (doCall ks (i,j)) (gossipBranches (doCall ks (i,j)) n' (depth'-1)) | i <- gossipers n', j <- gossipers n', i < j ]  
-% \end{code}

@@ -51,9 +51,10 @@ mainHelperT n ks = do
                         putStr   "Second agent: "
                         line' <- getLine
                         let b = readMaybe line'
-                        if isNothing b || fromJust b >= n
-                            then do
-                                putStrLn "Error: unrecognized agent. Retrying..."
+
+                        if isNothing b || fromJust b >= n || fromJust a >= fromJust b
+                            then do 
+                                putStrLn "Error: unrecognized agent. Retrying..." 
                                 mainHelperT n ks
                             else do
                                 let ks' = doCallTransparent ks (fromJust a, fromJust b)
@@ -73,22 +74,22 @@ mainHelperS n ks = do
                     putStr   "First agent: "
                     line <- getLine
                     let a = readMaybe line
-                    if isNothing a || fromJust a >= n
-                    then do
-                        putStrLn "Error: unrecognized agent. Retrying..."
-                        mainHelperT n ks
-                    else do
+                    if isNothing a || fromJust a >= n 
+                    then do 
+                        putStrLn "Error: unrecognized agent. Retrying..." 
+                        mainHelperS n ks
+                    else do 
                         putStrLn "Input which two agents call"
                         putStr   "Second agent: "
                         line' <- getLine
                         let b = readMaybe line'
-                        if isNothing b || fromJust b >= n
-                            then do
-                                putStrLn "Error: unrecognized agent. Retrying..."
-                                mainHelperT n ks
-                            else do
+                        if isNothing b || fromJust b >= n || fromJust a >= fromJust b
+                            then do 
+                                putStrLn "Error: unrecognized agent. Retrying..." 
+                                mainHelperS n ks
+                            else do 
                                 let ks' = doCall ks (fromJust a, fromJust b)
-                                mainHelperT n ks'
+                                mainHelperS n ks' 
 
 
 mainHelperSi :: Int -> KnowScene -> IO ()
@@ -104,19 +105,19 @@ mainHelperSi n ks = do
                     putStr   "First agent: "
                     line <- getLine
                     let a = readMaybe line
-                    if isNothing a || fromJust a >= n
-                    then do
-                        putStrLn "Error: unrecognized agent. Retrying..."
-                        mainHelperT n ks
-                    else do
+                    if isNothing a || fromJust a >= n 
+                    then do 
+                        putStrLn "Error: unrecognized agent. Retrying..." 
+                        mainHelperSi n ks
+                    else do 
                         putStrLn "Input which two agents call"
                         putStr   "Second agent: "
                         line' <- getLine
                         let b = readMaybe line'
-                        if isNothing b || fromJust b >= n
-                            then do
-                                putStrLn "Error: unrecognized agent. Retrying..."
-                                mainHelperT n ks
-                            else do
-                                let ks' = doCallSimple ks (fromJust a, fromJust b)
-                                mainHelperT n ks'
+                        if isNothing b || fromJust b >= n || fromJust a >= fromJust b
+                            then do 
+                                putStrLn "Error: unrecognized agent. Retrying..." 
+                                mainHelperSi n ks
+                            else do 
+                                let ks' = doCallSimple ks (fromJust a, fromJust b) 
+                                mainHelperSi n ks' 

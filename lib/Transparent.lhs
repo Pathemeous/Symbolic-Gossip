@@ -3,7 +3,7 @@
 This section describes a variant of the Classic Knowledge Transformer that is implemented for the Transparent Gossip Problem. 
 This transformer is tailored to the actual call that happens, which makes sure that whenever a call happens, all agents 
 know this and also know which agents participate. 
- 
+
 \begin{code}
 module Transparent where
 
@@ -17,34 +17,25 @@ Problem. Instead of \texttt{Int -> KnowTransformer}, the function is now \texttt
 agents $a$ and $b$ are arguments for the transformer for call ab. 
 As in Section \ref{sec:Background}, we redefine how to update the vocabulary, law, and observations of each agent. 
 
-First, the vocabulary $V^+$, called \texttt{thisCallHappens}, is now simply the call between agents $a$ and $b$; 
-as opposed to the synchronous case, we do not need to add any other new call variables, as all agents know exactly which 
-call happens. The \texttt{eventprops} are now empty, since we don't need extra vocabulary anymore to describe the possible 
-calls that could be happening. 
+First, the vocabulary $V^+$ (the \texttt{eventprops}), now simply consists of the call between agents $a$ and $b$.
+As opposed to the synchronous case, we don't need extra vocabulary to describe all possible calls that could be happening: all agents know exactly which call happens.  
 
-% We define a helper function \texttt{isInCallForm}, which describes the conditions for agent $k$ to be in a call, and is
-% now not a disjunction of possible calls as in the synchronous case, but requires $k$ to be either $a$ or $b$. 
-% \texttt{thisCallHappens} is only defined for the agents performing the actual call. 
+The \texttt{eventlaw}, $\theta^+$ (which originally stated that only one 
+call happens at a time), is simplified to describe that only the specified call between $a$ and $b$ happens. 
+The \texttt{changelaws}, $\theta_-$, are quite different from those in the Classic Transformer: the conditions for the proposition $S_ij$ to be true after \textit{some} call happens, are simplified to the conditions $S_ij$ to be true after the \textit{actual} call $ab$ happens. 
 
-The \texttt{eventlaw} $\theta^+$ (which originally stated that only one 
-call happens at a time) is simplified to describe that only the specified call between $a$ and $b$ happens. 
-The \texttt{changelaws} $\theta_-$ are quite different from those in the Classic Transformer TODO 
-% fixme: explain changelaws when callTrfTransparent works 
+For instance, if $i$ is agent $a$, then $i$ knows $j$'s secret after call $ab$ if either 
+\begin{enumerate}
+  \item $i$ knew it already, or
+  \item $j$ equals $b$, or
+  \item $b$ told $i$ the secret of $j$ during their call. 
+\end{enumerate}
 
+Finally, the \texttt{eventobs}, $O_k^+$ for each agent $k$, are also simplified to call $ab$, since there is only one possible event happening and every agent observes it.
 
-% Moreover, \texttt{changelaws} $\theta_-$ are identical to those of the synchronous variant.  -- old version
-
-The \texttt{eventobs} $O_k^+$ are also simplified to the call between $a$ and $b$, as every agent observes the call.
-
-% fixme test this 
 \begin{code}
 callTrfTransparent :: Int -> Int -> Int -> KnowTransformer
-callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
-  -- agent k is in the call ab if a calls k (so k==b) or k calls b (so k==a)
-  -- isInCallForm k | k == a = Top 
-                 -- | k == b = Top 
-                 -- | otherwise = Bot
-                 
+callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where                 
   thisCallHappens = thisCallProp (a,b)
   -- the only event proposition is the current call
   eventprops = [thisCallHappens]
@@ -57,7 +48,7 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
                                                        , i < j ]]
   changelaws =
   -- i has secret of j 
-      -- case: i is not a or i is not b: then i can not have learned the secret unless it already knew it (has n i j)
+      -- case: i is not a and i is not b: then i can not have learned the secret unless it already knew it (has n i j)
     [(hasSof n i j, boolBddOf $ has n i j) | i <- gossipers n, j <- gossipers n, i /= j, i /= a, i /= b] ++
       -- case: i is a, j is not b: then i learned the secret if it already knew it, or b knew the secret of j
     [(hasSof n a j, boolBddOf $ Disj [ has n a j , has n b j ]) | j <- gossipers n, a /= j, b /= j ] ++
@@ -65,17 +56,6 @@ callTrfTransparent n a b = KnTrf eventprops eventlaw changelaws eventobs where
     [(hasSof n a b, boolBddOf Top)] ++ [(hasSof n b a, boolBddOf Top)] ++ 
       -- case i is b, j is not a: synonymous to above
     [(hasSof n b j, boolBddOf $ Disj [ has n b j , has n a j ]) | j <- gossipers n, a /= j, b /= j ]
-
---   *** changelaws =
---    [(hasSof n i j, boolBddOf $             
---        Disj [ has n i j                     
---             , Conj (map isInCallForm [i,j]) 
---             , Conj [ isInCallForm i         
---                    , Disj [ Conj [ isInCallForm k, has n k j ] 
---                           | k <- gossipers n \\ [j], a<k && k<b ]]
---             ])
---    | i <- gossipers n, j <- gossipers n, i /= j ]
-
 
   eventobs = [(show k, [thisCallHappens]) | k <- gossipers n]
 \end{code}

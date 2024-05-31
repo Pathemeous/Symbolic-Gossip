@@ -1,10 +1,12 @@
-\section{Benchmarks}
+\section{Benchmarks}\label{sec:Benchmarks}
 
 The primary motivation for using symbolic model checking is to provide faster computation,
 as explicit model checking in DEL is generally slow even for small examples \cite{GattingerThesis2018}.
 
 We therefore benchmark the runtime of the various implementations and compare them.
 Comparing the resuls, we can find what parts of the knowledge structure or updates on it cause the slowdown.
+
+We execute three different call sequences, dependent on the number of agents: with a higher number of agents, we use call sequences in which more agents participate. This prevents situations in which a model containing five agents is only tested on a call sequence that concerns only a small subset of those agents, which could skew the results of the tests for models with a large number of agents. 
 \begin{code}
 module Main where
 
@@ -25,11 +27,11 @@ import SMCDEL.Language
     - the ClasicTransformer (ClsTrf)
     The program runs updates in various settings (3,4,5 agents and 1,2,3 calls)
 
-    * Runnng the Benchmark
+    * Running the Benchmark
     To run the benchmark, execute `stack bench` from the root of the project
 -}
 
--- The call sequence we apply
+-- The call sequences we apply
 callsequence :: Int -> [(Int, Int)]
 callsequence 3 = [(0,1),(1,2),(1,2),(0,2),(1,2)]
 callsequence 4 = [(0,1),(1,2),(0,2),(2,3),(1,3)]
