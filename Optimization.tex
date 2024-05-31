@@ -1,0 +1,14 @@
+\section{Optimization}\label{sec:Optimization}
+
+We will now look at improving the runtime of the synchronous case.
+
+As mentioned before, the classical transformer defined in \cite{GattingerThesis2018}
+involves a considerable amount of inserted propositions and extensions of the state law.
+
+This is further worsened by the nature of the gossip problem:
+both the event propositions (the calls) and the secret atoms grow rapidly as the number of agents increases.
+Moreover, the statelaw encodes all of the secret atoms.
+
+The route of optimization therefore seems to be in limiting the amount of proposition insertions.
+We show two methods do that: using a optimization function to trim redundant propositions,
+and a different notion of transformer that avoids copying alltogether.
