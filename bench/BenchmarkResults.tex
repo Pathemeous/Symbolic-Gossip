@@ -1,0 +1,40 @@
+\subsection{Benchmarking Results}
+
+We compared the performance of the Classic Transformer, the Optimized Classic Transformer, the Transparent variant and the Simple Transformer. The Optimized Transformer timed out at all runs and was therefore not included in the results. The relevant results of the other tests are discussed below. 
+% fixme: check if optimized actually times out
+
+The benchmarks evaluate the average running time needed to execute call sequences of different lengths, on models containing respectively three, four, and five agents. Below we highlight the results for three and five agents; for a complete documentation, we refer to the Appendix. 
+
+Table \ref{tab:three} compares the results on models containing three agents. 
+
+\begin{table}[H]
+\caption {Call sequences on models containing three agents} \label{tab:three} 
+\begin{center}
+\begin{tabular}{l|lll}
+\title 
+Nr. of calls & Classic      & Transparent  & Simple       \\ \hline
+1            & 388.4 $\mu$s & 146.0 $\mu$s & 88.29 $\mu$s \\
+3            & 1.308 ms     & 331.4 $\mu$s & 99.34 $\mu$s \\
+5            & 1.876 ms     & 491.2 $\mu$s & 486.2 $\mu$s
+\end{tabular}
+\end{center}
+\end{table}
+
+To illustrate the differences between the models on larger problems, the following table compares the results on models containing five agents. 
+
+\begin{table}[H]
+\caption {Call sequences on models containing five agents} \label{tab:five}  
+\begin{center}
+\begin{tabular}{l|lll}\label{tab:2}
+    Nr. of calls & Classic  & Transparent  & Simple       \\ \hline
+    1            & 18.33 ms & 477.0 $\mu$s & 638.0 $\mu$s \\
+    3            & 63.01 ms & 1.323 ms     & 2.153 ms     \\
+    5            & 12.27 s  & 1.831 ms     & 2.096 ms    
+\end{tabular}
+\end{center}
+\end{table}
+
+We see that the differences in performance grow with the number of agents and the length of call sequences: 
+on larger models, the Transparent and Simple implementation are significantly faster than the Classic implementation.
+This is most apparent in the results for five calls between five agents (see table \ref{tab:five}). 
+

@@ -1,10 +1,9 @@
-import SMCDEL.Internal.TexDisplay (begintab)
 \section{Transparent Transformer}\label{sec:Transparent}
 
 This section describes a variant of the Classic Knowledge Transformer that is implemented for the Transparent Gossip Problem. 
 This transformer is tailored to the actual call that happens, which makes sure that whenever a call happens, all agents 
 know this and also know which agents participate. 
- 
+
 \begin{code}
 module Transparent where
 
