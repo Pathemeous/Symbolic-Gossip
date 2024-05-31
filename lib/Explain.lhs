@@ -123,7 +123,8 @@ gsi kns@(KnS voc stl obs, s) calls = do
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 \end{code}
 
-We also have functions specific for the voc (gsiVoc), state law ,... which work exactly the same as gsi.
+We also have functions specific for the voc (gsiVoc), state law (gsiStLaw), observables (gsiObs) and current state (gsiState)
+which work exactly the same as gsi.
 
 \hide{
 \begin{code}
@@ -185,7 +186,7 @@ Observables:
 Actual state: 
  --  Nobody knows about any other secret
 
-ghci> gsi (doCall (gossipInit 3) (0,1)) Nothing
+ghci> gsiVoc (doCall (gossipInit 3) (0,1)) Nothing
 Vocabulary: 
  --  s01
  --  s02
@@ -202,21 +203,30 @@ Vocabulary:
  --  s12'
  --  s20'
  --  s21'
-State Law:  
-"((s01 & ~s02 & s10 & ~s12 & ~s20 & ~s21 & q01 & ~q02 
-      & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
-   | (~s01 & ((s02 & ~s10 & ~s12 & s20 & ~s21 & ~q01 
-      & q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
-   | (~s02 & ~s10 & s12 & ~s20 & s21 & ~q01 & ~q02 
-      & q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21'))))"
-Observables: 
- --  0:  ["q01","q02"]
- --  1:  ["q01","q12"]
- --  2:  ["q02","q12"]
-Actual state: 
+
+ ghci> gsiState (doCall (gossipInit 3) (0,1)) Nothing
+ Actual state: 
  --  s01
  --  s10
  --  q01
+
+ghci> gsiObs (doCallTransparent (gossipInit 3) (0,1)) (Just [(0,1)])
+Observables: 
+ --  0:  ["q01"]
+ --  1:  ["q01"]
+ --  2:  ["q01"]
+% State Law:  
+% "((s01 & ~s02 & s10 & ~s12 & ~s20 & ~s21 & q01 & ~q02 
+%       & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
+%    | (~s01 & ((s02 & ~s10 & ~s12 & s20 & ~s21 & ~q01 
+%       & q02 & ~q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21') 
+%    | (~s02 & ~s10 & s12 & ~s20 & s21 & ~q01 & ~q02 
+%       & q12 & ~s01' & ~s02' & ~s10' & ~s12' & ~s20' & ~s21'))))"
+% Observables: 
+%  --  0:  ["q01","q02"]
+%  --  1:  ["q01","q12"]
+%  --  2:  ["q02","q12"]
+
 \end{showCode}
 
 
