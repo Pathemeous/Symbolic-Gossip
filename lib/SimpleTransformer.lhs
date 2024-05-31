@@ -14,7 +14,7 @@ import Data.List ((\\))
 }
 
 As we have seen, the (classical) implementation of transformer inserts propositions into the vocabulary and modfies the state law,
-which is suspected to be the mani source of computation.
+which is suspected to be the main source of computation.
 We therefore consider a different notion of transformers called \emph{Simple Transformers}, which was introduced by \cite{danielMasterThesis}.
 There is a notion of such transformers with and without factual change. For gossip we will only use the simple transformers with factual change.
 
@@ -26,8 +26,7 @@ The transformer still uses the event propositions in $V^+$ and the change laws $
 but instead uses that result to modify the state rather than the knowledge structure.
 
 Meanwhile, observables can be mutated similarly to the classical case, with the addition of the notion to remove observables from agents too.
-
-In our implementation of the Simple Transformer for gossip, we will not use the observable management and instead only rely on the transformer to compute the factual change.
+However, for Gossip we will not use the observable management and instead only rely on the transformer to compute the factual change.
 
 \subsubsection{Simple Initial Knowledge Scene}
 Due to the limitations in changing the knowledge structure with every update, we must make minimal changes to the initial knowledge scene.
