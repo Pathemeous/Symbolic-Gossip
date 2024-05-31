@@ -21,7 +21,7 @@ main = do
              putStrLn "Enter the code corresponding to which transformer you want to use:"
              putStrLn "     (T) Transparent     (S) Synchronous (SMCDEL)     (Si) Simple     (Q) Quit"
              transformer <- getLine
-             if transformer == "T" then mainHelperT (fromJust n) (gossipInit $ fromJust n)
+             if transformer == "T" then mainHelperT (fromJust n) (gossipInit $ fromJust n) []
              else if transformer == "S" then mainHelperS (fromJust n) (gossipInit $ fromJust n)
              else if transformer == "Si" then mainHelperSi (fromJust n) (gossipInitSimple $ fromJust n)
              else if transformer == "Q" then putStrLn "Exiting..."
@@ -29,9 +29,9 @@ main = do
 
 
 
-mainHelperT :: Int -> KnowScene -> IO ()
-mainHelperT n ks = do
-    gsi ks
+mainHelperT :: Int -> KnowScene -> [(Int, Int)] -> IO ()
+mainHelperT n ks calls = do
+    gsi ks (Just calls)
     putStrLn "Do you want to continue?"
     putStrLn "     (Anything) Continue     (R) Restart     (Q) Quit"
     response <- getLine
@@ -45,7 +45,7 @@ mainHelperT n ks = do
                     if isNothing a || fromJust a >= n
                     then do
                         putStrLn "Error: unrecognized agent. Retrying..."
-                        mainHelperT n ks
+                        mainHelperT n ks calls
                     else do
                         putStrLn "Input which two agents call"
                         putStr   "Second agent: "
@@ -55,15 +55,15 @@ mainHelperT n ks = do
                         if isNothing b || fromJust b >= n || fromJust a >= fromJust b
                             then do 
                                 putStrLn "Error: unrecognized agent. Retrying..." 
-                                mainHelperT n ks
+                                mainHelperT n ks calls
                             else do
                                 let ks' = doCallTransparent ks (fromJust a, fromJust b)
-                                mainHelperT n ks'
+                                mainHelperT n ks' (calls ++ [(fromJust a, fromJust b)])
 
 
 mainHelperS :: Int -> KnowScene -> IO ()
 mainHelperS n ks = do
-    gsi ks
+    gsi ks Nothing
     putStrLn "Do you want to continue?"
     putStrLn "     (Anything) Continue     (R) Restart     (Q) Quit"
     response <- getLine
@@ -94,7 +94,7 @@ mainHelperS n ks = do
 
 mainHelperSi :: Int -> KnowScene -> IO ()
 mainHelperSi n ks = do
-    gsi ks
+    gsi ks Nothing
     putStrLn "Do you want to continue?"
     putStrLn "     (Anything) Continue     (R) Restart     (Q) Quit"
     response <- getLine
