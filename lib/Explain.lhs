@@ -20,7 +20,7 @@ by copying all of the secret propositions.
 This means that in any given transformation, there will be a propositional variable representing a secret 
 $S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_{ij}$. 
 In order to prevent overlap between the several groups of variables, a unique value is computed for each propositional variable. 
-A propositional variable is of the form $P i$, where $i$ is generated using one of the following functions (\cite{GattingerThesis2018}):
+A propositional variable is of the form $p_i$, where $i$ is generated using one of the following functions (\cite{GattingerThesis2018}):
 
 \begin{verbatim}
    -- a has the secret of b
@@ -99,9 +99,7 @@ explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and the number of agents, 
 and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
 \begin{code}
--- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
--- 
-
+-- Gossip Scene Investigation: GSI... like the TV show but with less crime and more gossip. 
 gsiVoc :: KnowScene -> IO()
 gsiVoc kns@(KnS voc _ _, _) = do
    putStrLn "Vocabulary: "
@@ -206,6 +204,5 @@ Actual state:
 \end{verbatim}
 
 
-In the future, we hope to also show the law as its BDD (Binary Decision Diagram
-\footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
-of logic problems.}) using the tool graphviz. 
+In the future, we hope to also show the law as its BDD (Binary Decision Diagram \footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
+of logic problems.}) using the tool \textit{graphviz}. 
