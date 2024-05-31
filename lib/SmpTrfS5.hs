@@ -36,7 +36,7 @@ instance HasPrecondition StwfEvent where
 
 -- The following instance is modified from Haitian's implementation of the
 -- general simple transformer definition
--- It is *only* sound for synchronous Gossip calls
+-- It is *only* applicable to synchronous Gossip calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
   unsafeUpdate kns@(KnS v th obs,s) (SimTrfWithF _ thetaminus _,x) = (newkns, newstate) where
