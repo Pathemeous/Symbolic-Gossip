@@ -20,9 +20,9 @@ import SMCDEL.Language
     This module benchmarks the various transformers.
     Currently we compare
     - the SimpleTransformer (SmpTrf)
-    - the ClasicTransformer (ClsTrf)
+    - the ClassicTransformer in Transparent setting (TnsTrf)
     - the ClassicTransformer using the SMCDEL optimization function (OptTrf)
-    - the ClassicTransformer in Transparent setting (TrnTrf)
+    - the ClasicTransformer (ClsTrf)
     The program runs updates in various settings (3,4,5 agents and 1,2,3 calls)
 
     * Runnng the Benchmark
@@ -68,18 +68,6 @@ main = defaultMain [
                                 , bench "3 calls"  $ whnf (benchSmpTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchSmpTrf 5) 5
                                 ],
-  bgroup "ClsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchClsTrf 3) 1
-                                , bench "3 calls"  $ whnf (benchClsTrf 3) 3
-                                , bench "5 calls"  $ whnf (benchClsTrf 3) 5
-                                ],
-  bgroup "ClsTrf - 4 agents"    [ bench "1 call"   $ whnf (benchClsTrf 4) 1
-                                , bench "3 calls"  $ whnf (benchClsTrf 4) 3
-                                , bench "5 calls"  $ whnf (benchClsTrf 4) 5
-                                ],
-  bgroup "ClsTrf - 5 agents"    [ bench "1 call"   $ whnf (benchClsTrf 5) 1
-                                , bench "3 calls"  $ whnf (benchClsTrf 5) 3
-                                , bench "5 calls"  $ whnf (benchClsTrf 5) 5
-                                ],
   bgroup "TnsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchTnsTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchTnsTrf 3) 3
                                 , bench "5 calls"  $ whnf (benchTnsTrf 3) 5
@@ -91,11 +79,7 @@ main = defaultMain [
   bgroup "TnsTrf - 5 agents"    [ bench "1 call"   $ whnf (benchTnsTrf 5) 1
                                 , bench "3 calls"  $ whnf (benchTnsTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchTnsTrf 5) 5
-                                ]
-  ]
-\end{code}
-
-\begin{showCode}
+                                ],
   bgroup "OptTrf - 3 agents"    [ bench "1 call"   $ whnf (benchOptTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchOptTrf 3) 3
                                 , bench "5 calls"  $ whnf (benchOptTrf 3) 5
@@ -108,4 +92,17 @@ main = defaultMain [
                                 , bench "3 calls"  $ whnf (benchOptTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchOptTrf 5) 5
                                 ],
-\end{showCode}
+  bgroup "ClsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchClsTrf 3) 1
+                                , bench "3 calls"  $ whnf (benchClsTrf 3) 3
+                                , bench "5 calls"  $ whnf (benchClsTrf 3) 5
+                                ],
+  bgroup "ClsTrf - 4 agents"    [ bench "1 call"   $ whnf (benchClsTrf 4) 1
+                                , bench "3 calls"  $ whnf (benchClsTrf 4) 3
+                                , bench "5 calls"  $ whnf (benchClsTrf 4) 5
+                                ],
+  bgroup "ClsTrf - 5 agents"    [ bench "1 call"   $ whnf (benchClsTrf 5) 1
+                                , bench "3 calls"  $ whnf (benchClsTrf 5) 3
+                                , bench "5 calls"  $ whnf (benchClsTrf 5) 5
+                                ]
+  ]
+\end{code}

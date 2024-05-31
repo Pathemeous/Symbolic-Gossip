@@ -1,6 +1,8 @@
+
 \subsection{Simple Transformer}\label{sec:Simple}
 
 \hide{
+\begin{code}
 module SimpleTransformer where
 
 import SmpTrfS5
