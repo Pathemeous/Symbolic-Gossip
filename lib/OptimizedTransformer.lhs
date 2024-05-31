@@ -17,7 +17,8 @@ import SMCDEL.Language
 
 \begin{code}
 doCallOpt :: [Prp] -> KnowScene -> (Int, Int) -> KnowScene
-doCallOpt vocab start (a,b) = optimize vocab $ start `update` call (length $ agentsOf start) (a,b)
+doCallOpt vocab start (a,b) = optimize vocab $
+                                start `update` call (length $ agentsOf start) (a,b)
 
 afterOpt :: Int -> [(Int,Int)] -> KnowScene
 afterOpt n = foldl (doCallOpt $ vocabOf (gossipInit n)) (gossipInit n)

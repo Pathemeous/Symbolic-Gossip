@@ -106,7 +106,7 @@ callTrfSimple n = SimTrfWithF eventprops changelaws changeobs where
     changeobs    = [ (show i, ([],[])) | i <- gossipers n ]
 \end{code}
 
-The following functions are analogues of those in originally defined in SMCDEL \texttt{GossipS5.hs} and instead use the simple transformer.
+The following functions are analogues of those in originally defined in SMCDEL's \texttt{GossipS5.hs} and instead use the simple transformer.
 
 \begin{code}
 -- construct a a single call event with a simple transformer
