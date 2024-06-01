@@ -5,14 +5,18 @@ _Symbolic Model Checking of the Gossip Problem_
 To run the code and see how specific transformers withspecific call sequences result in different knowledge 
 scenes you can run the following: 
 
+```
 stack build 
 stack ghci exec/Main.hs
+```
 
 from the main directory. Then in ghci: 
 
+```
 ghci> main
+```
 
-Here you can enter the number of agents in the gossip scenario, after which you caan choose which 
+Then you can enter the number of agents in the gossip scenario you want to model, after which you can choose which 
 knowledge transformer to use. 
 
 After this you will see a description of the initial gossip scene. After which you can input calls between agents
