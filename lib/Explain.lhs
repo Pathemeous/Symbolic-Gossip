@@ -50,7 +50,7 @@ secretDecoder ((P p):ps) n = ("s"++ show i ++ show j) : secretDecoder ps n
 -- function that creates a library (list of tuples) containing translations/decodings
 -- for a given list of propositions and amount of agents
 -- !!! does not work for transparent transformer, therefore we have a different function
---     for the transparent transformer
+--     for the transparent transformer specifically
 prpLibrary :: [Prp] -> Int  -> [(Prp,String)]
 prpLibrary prps n = zip prps (prpLibraryHelper prps)
    where 
@@ -84,7 +84,7 @@ prpLibraryTr prps n calls = zip prps (decSec ++ callsNcopies (drop nS prps) call
    where 
       nS = (n-1)*n
       decSec = secretDecoder (take nS prps) n
-      -- decode calls and append decoded Secrets primed (copies)
+      -- decode calls and append decoded Secrets primed (copies) recursively
       callsNcopies :: [Prp] -> [(Int, Int)] -> String -> [String]
       callsNcopies [] _ _ = []
       callsNcopies _ [] s = map (++s) decSec
@@ -100,12 +100,14 @@ explainPrp :: Prp -> [(Prp,String)] -> String
 explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 \end{code}
 
-We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and the number of agents, 
-and uses \texttt{explainPrp} to make sense of the vocabulary and observations.
+We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and a sequence f calls 
+in case we use a transparent transformer ('Nothing' for other transformers). The function then uses \texttt{explainPrp} to make 
+sense of the vocabulary and observations.
 
 \begin{code}
 -- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
--- 
+-- takes a knowledge scene and a Maybe [(Int,Int)] (Maybe call sequence) which is necessary in case 
+-- of a transparent transformer
 gsi :: KnowScene -> Maybe [(Int, Int)] -> IO ()
 gsi kns@(KnS voc stl obs, s) calls = do
     putStrLn "Vocabulary: "
@@ -124,7 +126,7 @@ gsi kns@(KnS voc stl obs, s) calls = do
 \end{code}
 
 We also have functions specific for the voc (gsiVoc), state law (gsiStLaw), observables (gsiObs) and current state (gsiState)
-which work exactly the same as gsi.
+which work exactly the same as gsi but show only a specific part of the knowledge scene. 
 
 \hide{
 \begin{code}
@@ -165,7 +167,7 @@ gsiState kns@(KnS voc _ _,s) calls = do
 \end{code} 
 }
 
-We can then run the following:  % fixme: overfull hbox
+We can then run the following: 
 
 \begin{showCode}
 import SMCDEL.Examples.GossipS5
