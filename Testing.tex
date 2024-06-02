@@ -1,0 +1,51 @@
+\section{Testing}\label{sec:Testing}
+We now discuss the results of the test suite written in \texttt{Hspec}.
+As this project relies heavily on the implementation of SMCDEL to execute updates to knowledge scenes,
+we assume the correctness of its code and only focus on the correctness of the transformer implementations for Gossip,
+as well as the correctness of the \texttt{gsi} function to decode propositions.
+
+In this section we do not show all test cases, and only highlight the most interesting tests. For the full source code, please
+refer to the appendix\ref{app:Tests}.
+
+\subsection{GSI Tests}
+The GSI suite is tested for correct and decoding of the propositions.
+Please note that the IO functions are not tested and only the pure functions are.
+
+\subsection{Gossip Transformer Test Suite}
+We developed a set of test cases that verifies the semantics of the gossip problem.
+The tests can be divided into roughly three sections:
+\begin{itemize}
+    \item factual change of secret atoms (call effects)
+    \item direct knowledge effects of agents directly invovled in the call
+    \item inferred knowledge effects of calls that agents were not directly involved in
+\end{itemize}
+
+The factual change is identical regardless of the type of semantics used, which allows the tests for them to be used for all transformers.
+The knowledge tests moreover assume (at least) synchronous semantics, which conveniently means they hold for the transparent case too.
+We provide additional knowledge tests that hold only for the transparent semantics, and ascertain their negative result in the synchronous setting.
+
+The `inferred` knowledge tries to isolate cases where agents should learn about the (effects of) calls that they were not involved in.
+A typical case is with a synchronous setting of three agents $a$, $b$, and $c$:
+if the first call $(a,b)$ happens, then $c$ can observe that some call happened due to synchronicity.
+However, as $c$ knows she was not invovled herself, and knows there are only two other agents,
+she must therefore conclude that the call was between $(a,b)$.
+Agent $c$ then knows already that $S_ab \land S_ba$ holds, without ever learning this in a gossip call herself.
+
+\subsubsection{Bugs in SMCDEL Implementation}
+Using our test suite we managed to find a bug in the classical transformer as implemented in SMCDEL. In particular the following case fails:
+\begin{showCode}
+    it "Knowledge: agent knows knowledge of other agent in same call" $ do
+    eval (after 4 [(0,1),(1,2)]) (K "2" (has 4 1 0)) `shouldBe` True
+    it "Knowledge (inferred): third agent infers knowledge of first agent after 2 calls (4 agents)" $ do
+    eval (after 4 [(0,1),(1,2)]) (K "2" (has 4 0 1)) `shouldBe` True
+\end{showCode}
+We observe that the simple transformer implementation of the same semantics is able to satisfy the first test.
+It does fail the second test, but this should be caused by a limitation in its implementation.
+The transparent transformer that we defined in \ref{sec:Transparent} satisfies both tests.
+
+\subsubsection{Limitations of the Simple transformer}
+The simple transformer implementation fails all `inferred' knowledge tests.
+This makes sense as the only knowledge effects that can happen is when an agent is in a call and their observables are updated.
+Any other effect taking place, will only be revealed to the agent if they are in a call that shares these secret atoms.
+
+As noted before, this limitation seems to

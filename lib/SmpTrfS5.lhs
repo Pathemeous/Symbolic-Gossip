@@ -83,7 +83,7 @@ instance Update KnowScene StwfEvent where
 
     -- Compute special observable management for Gossip
     -- Calling agents get their own original observables O_i plus the secrets that they other know
-    -- which we define by the intersection of the other agent's observables with the state
+    -- which we define by the intersection of the other agent's observables with the (new) state
     newobs = [ (show i,obs ! show i) | i <- gossipers, i < fst inThisCall ] ++
              [ (show (fst inThisCall) , callerObs ++ intersect newstate calleeTrfObs) ] ++             -- caller
              [ (show i,obs ! show i) | i <- gossipers, i > fst inThisCall, i < snd inThisCall ] ++
@@ -111,7 +111,7 @@ In particular, we do not add the $O^+$ for each agent to their own observables,
 but add the \emph{other agent's} $O^+$ to the agent calling with them.
 This mimicks the symmetric exchange of secrets. We only do so for the specific two agents in the call.
 
-We furthermore intersect $O^+$ with the (old) state before addng them to an agent's observables.
+We furthermore intersect $O^+$ with the (new) state before addng them to an agent's observables.
 Agents can only share secrets that they actually know, and if they know a secret, they wil remember it.
 This monotonicty of the atoms means that we can safely share observables that are already true,
 but not necessarily those that are not true yet.
@@ -120,8 +120,8 @@ By intersecting with the state, we ensure only the known secrets get exchanged.
 This method is a limited implementation of the effects of a call: in reality,
 more information can be inferred and more secret atoms might become observable to an agent.
 
-It seems from our tests that agents cannot learn knowledge that they should not learn, i.e. make formulaes true that should not be.
-If this is true, the simple transformer could be a suitable faster computation for simpler questions.
+It seems from our tests that agents cannot learn knowledge that they should not learn, i.e. make formulae true that should not be.
+If this is correct, the simple transformer could provide a suitable faster computation for simpler questions.
 We do note that a mathematical proof of this is required to ascertain such a claim.
 
 

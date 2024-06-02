@@ -1,4 +1,4 @@
-
+\subsubsection{Classic Transformer Tests}
 
 \begin{code}
 module ClassicTransformerSpec where

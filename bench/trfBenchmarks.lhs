@@ -6,7 +6,7 @@ as explicit model checking in DEL is generally slow even for small examples \cit
 We therefore benchmark the runtime of the various implementations and compare them.
 Comparing the resuls, we can find what parts of the knowledge structure or updates on it cause the slowdown.
 
-We execute three different call sequences, dependent on the number of agents: with a higher number of agents, we use call sequences in which more agents participate. This prevents situations in which a model containing five agents is only tested on a call sequence that concerns only a small subset of those agents, which could skew the results of the tests for models with a large number of agents. 
+We execute three different call sequences, dependent on the number of agents: with a higher number of agents, we use call sequences in which more agents participate. This prevents situations in which a model containing five agents is only tested on a call sequence that concerns only a small subset of those agents, which could skew the results of the tests for models with a large number of agents.
 \begin{code}
 module Main where
 
@@ -17,6 +17,7 @@ import Transparent
 import SMCDEL.Symbolic.S5
 import SMCDEL.Examples.GossipS5
 import SMCDEL.Language
+import System.Random
 
 {-
     This module benchmarks the various transformers.
@@ -36,7 +37,14 @@ callsequence :: Int -> [(Int, Int)]
 callsequence 3 = [(0,1),(1,2),(1,2),(0,2),(1,2)]
 callsequence 4 = [(0,1),(1,2),(0,2),(2,3),(1,3)]
 callsequence 5 = [(0,1),(1,2),(0,2),(3,4),(1,4)]
+callsequence 15 = concat $ replicate 3 (callsequence 5)
+callsequence 25 = concat $ replicate 5 (callsequence 5)
 callsequence _ = []
+
+genCallSeqWithAgentsOfLength :: Int -> Int ->
+genCallSeqWithAgentsOfLength a n = getStdRandom (randomR (0,a-2))
+
+
 
 -- The function we're benchmarking.
 -- Simple Transformer
@@ -54,7 +62,9 @@ benchOptTrf a c = evalViaBdd (afterOpt a $ take c $ callsequence a) (K "0" $ all
 -- Transparent Transformer
 benchTnsTrf :: Int -> Int -> Bool
 benchTnsTrf a c = evalViaBdd (afterTransparent a $ take c $ callsequence a) (K "0" $ allExperts a)
+\end{code}
 
+\begin{code}
 -- Our benchmark harness.
 main :: IO ()
 main = defaultMain [
@@ -69,6 +79,12 @@ main = defaultMain [
   bgroup "SmpTrf - 5 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 5) 1
                                 , bench "3 calls"  $ whnf (benchSmpTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchSmpTrf 5) 5
+                                , bench "15 calls" $ whnf (benchSmpTrf 5) 15
+                                , bench "25 calls" $ whnf (benchSmpTrf 5) 25
+                                ],
+  bgroup "SmpTrf - 10 agents"   [ bench " 5 call"   $ whnf (benchSmpTrf 10) 5
+                                , bench "15 calls"  $ whnf (benchSmpTrf 10) 15
+                                , bench "25 calls"  $ whnf (benchSmpTrf 10) 25
                                 ],
   bgroup "TnsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchTnsTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchTnsTrf 3) 3
@@ -92,7 +108,7 @@ main = defaultMain [
                                 ],
   bgroup "OptTrf - 5 agents"    [ bench "1 call"   $ whnf (benchOptTrf 5) 1
                                 , bench "3 calls"  $ whnf (benchOptTrf 5) 3
-                                , bench "5 calls"  $ whnf (benchOptTrf 5) 5
+                                -- no case for 5 calls as it runs 45+ mins without result
                                 ],
   bgroup "ClsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchClsTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchClsTrf 3) 3

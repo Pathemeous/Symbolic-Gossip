@@ -1,0 +1,22 @@
+\subsection{Transformer Tests}
+We use the following functions (previously defined in \cite{GattingerThesis2018}) concerning experts\footnote{An expert is an
+agent who knows all secrets, that is, \texttt{expert n a} is defined as
+$\bigwedge \{S_a b\mid b\in [1,...,n]\}$},
+which define the formulas "agent a is an expert" and "all agents are experts".
+
+\begin{showCode}
+    expert :: Int -> Int -> Form
+    expert n a = Conj [ PrpF (hasSof n a b) | b <- gossipers n, a /= b ]
+
+    allExperts :: Int -> Form
+    allExperts n = Conj [ expert n a | a <- gossipers n ]
+
+    isSuccess :: Int -> [(Int,Int)] -> Bool
+    isSuccess n cs = evalViaBdd (after n cs) (allExperts n)
+
+    isSuccessTransparent :: Int -> [(Int,Int)] -> Bool
+    isSuccessTransparent n cs = evalViaBdd (afterTransparent n cs) (allExperts n)
+
+    isSuccessSimple :: Int -> [(Int,Int)] -> Bool
+    isSuccessSimple n cs = evalViaBdd (afterSimple n cs) (allExperts n)
+\end{showCode}

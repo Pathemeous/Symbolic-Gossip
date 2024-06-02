@@ -20,30 +20,34 @@ We extend the interpretability of output from SMCDEL's Knowledge Scenes for The 
 
 \clearpage
 
-\input{Intro.tex} 
-\input{Background.tex} 
-\input{lib/Explain.lhs} 
-\input{lib/Transparent.lhs} 
+\input{Intro.tex}
+\input{Background.tex}
+\input{lib/Explain.lhs}
+\input{lib/Transparent.lhs}
 
 \input{Optimization}
 \input{lib/OptimizedTransformer.lhs}
 \input{lib/SimpleTransformer.lhs}
 \input{lib/SmpTrfS5.lhs}
 
-\section{Testing}
-\input{test/ExplainTestsSpec.lhs}
-\input{test/TransparentTransformerSpec.lhs}
-\input{test/SimpleTransformerSpec.lhs} 
+\input{Testing.tex}
 
 \input{bench/trfBenchmarks.lhs}
 \input{bench/BenchmarkResults.tex}
 
-\input{Conclusion.tex} 
+\input{Conclusion.tex}
 
 \appendix
 
-\input{Appendix.tex}
+\newpage
+\input{BenchmarksAppendix.tex}
 
+\section{Test Suite}\label{app:Tests}
+\input{test/ExplainSpec.lhs}
+\input{TransformerTests.tex}
+\input{test/ClassicTransformerSpec.lhs}
+\input{test/TransparentTransformerSpec.lhs}
+\input{test/SimpleTransformerSpec.lhs}
 
 \addcontentsline{toc}{section}{Bibliography}
 \bibliographystyle{alpha}
