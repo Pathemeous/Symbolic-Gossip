@@ -63,7 +63,7 @@ we here modify it to instead work specifically for our case of a Gossip transfor
 -- It is *only* applicable to synchronous Gossip calls
 instance Update KnowScene StwfEvent where
   checks = [haveSameAgents]
-  unsafeUpdate kns@(KnS v th obs,s) (SimTrfWithF _ thetaminus _,x) = (newkns, newstate) where
+  unsafeUpdate kns@(KnS v th obs,s) (SimTrfWithF _ thetaminus trfObs, x) = (newkns, newstate) where
     -- gossip helper functions to be able to find the current two agents in the call
     thisCallProp :: (Int,Int) -> Prp
     thisCallProp (i,j) | i < j     = P (100 + 10*i + j)
@@ -82,28 +82,48 @@ instance Update KnowScene StwfEvent where
     inThisCall = callPropResolve ! head x
 
     -- Compute special observable management for Gossip
-    -- Calling agents get their own original observables O_i plus
-    -- the intersection of the other agent's observables with the state (their known true secrets)
-    -- Note that the transformer observables are ignored fully.
+    -- Calling agents get their own original observables O_i plus the secrets that they other know
+    -- which we define by the intersection of the other agent's observables with the state
     newobs = [ (show i,obs ! show i) | i <- gossipers, i < fst inThisCall ] ++
-             [ (show (fst inThisCall) , obs ! show (fst inThisCall) ++ intersect newstate (obs ! show (snd inThisCall))) ] ++
+             [ (show (fst inThisCall) , callerObs ++ intersect newstate calleeTrfObs) ] ++             -- caller
              [ (show i,obs ! show i) | i <- gossipers, i > fst inThisCall, i < snd inThisCall ] ++
-             [ (show (snd inThisCall) , obs ! show (snd inThisCall) ++ intersect newstate (obs ! show (fst inThisCall))) ] ++
-             [ (show i,obs ! show i) | i <- gossipers, i > snd inThisCall  ]
-
+             [ (show (snd inThisCall) , calleeObs ++ intersect newstate callerTrfObs) ] ++             -- callee
+             [ (show i,obs ! show i) | i <- gossipers, i > snd inThisCall  ] where
+                 -- determine the O and O^+ a for agents a,b that are calling (caller,callee)
+                callerObs :: [Prp]
+                callerObs = obs ! show ( fst inThisCall)
+                calleeObs :: [Prp]
+                calleeObs = obs ! show ( snd inThisCall)
+                callerTrfObs :: [Prp]
+                callerTrfObs = fst $ trfObs ! show ( fst inThisCall)
+                calleeTrfObs :: [Prp]
+                calleeTrfObs = fst $ trfObs ! show ( snd inThisCall)
 
     newkns = KnS v th newobs -- keep V and Theta but changes obs
     newstate = sort ((s \\ map fst thetaminus) ++ filter (\ p -> bddEval (s ++ x) (thetaminus ! p)) (map fst thetaminus))
 \end{code}
 
-In particular, we use the old observables of the two agents involved in the call to determine their new observables.
-This is somewhat close to what happens during a call: secrets (that they observe) are exchanged.
-There is one nuance, which is that the observables are technically a stronger notion ("$a$ knows the secret of $b$"),
-while in a call an agent can only share the secrets themselves ("the secret of $b$").
+The update function has two elements: determining the new state and changing the obervables.
+We calculte the new state as defined in \cite{danielMasterThesis},
+but change the observable management to bespecific to the semantics of a gossip call.
 
-However, based on our preliminary tests, it seems that this definition does not find false positives,
-that is: it does not satisfy formulae that should not be satisfied.
-Note however that a mathematical result of this is missing and tests cannot verify such a hypothesis.
+In particular, we do not add the $O^+$ for each agent to their own observables,
+but add the \emph{other agent's} $O^+$ to the agent calling with them.
+This mimicks the symmetric exchange of secrets. We only do so for the specific two agents in the call.
+
+We furthermore intersect $O^+$ with the (old) state before addng them to an agent's observables.
+Agents can only share secrets that they actually know, and if they know a secret, they wil remember it.
+This monotonicty of the atoms means that we can safely share observables that are already true,
+but not necessarily those that are not true yet.
+By intersecting with the state, we ensure only the known secrets get exchanged.
+
+This method is a limited implementation of the effects of a call: in reality,
+more information can be inferred and more secret atoms might become observable to an agent.
+
+It seems from our tests that agents cannot learn knowledge that they should not learn, i.e. make formulaes true that should not be.
+If this is true, the simple transformer could be a suitable faster computation for simpler questions.
+We do note that a mathematical proof of this is required to ascertain such a claim.
+
 
 \hide{
 \begin{code}

@@ -76,8 +76,8 @@ The event vocabulary $V^+$ contains again all fresh variables needed to describe
 The state law $\theta_-$ (\texttt{changelaws}) is similarly defined as in the classic transformer,
 allowing the update to compute the factual change $V_-$ and modify the state
 
-The transformation observables in this transformer are empty,
-as we will show that the specific update function will only need the observables in the original knowledge structure.
+The transformation observables are each agent's own secret atoms, just like the initial state.
+In the definition of the update function, we will use this set of atoms to mimick ``sharing what you know''.
 
 \begin{code}
 callTrfSimple :: Int -> SimpleTransformerWithFactual
@@ -103,7 +103,7 @@ callTrfSimple n = SimTrfWithF eventprops changelaws changeobs where
       | i <- gossipers n, j <- gossipers n, i /= j ]
 
     -- Change observables are empty as they are not used
-    changeobs    = [ (show i, ([],[])) | i <- gossipers n ]
+    changeobs    = [ (show i, (allSecretsOf n i,[])) | i <- gossipers n ]
 \end{code}
 
 The following functions are analogues of those in originally defined in SMCDEL's \texttt{GossipS5.hs} and instead use the simple transformer.

@@ -53,31 +53,45 @@ We run the following tests, in this order:
 \begin{code}
 spec :: Spec
 spec = do
-        -- simple tests
-        it "trsTrf 1: knowledge of initial state" $ do
-            eval (gossipInit 2) (K "0" (Neg (has 2 1 0))) `shouldBe` True
-        it "trsTrf 2: call shares secrets between agents" $ do
-            eval (afterTransparent 2 [(0,1)]) (Conj [has 2 1 0, has 2 0 1]) `shouldBe` True
-        it "trsTrf 3: call sequence shares secrets between agents" $ do
-            eval (afterTransparent 3 [(0,1),(1,2)]) (has 3 2 0) `shouldBe` True
-        it "trsTrf 4: no faulty experts" $ do
-            eval (afterTransparent 3 [(0,1)]) (Disj [expert 3 i | i <- [0..2]]) `shouldBe` False
-        it "trsTrf 5: all are experts after the correct call sequence" $ do
+        -- Secret exchange tests (hold for sync and transparent)
+        it "Secrets: all are experts after the correct call sequence" $ do
             isSuccessTransparent 3 [(0,1),(1,2),(0,2)] `shouldBe` True
+        it "Secrets: call shares secrets between agents" $ do
+            eval (afterTransparent 4 [(0,1)]) (Conj [has 4 1 0, has 4 0 1]) `shouldBe` True
+        it "Secrets: secrets from first call get exchanged to second call" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (has 4 2 0) `shouldBe` True
+        it "Secrets: agent of first call does not learn secrets from second call" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (has 4 0 2) `shouldBe` False
+        it "Secrets: no faulty experts" $ do
+            eval (afterTransparent 3 [(0,1)]) (Disj [expert 3 i | i <- [0..2]]) `shouldBe` False
 
-        -- transparent-specific tests
-        it "trsTrf 6: call is observed by other agents" $ do
-            eval (afterTransparent 3 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` True
-        it "trsTrf 7: call sequence is observed by other agents" $ do
-            eval (afterTransparent 4 [(0,1),(1,2)]) (K "3" (has 3 2 0)) `shouldBe` True
-        it "trsTrf 8: all agents know that all are experts after the correct call sequence" $ do
-            eval (afterTransparent 3 [(0,1),(1,2),(0,2)]) (Conj [ K (show i) (allExperts 3)
+        -- Tests about more direct knowledge
+        it "Knowledge: initial knowledge of own secret atoms" $ do
+            eval (gossipInit 3) (K "0" (Neg (has 3 0 1))) `shouldBe` True
+        it "Knowledge: agent knows callee knows their secret after call" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (K "2" (has 4 1 2)) `shouldBe` True
+        it "Knowledge: agent knows knowledge of other agent in same call" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (K "2" (has 4 1 0)) `shouldBe` True
+        it "Knowledge: all agents know that all are experts after the explicit call sequence" $ do
+            eval (afterTransparent 3 [(0,1),(1,2),(0,2),(0,1),(1,2),(0,2)]) (Conj [ K (show i) (allExperts 3)
                                                                 | i <- [(0::Int)..2] ]) `shouldBe` True
-        -- general higher-order knowledge tests
-        it "trsTrf 9: higher-order knowledge after one call" $ do
-            eval (afterTransparent 3 [(0,1)]) (K "1" (has 3 0 1)) `shouldBe` True
-        --it "trsTrf 10: higher-order knowledge after call sequence" $ do
-        --     eval (afterTransparent 3 [(0,1),(1,2),(2,3),(0,2)]) (K "0" $ Conj [has 3 3 0, K "3" (has 3 2 0)]) `shouldBe` True
-\end{code}
 
-% fixme: test if these actually pass and maybe write a sentence or two about it
+        -- Tests about inferred knowledge
+        it "Knowledge (inferred): initial inferred knowledge of other's secret atoms" $ do
+            eval (gossipInit 3) (K "0" (Neg (has 3 1 0))) `shouldBe` True
+        it "Knowledge (inferred): third agent infers knowledge of first agent after 2 calls (4 agents)" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (K "2" (has 4 0 1)) `shouldBe` True
+        it "Knowledge (inferred): non-involed knows what call happened (3 agents)" $ do
+            eval (afterTransparent 3 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` True
+        it "Knowledge (inferred): agents can reason about the limits of other agents' knowledge" $ do
+            eval (afterTransparent 3 [(0,1)]) (K "0" (Neg (has 3 2 1))) `shouldBe` True
+        it "Knowledge (inferred): all agents infer they are all experts after minimal call sequence (3 agents)" $ do
+            eval (afterTransparent 3 [(0,1),(1,2),(0,2)]) (Conj [K (show i) (allExperts 3)
+                                                                | i <- [(0::Int)..2]]) `shouldBe` True
+
+        -- transparent-specific knowledge
+        it "Knowledge (transparent): call is observed by other agents" $ do
+            eval (afterTransparent 4 [(0,1)]) (K "2" (has 3 0 1)) `shouldBe` True
+        it "Knowledge (transparent): call sequence is observed by non-involed agents" $ do
+            eval (afterTransparent 4 [(0,1),(1,2)]) (K "3" (has 3 2 0)) `shouldBe` True
+\end{code}
