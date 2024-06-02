@@ -125,7 +125,7 @@ gsi kns@(KnS voc stl obs, s) calls = do
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 \end{code}
 
-We also have functions specific for the voc (gsiVoc), state law (gsiStLaw), observables (gsiObs) and current state (gsiState)
+We also have functions specific for the vocabulary (\texttt{gsiVoc}), state law (\texttt{gsiStLaw}), observables (\texttt{gsiObs}) and current state (\texttt{gsiState})
 which work exactly the same as gsi but show only a specific part of the knowledge scene. 
 
 \hide{
