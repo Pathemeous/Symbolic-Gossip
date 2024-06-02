@@ -7,6 +7,9 @@ as well as the correctness of the \texttt{gsi} function to decode propositions.
 In this section we do not show all test cases, and only highlight the most interesting tests. For the full source code, please
 refer to the appendix\ref{app:Tests}.
 
+The test coverage is near 100\%. The only omissions are from functions returning \texttt{IO ()} type.
+The coverage report can be found in the GitHub repository.
+
 \subsection{GSI Tests}
 The GSI suite is tested for correct and decoding of the propositions.
 Please note that the IO functions are not tested and only the pure functions are.
@@ -48,4 +51,4 @@ The simple transformer implementation fails all `inferred' knowledge tests.
 This makes sense as the only knowledge effects that can happen is when an agent is in a call and their observables are updated.
 Any other effect taking place, will only be revealed to the agent if they are in a call that shares these secret atoms.
 
-As noted before, this limitation seems to
+As noted before, this limitation seems to only restrict the knowledge of agents, and not lead to false knowledge.

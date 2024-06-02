@@ -1,33 +1,38 @@
 \section{Introduction}
 
-\textit{The Gossip Problem} or \textit{Gossip} is the problem of sharing information in a network. 
-Many variants of Gossip exist, each with their own computational challenges. 
-Most notably, a distinction is made between the \textit{Transparent} Gossip Problem - the situation where all agents know 
-which agents exchange information at any update - and the \textit{Synchronous} Gossip Problem, where agents know when an 
+\textit{The Gossip Problem} or historically \textit{the Telephone Problem} is the problem of sharing information in a network.
+A set of $n$ agents, each with their own secret, may execute one-on-one calls between each other in which they share all secrets that they know.
+Agents share all secrets in a call, and nothing else than secrets. In particular, they share no higher order information.
+The goal of the problem is to find a (minimal) sequence of calls so that all agents are \emph{experts}, i.e. they know all $n$ secrets.
+
+Various variants of Gossip exist, each with their own computational challenges.
+Most notably, a distinction is made between the \textit{Transparent} setting - the situation where all agents know
+which agents exchange information at any update - and the \textit{Synchronous} setting, where agents know when an
 update occurs but not which agents exchange information during that update.
 
-For modelling Gossip, an explicit model checker for Gossip called \textit{GoMoChe} exists \cite{gattinger2023gomoche}. 
-Explicit model checkers are generally less efficient than symbolic ones, which aim to cut down on computation time. 
-GoMoChe too is therefore computationally limited to small examples. On the other hand, 
-a symbolic model checker for dynamic epistemic logic (DEL) called SMCDEL exists, which is much more general than \textit{GoMoChe}. 
-SMCDEL is implemented for
-both $K$ and $S5$ and contains symbolic representations for various logic problems, including Gossip \cite{GattingerThesis2018}. 
-However, in terms of Gossip, SMCDEL only covers an encoding of the Synchronous Gossip 
-Problem (in standard S5 DEL), and the implementation of its update function causes the model to blow up in terms of 
-complexity.
+For modelling Gossip, an explicit model checker for Gossip called \textit{GoMoChe} exists \cite{gattinger2023gomoche}.
+Explicit model checkers are generally less efficient than symbolic ones, which aim to cut down on computation time.
+GoMoChe too is therefore computationally limited to small examples. On the other hand,
+a symbolic model checker for dynamic epistemic logic (DEL) called SMCDEL exists, which is much more general than \textit{GoMoChe}.
+SMCDEL implements both \textbf{K} and \textbf{S5} knowledge structures and contains symbolic representations for various logic problems,
+including Gossip \cite{GattingerThesis2018}.
 
-A solution to this exponential blowup was proposed in the unpublished master's thesis by \cite{danielMasterThesis}, in the shape 
-of a \textit{Simple Knowledge Transformer} that should replace the \textit{Classic Knowledge Transformer} from SMCDEL. An existing 
-implementation by \cite{HaitianHanabi} extends SMCDEL to incorporate updates with Simple Transformers, but an instance of this transformer
-tailored to the Gossip problem wasn't included. 
+However, the Gossip implementation in SMCDEL only covers the synchronous version.
+Moreover the \textbf{S5} symbolic structure and transformer updates have an inherent weakness
+as they must duplicate parts of and increase the size of the knowledge structure with each update.
+The Gossip transformer implementation from \cite{GattingerThesis2018} quickly causes a blowup of the symbolic knowledge structure.
+This even leads to sometimes worse runtime performance than the explicit model checker \cite{danielMasterThesis}.
 
-This project expands on SMCDEL's functionality. Section \ref{sec:Background} contains a description of 
-the Classic Knowledge Transformer in SMCDEL, and 
-specifically how it is used to model updates to the state in \cite{GattingerThesis2018}. 
-Next, Section \ref{sec:Explain} contains a number of functions that provide an interpretation of the current state, 
-which makes the Synchronous Gossip Problem already provided in SMCDEL more user-friendly. 
-Next we create a variant of the Classic Transformer for the transparent variant of the Gossip Problem in Section \ref{sec:Transparent}. 
-To conclude our work, Section \ref{sec:Optimization} describes our implementation of the Simple Transformer, 
-which cuts down on the complexity of computing the Synchronous Gossip Problem, with the tradeoff of losing higher-order knowledge. 
-The code of Section \ref{sec:Explain}, \ref{sec:Transparent}, and \ref{sec:Optimization} is tested in Subsections \ref{ssec:ExplainTests}, 
-\ref{ssec:TransparentTests}, and \ref{ssec:SimpleTests} respectively, and the necessary parts are benchmarked in Section \ref{sec:Benchmarks}.
+A solution to the transformation method and its inherent knowledge structure growth was proposed in the unpublished master's thesis by \cite{danielMasterThesis},
+who introduces the notion of a \textit{Simple Knowledge Transformer} that can replace the \textit{Classic Knowledge Transformer} in certain epistemic settings.
+An existing implementation by \cite{HaitianHanabi} extends SMCDEL to incorporate updates with Simple Transformers,
+but the translation from a classical transformer to a simple one is not always obvious and none exists for Gossip yet.
+
+This project expands on SMCDEL's functionality. Section \ref{sec:Background} contains a description of
+the Classic Knowledge Transformer in SMCDEL, and specifically how it is used to model updates to the state in \cite{GattingerThesis2018}.
+Next, Section \ref{sec:Explain} contains a number of functions that provide an interpretation of the current state,
+which makes the Synchronous Gossip Problem already provided in SMCDEL more user-friendly.
+Next we create a variant of the Classic Transformer for the transparent variant of the Gossip Problem in Section \ref{sec:Transparent}.
+To conclude our work, Section \ref{sec:Optimization} describes our implementation of the Simple Transformer,
+which cuts down on the complexity of computing the Synchronous Gossip Problem, with the tradeoff of losing higher-order knowledge.
+The test results of are discussed in \ref{ssec:ExplainTests} and the various transformer implementations are benchmarked in Section \ref{sec:Benchmarks}.

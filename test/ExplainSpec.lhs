@@ -1,7 +1,7 @@
 \subsection{Gossip Scene Investigation Tests}\label{ssec:ExplainTests}
 
 \begin{code}
-module ExplainTestsSpec where
+module ExplainSpec where
 
 import Explain
 import SMCDEL.Examples.GossipS5

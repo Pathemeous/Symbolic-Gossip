@@ -1,20 +1,23 @@
 \subsection{Benchmarking Results}
 
-We compared the performance of the Classic Transformer, the Optimized Classic Transformer, the Transparent variant and the Simple Transformer. The Optimized Transformer timed out at all runs and was therefore not included in the results. The relevant results of the other tests are discussed below.
+We compared the performance of the Classic Transformer, the Optimized Classic Transformer, the Transparent variant and the Simple Transformer.
+The raw benchmark results are included in \ref{app:Benchmarks}.
 
-The benchmarks evaluate the average running time needed to execute call sequences of different lengths, on models containing respectively three, four, and five agents. Below we highlight the results for three and five agents; for a complete documentation, we refer to the Appendix.
+The benchmarks evaluate the average running time needed to execute call sequences of different lengths,
+on models containing respectively three, four, and five agents.
+Below we highlight the results for three and five agents; for a complete documentation, we refer to the Appendix.
 
 Table \ref{tab:three} compares the results on models containing three agents.
 
 \begin{table}[H]
 \caption {Call sequences on models containing three agents} \label{tab:three}
 \begin{center}
-\begin{tabular}{l|lll}
+\begin{tabular}{l|llll}
 \title
-Nr. of calls & Classic      & Transparent  & Simple       \\ \hline
-1            & 388.4 $\mu$s & 146.0 $\mu$s & 88.29 $\mu$s \\
-3            & 1.308 ms     & 331.4 $\mu$s & 99.34 $\mu$s \\
-5            & 1.876 ms     & 491.2 $\mu$s & 486.2 $\mu$s
+Nr. of calls & Classic      & Optimized     & Transparent  & Simple       \\ \hline
+1            & 517.8 $\mu$s & 725.2 $\mu$s  & 142.7 $\mu$s & 99.69 $\mu$s \\
+3            & 1.811 ms     & 5.033 ms      & 335.1 $\mu$s  & 128.9 $\mu$s \\
+5            & 2.578 ms     & 11.63 ms      & 414.4 $\mu$s  & 448.7 $\mu$s
 \end{tabular}
 \end{center}
 \end{table}
@@ -25,14 +28,25 @@ To illustrate the differences between the models on larger problems, the followi
 \caption {Call sequences on models containing five agents} \label{tab:five}
 \begin{center}
 \begin{tabular}{l|lll}\label{tab:2}
-    Nr. of calls & Classic  & Transparent  & Simple       \\ \hline
-    1            & 18.33 ms & 477.0 $\mu$s & 638.0 $\mu$s \\
-    3            & 63.01 ms & 1.323 ms     & 2.153 ms     \\
-    5            & 12.27 s  & 1.831 ms     & 2.096 ms
+    Nr. of calls & Classic  & Optimized  & Transparent  & Simple       \\ \hline
+    1            & 18.33 ms & 22.76 ms   & 544.0 $\mu$s & 711.1 $\mu$s \\
+    3            & 55.59 ms & 273.9 ms   & 1.255 ms     & 2.099 ms     \\
+    5            & 5.976 s & N/A        & 2.143 ms     & 2.259 ms
 \end{tabular}
 \end{center}
 \end{table}
 
 We see that the differences in performance grow with the number of agents and the length of call sequences:
 on larger models, the Transparent and Simple implementation are significantly faster than the Classic implementation.
-This is most apparent in the results for five calls between five agents (see table \ref{tab:five}).
+This is most apparent in the results for five calls between five agents (see table \ref{tab:five})\footnote{The 5 agent, 5 call classic transformer benchmark deviated between 2.0 and 12.0 seconds}.
+
+The Optimized transformer does not manage to improve the runtime and instead only increases it, sometimes considerably.
+The 5 agent and 5 call benchmark was therefore excluded.
+
+\subsection{Testing the limits}
+Both the Transparent and Simple transformer can reach much larger models and longer call sequences.
+The Transparent transformer benchmarked at 15 agents and 15 calls at 268.4 ms and only passed the second-mark 15 agents and 25 calls at 6.732 seconds.
+
+The simple transformer could go further and reaches 15 agents and 100 calls in 5.334 seconds.
+
+For all the benchmarks, please refer to appendix \ref{app:Benchmarks}.

@@ -1,4 +1,4 @@
-\subsubsection{Simple Transformer Tests} \label{sec:SimpleTests}
+\subsubsection{Simple Transformer Tests} \label{ssec:SimpleTests}
 
 \begin{code}
 module SimpleTransformerSpec where

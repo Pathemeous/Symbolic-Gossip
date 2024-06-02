@@ -1,23 +1,26 @@
 \section{Background}\label{sec:Background}
 
-For the language and syntax of Gossip, please refer to \cite{GattingerThesis2018} (Section 6.6). 
-We discuss how the Gossip Problem is approached in SMCDEL using \cite{GattingerThesis2018} (in particular, Section 6.6.5 on Symbolic Gossip). 
+For the language and syntax of Gossip, please refer to \cite{GattingerThesis2018} (Section 6.6).
+We discuss how the Gossip Problem is approached in SMCDEL using \cite{GattingerThesis2018} (in particular, Section 6.6.5 on Symbolic Gossip).
 For an in-depth explanation, please refer to the aforementioned source.
 
-The Gossip Problem models the flow of information called secrets. 
-At the initial state of the problem, no information has been shared and each agent knows only their own secret. The goal is for 
-the agents to exchange all secrets, which happens through \textit{updates} on the model, which is called a \textit{Knowledge Structure}. 
-The Knowledge Structure and the actual state are described by the \textit{vocabulary} ($V$), 
-\textit{state law} ($\theta$), and \textit{observations} ($O_i$ for each agent $i$). The vocabulary $V$ expresses all existing atomic propositions of 
-the form $S_ij$, where $S_ij$ denotes agent $i$ knowing agent $j$'s secret. 
-Next, the state law $\theta$ describes the possible worlds in the current model. Following the conceptual assumption that all agents
-are aware of the model they reside in, $\theta$ is common knowledge among the agents. Initially, $\theta$ states that nobody knows 
-anyone else's secret. Finally, the observations $O_i$ describe which propositional 
-variables agent $i$ observes; following \cite{GattingerThesis2018}, the observations are initially empty for all agents. 
-Throughout the run of the model, propositions are added to the observables, which encode which calls each agent can observe.
+\subsection{Initial Knowledge Scene}
+The Gossip Problem models the flow of information called secrets.
+At the initial state of the problem, no information has been shared and each agent knows only their own secret (and this is common knowledge).
+The goal is for the agents to exchange all secrets, which happens through \textit{updates} on the model, which is called a \textit{Knowledge Structure}.
+The Knowledge Structure and the actual state are described by the \textit{vocabulary} ($V$),
+\textit{state law} ($\theta$), and \textit{observations} ($O_i$ for each agent $i$).
 
-For the sake of simplicity, the notions of knowing one's own secret are completely removed. 
-Equation \ref{init} (from \cite{GattingerThesis2018}, page 194) 
+In the setting of gossip, the vocabulary $V$ expresses all existing atomic propositions of
+the form $S_ij$, where $S_ij$ denotes agent $i$ knowing agent $j$'s secret.
+Next, the state law $\theta$ describes the possible worlds in the current model. Following the conceptual assumption that all agents
+are aware of the model they reside in, $\theta$ is common knowledge among the agents. Initially, $\theta$ states that nobody knows
+anyone else's secret. Finally, the observations $O_i$ describe which propositional
+variables agent $i$ observes; following \cite{GattingerThesis2018}, the observations are initially empty for all agents.
+Throughout updates of the model, propositions are added to the observables, which encode which calls each agent can observe.
+
+For the sake of simplicity, the notions of knowing one's own secret are completely removed.
+Equation \ref{init} (from \cite{GattingerThesis2018}, page 194)
 shows the tuple describing the initial Knowledge Structure $F_\text{init}$.
 
 \begin{equation}
@@ -25,52 +28,55 @@ shows the tuple describing the initial Knowledge Structure $F_\text{init}$.
     F_\text{init} = (V = \{S_ij \mid i, j \text{ Agents}, i \neq j\}, \theta =\bigwedge_{i\neq j} \lnot S_ij , O_i = \emptyset)
 \end{equation}
 
-In order to transform the model after a call happens, we use a Knowledge Transformer. The crux of this paper involves changing 
-the Knowledge Transformer for the Synchronous Gossip Problem provided in SMCDEL to fit our needs. 
+In order to transform the model after a call happens, we use a Knowledge Transformer. The crux of this paper involves changing
+the Knowledge Transformer for the Synchronous Gossip Problem provided in SMCDEL to fit our needs.
 
-The Knowledge Transformer explains how the state should change after an update, in this case an arbitrary call. 
-The vocabulary is extended with propositional variables $q_{ij}$, which express that agent $i$ called agent $j$. 
-Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occurred, 
-but not which two agents called, we encode this into two laws $\theta^+$ and $\theta_-$, where $\theta^+$ 
-(also: \textit{preconditions} for a call) expresses that exactly one 
-call happens, and $\theta_-$ (also: \textit{postconditions} of a call) expresses the conditions under which agent $i$ can 
-learn agent $j$'s secret. 
-Finally, each agent $i$ observes only calls they participate in, which we describe in $O^+_i$. 
+\subsection{Knowledge Transformer}
+The Knowledge Transformer explains how the state should change after an update, in this case an arbitrary call.
+The vocabulary is extended with propositional variables $q_{ij}$, which express that agent $i$ called agent $j$.
+Recalling that we are dealing with the Synchronous Gossip Problem, where agents only know a call occurred,
+but not which two agents called, we encode this into two laws $\theta^+$ and $\theta_-$, where $\theta^+$
+(also: \textit{preconditions} for a call) expresses that exactly one
+call happens, and $\theta_-$ (also: \textit{postconditions} of a call) expresses the conditions under which agent $i$ can
+learn agent $j$'s secret.
+Finally, each agent $i$ observes only calls they participate in,
+which we describe in $O^+_i$ and which are added to the observables in the resulting structure..
 
 %Putting this all together
-In short, the Knowledge Transformer for The Synchronous Gossip Problem is the quintuple 
+In short, the Knowledge Transformer for The Synchronous Gossip Problem is the quintuple
 $\chi_\text{call}=(V^+,\theta ^+,V_-,\theta _-,O^+)$ (see \cite{GattingerThesis2018}, page 195 for the exact encoding).
 
 % About the copying of secrets
-The design of the Knowledge Transformer allows it to encode and check higher-order knowledge, but it 
-also poses a problem in the form blowup. The state law ($\theta$) keeps track 
-of the updates in the model and is itself updated using $\theta^+$ and $\theta_-$. Essentially, the state law 
-after the final update forms a conjunction of the original state law with event laws ($\theta^+$) for each update and 
-\texttt{changelaws} ($\theta_-$), 
-such that the validity of a logical formula on a given Knowledge Structure can be evaluated by solely checking if it's implied by 
-the state law. 
+The design of the Knowledge Transformer allows it to encode and check higher-order knowledge, but it
+does so by including introducing many new propositions into the vocabulary at each update.
+The state law ($\theta$) keeps track of the updates in the model and is itself extended using $\theta^+$ and $\theta_-$.
+Essentially, the state law
+after the final update forms a conjunction of the original state law with event laws ($\theta^+$) for each update and
+\texttt{changelaws} ($\theta_-$),
+such that the validity of a logical formula on a given Knowledge Structure can be evaluated by solely checking if it's implied by
+the state law.
 
-However, it is possible for an update to create states that previously were excluded by the state law. 
-In order to allow this type of flexibility, each update causes all propositional variables of the form $S_ij$  
-to be copied and labelled in the state law. For example, suppose Alice learns Bob's secret during update $n$. 
-Any occurrence of the corresponding proposition $S_ab$ in the state law need to be flagged in update $n+1$, just in case 
-Alice would \textit{forget} Bob's secret in some future update. A copy of $S_ab$ is added and now exists alongside the 
-flagged version (denoted by $(S_ab)^o$ to indicate that it is an "old" proposition). Even for a small number of agents and 
+However, it is possible for an update to create states that previously were excluded by the state law.
+In order to allow this type of flexibility, each update causes all propositional variables of the form $S_ij$
+to be copied and labelled in the state law. For example, suppose Alice learns Bob's secret during update $n$.
+Any occurrence of the corresponding proposition $S_ab$ in the state law need to be flagged in update $n+1$, just in case
+Alice would \textit{forget} Bob's secret in some future update. A copy of $S_ab$ is added and now exists alongside the
+flagged version (denoted by $(S_ab)^o$ to indicate that it is an ``old'' proposition). Even for a small number of agents and
 calls (say, 4 agents and 3 calls), the blowup of the state law is as such that it's unfeasible to print an example of the representation
 of the resulting Knowledge Structure.
 
-% TODO add image of what the BDD looks like? 
+% TODO add image of what the BDD looks like?
 % if so, include explanation of BDDs
 
 
-The possibility of the truth value $S_ab$ to change back to false is an unrealistic hypothetical in Gossip, as in this situation 
-agents aren't modelled to forget any secrets. However, SMCDEL is implemented for a wide range of logical problems, which prevents it 
-from making such assumptions. 
+The possibility of the truth value $S_ab$ to change back to false is an unrealistic hypothetical in Gossip, as in this situation
+agents aren't modelled to forget any secrets. However, SMCDEL is implemented for a wide range of logical problems, which prevents it
+from making such assumptions.
 
-The existing implementation in SMCDEL includes optimization functions that discard the redundant propositions 
-(by checking which propositional variables are equivalent), but this optimization is only implemented to be run after running the 
-model and is therefore not optimal. 
+The existing implementation in SMCDEL includes optimization functions that discard the redundant propositions
+(by checking which propositional variables are equivalent), but this optimization is only implemented to be run after running the
+model and is therefore not optimal.
 
-With this background on how to model Gossip symbolically, we write our own transformer for modelling the transparant variant 
-of The Gossip Problem, implement an adapted optimization that runs in between updates, and a simple transformer based on Daniel 
-Reifsteck's master's thesis. 
+With this background on how to model Gossip symbolically, we write our own transformer for modelling the transparant variant
+of The Gossip Problem, implement an adapted optimization that runs in between updates, and a simple transformer based on Daniel
+Reifsteck's master's thesis.

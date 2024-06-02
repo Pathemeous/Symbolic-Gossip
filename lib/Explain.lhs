@@ -1,27 +1,28 @@
 \section{Gossip Scene Investigation}\label{sec:Explain}
 
-This section explains the functions that we created to make sense of the current state of a given gossip problem, 
-i.e. gossip scene investigation. The functions only work on the unoptimized, Classic Transformer, since the code relies on the 
-exact vocabulary being copied. First of all, the code makes use of the following imports:
+This section explains the functions that we created to make sense of the current symbolic knowledge scene of a given gossip problem,
+which we call gossip scene investigation. The functions only work on the unoptimized, Classic Transformer, since the code relies on the
+exact vocabulary being copied.
 
+\hide{
 \begin{code}
 module Explain where
-   
+
 import SMCDEL.Symbolic.S5
 import SMCDEL.Language
 import SMCDEL.Other.BDD2Form
 import Data.Maybe
-
 \end{code}
+}
 
-One remarkable property of the SMCDEL implementation \cite{GattingerThesis2018} is how the transformer updates the vocabulary 
+One remarkable property of the SMCDEL implementation \cite{GattingerThesis2018} is how the transformer updates the vocabulary
 by copying all of the secret propositions.
-This means that in any given transformation, there will be a propositional variable representing a secret 
-$S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_{ij}$. 
-In order to prevent overlap between the several groups of variables, a unique value is computed for each propositional variable. 
-A propositional variable is of the form $p_i$, where $i$ is generated using one of the following functions (\cite{GattingerThesis2018}):
+This means that in any given transformation, there will be a propositional variable representing a secret
+$S_ij$, as well as a copy of said variable $(S_ij)^o$. Moreover, we have propositions for calls $q_{ij}$.
+In order to prevent overlap between the several groups of variables, a unique value is computed for each propositional variable.
+A propositional variable is of the form $p_i$, where $i$ is generated using one of the following functions in SMCDEL:
 
-\begin{verbatim}
+\begin{showCode}
    -- a has the secret of b
    hasSof :: Int -> Int -> Int -> Prp
    hasSof n a b | a == b    = error "Let's not even talk about that."
@@ -31,15 +32,14 @@ A propositional variable is of the form $p_i$, where $i$ is generated using one 
    thisCallProp :: (Int,Int) -> Prp
    thisCallProp (i,j) | i < j     = P (100 + 10*i + j)
                       | otherwise = error $ "wrong call: " ++ show (i,j)
-\end{verbatim}
+\end{showCode}
 
 In order to make the description of a Knowledge Structure human-readable, we defined the following functions to translate the
 encoded propositions: \texttt{prpLibrary} checks whether a proposition denotes a secret, call proposition, or copy of a secret.
-The function takes the vocabulary as input, as well as the number of agents, and returns the library from which we can 
+The function takes the vocabulary as input, as well as the number of agents, and returns the library from which we can
 decipher propositions in our gossip scene investigation.
 
 \begin{code}
-
 -- function to decode secrets propositions, takes list of propositions
 -- and an amount of agents and returns decoded secrets as strings
 secretDecoder ::  [Prp] -> Int -> [String]
@@ -53,26 +53,26 @@ secretDecoder ((P p):ps) n = ("s"++ show i ++ show j) : secretDecoder ps n
 --     for the transparent transformer specifically
 prpLibrary :: [Prp] -> Int  -> [(Prp,String)]
 prpLibrary prps n = zip prps (prpLibraryHelper prps)
-   where 
+   where
       -- assign the propositions to secrets, calls, and copies of secrets
       -- and decode each with the appropriate decoder
       prpLibraryHelper :: [Prp]  -> [String]
       prpLibraryHelper [] = []
       prpLibraryHelper prps' = a ++ copyDecoder (drop (div (3*n*(n-1)) 2) prps') a "'"
-         where 
+         where
             a = secretDecoder (take (n*(n-1)) prps') n ++ callDecoder 0 (take (div (n*(n-1)) 2) (drop (n*(n-1)) prps'))
-      
+
       -- decode calls
       callDecoder :: Int -> [Prp] -> [String]
       callDecoder k calls | k >= div (n*(n-1)) 2 = []
                           | null calls = []
                           | otherwise = ("q" ++ show i ++ show j) : callDecoder (k + 1) calls
-         where 
+         where
             (i, j) = getCNums k 0
             getCNums :: Int -> Int -> (Int,Int)
             getCNums k' r'' | (k'+1) < n = (r'',k'+1)
                             | otherwise = getCNums (k'-n+2+r'') (r''+1)
-      
+
       -- decode copies
       copyDecoder :: [Prp] -> [String] -> String -> [String]
       copyDecoder [] _ _ = []
@@ -81,7 +81,7 @@ prpLibrary prps n = zip prps (prpLibraryHelper prps)
 
 prpLibraryTr :: [Prp] -> Int -> [(Int, Int)] -> [(Prp, String)]
 prpLibraryTr prps n calls = zip prps (decSec ++ callsNcopies (drop nS prps) calls "'")
-   where 
+   where
       nS = (n-1)*n
       decSec = secretDecoder (take nS prps) n
       -- decode calls and append decoded Secrets primed (copies) recursively
@@ -89,24 +89,23 @@ prpLibraryTr prps n calls = zip prps (decSec ++ callsNcopies (drop nS prps) call
       callsNcopies [] _ _ = []
       callsNcopies _ [] s = map (++s) decSec
       callsNcopies (_:ps) ((a,b):c) s = ["q"++show a++show b++tail s] ++ map (++s) decSec ++ callsNcopies (drop nS ps) c (s++"'")
-
 \end{code}
 
-Additionally, we wrote the (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library, 
-to return its meaning (as String). 
+Additionally, we wrote the (unsafe) function \texttt{explainPrp}, which takes in a proposition as well as the library,
+to return its meaning (as String).
 
-\begin{code} 
+\begin{code}
 explainPrp :: Prp -> [(Prp,String)] -> String
 explainPrp (P x) prpLib = fromJust (lookup (P x) prpLib)
 \end{code}
 
-We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and a sequence f calls 
-in case we use a transparent transformer ('Nothing' for other transformers). The function then uses \texttt{explainPrp} to make 
+We follow this up with \texttt{gsi}, our gossip scene investigation, which takes in a knowledge scene and a sequence f calls
+in case we use a transparent transformer ('Nothing' for other transformers). The function then uses \texttt{explainPrp} to make
 sense of the vocabulary and observations.
 
 \begin{code}
--- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip. 
--- takes a knowledge scene and a Maybe [(Int,Int)] (Maybe call sequence) which is necessary in case 
+-- Gossip Scene Investigation: GSI. ...like the tv show but with less crime and more gossip.
+-- takes a knowledge scene and a Maybe [(Int,Int)] (Maybe call sequence) which is necessary in case
 -- of a transparent transformer
 gsi :: KnowScene -> Maybe [(Int, Int)] -> IO ()
 gsi kns@(KnS voc stl obs, s) calls = do
@@ -117,8 +116,8 @@ gsi kns@(KnS voc stl obs, s) calls = do
     putStrLn "Observables: "
     mapM_ (putStrLn . (++) " --  " . (\ x -> fst x ++ ":  " ++ show (map (`explainPrp` lib) (snd x)) )) obs
     putStrLn "Actual state: "
-    if null s then putStrLn " --  Nobody knows about any other secret" 
-      else 
+    if null s then putStrLn " --  Nobody knows about any other secret"
+      else
       mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
    where
       lib | isNothing calls = prpLibrary voc (length $ agentsOf kns)
@@ -126,7 +125,7 @@ gsi kns@(KnS voc stl obs, s) calls = do
 \end{code}
 
 We also have functions specific for the vocabulary (\texttt{gsiVoc}), state law (\texttt{gsiStLaw}), observables (\texttt{gsiObs}) and current state (\texttt{gsiState})
-which work exactly the same as gsi but show only a specific part of the knowledge scene. 
+which work exactly the same as gsi but show only a specific part of the knowledge scene.
 
 \hide{
 \begin{code}
@@ -139,7 +138,7 @@ gsiVoc kns@(KnS voc _ _, _) calls = do
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 
 gsiStLaw :: KnowScene -> Maybe [(Int, Int)] -> IO()
-gsiStLaw kns@(KnS voc stl _ ,_) calls = do 
+gsiStLaw kns@(KnS voc stl _ ,_) calls = do
    putStrLn "State Law: "
    print (ppFormWith (`explainPrp` lib) (formOf stl))
       where
@@ -147,7 +146,7 @@ gsiStLaw kns@(KnS voc stl _ ,_) calls = do
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 
 gsiObs :: KnowScene -> Maybe [(Int, Int)] -> IO()
-gsiObs kns@(KnS voc _ obs ,_) calls = do 
+gsiObs kns@(KnS voc _ obs ,_) calls = do
    putStrLn "Observables: "
    mapM_ (putStrLn . (++) " --  " . (\ x -> fst x ++ ":  " ++ show (map (`explainPrp` lib) (snd x)) )) obs
       where
@@ -155,41 +154,41 @@ gsiObs kns@(KnS voc _ obs ,_) calls = do
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 
 gsiState :: KnowScene -> Maybe [(Int, Int)] ->IO()
-gsiState kns@(KnS voc _ _,s) calls = do 
+gsiState kns@(KnS voc _ _,s) calls = do
    putStrLn "Actual state: "
-   if null s then putStrLn " --  Nobody knows about any other secret" 
-      else 
+   if null s then putStrLn " --  Nobody knows about any other secret"
+      else
       mapM_ (putStrLn . (++) " --  " . \p -> explainPrp p lib) s
          where
       lib | isNothing calls = prpLibrary voc (length $ agentsOf kns)
           | otherwise = prpLibraryTr voc (length $ agentsOf kns) (fromJust calls)
 
-\end{code} 
+\end{code}
 }
 
-We can then run the following: 
+We can then run the following:
 
 \begin{showCode}
 import SMCDEL.Examples.GossipS5
 ghci> gsi (gossipInit 3) Nothing
-Vocabulary: 
+Vocabulary:
  --  s01
  --  s02
  --  s10
  --  s12
  --  s20
  --  s21
-State Law: 
+State Law:
 "(~s01 & ~s02 & ~s10 & ~s12 & ~s20 & ~s21)"
-Observables: 
+Observables:
  --  0:  []
  --  1:  []
  --  2:  []
-Actual state: 
+Actual state:
  --  Nobody knows about any other secret
 
 ghci> gsiVoc (doCall (gossipInit 3) (0,1)) Nothing
-Vocabulary: 
+Vocabulary:
  --  s01
  --  s02
  --  s10
@@ -207,18 +206,18 @@ Vocabulary:
  --  s21'
 
  ghci> gsiState (doCall (gossipInit 3) (0,1)) Nothing
- Actual state: 
+ Actual state:
  --  s01
  --  s10
  --  q01
 
 ghci> gsiObs (doCallTransparent (gossipInit 3) (0,1)) (Just [(0,1)])
-Observables: 
+Observables:
  --  0:  ["q01"]
  --  1:  ["q01"]
  --  2:  ["q01"]
 \end{showCode}
 
-
-In the future, we hope to also show the law as its BDD (Binary Decision Diagram \footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula. SMCDEL uses BDDs for the symbolic evaluation 
-of logic problems.}) using the tool \textit{graphviz}. 
+In the future, we hope to also show the law as its Binary Decision Diagram (BDD
+\footnote{A Binary Decision Diagram provides a concise representation of a Boolean formula.
+SMCDEL uses BDDs for the symbolic evaluation of logic problems.}) using the tool \textit{graphviz}.

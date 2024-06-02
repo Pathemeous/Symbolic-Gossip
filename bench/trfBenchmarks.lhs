@@ -17,7 +17,6 @@ import Transparent
 import SMCDEL.Symbolic.S5
 import SMCDEL.Examples.GossipS5
 import SMCDEL.Language
-import System.Random
 
 {-
     This module benchmarks the various transformers.
@@ -33,20 +32,17 @@ import System.Random
 -}
 
 -- The call sequences we apply
+-- The number parameter denotes the amount of agents involved
+-- The length (up to 100) can be determined with `take`
 callsequence :: Int -> [(Int, Int)]
-callsequence 3 = [(0,1),(1,2),(1,2),(0,2),(1,2)]
-callsequence 4 = [(0,1),(1,2),(0,2),(2,3),(1,3)]
-callsequence 5 = [(0,1),(1,2),(0,2),(3,4),(1,4)]
-callsequence 15 = concat $ replicate 3 (callsequence 5)
-callsequence 25 = concat $ replicate 5 (callsequence 5)
+callsequence 3 = concat $ replicate 10  [(0,1),(1,2),(1,2),(0,2),(1,2),(0,1),(0,2),(1,2),(1,2),(1,2)]
+callsequence 4 = concat $ replicate 10  [(0,1),(1,2),(0,2),(2,3),(1,3),(0,2),(0,1),(1,2),(2,3),(1,3)]
+callsequence 5 = concat $ replicate 10  [(0,1),(1,2),(0,2),(3,4),(1,4),(0,1),(1,3),(0,2),(3,4),(2,4)]
+callsequence 15 = concat $ replicate 10 [(0,2),(3,5),(1,14),(7,8),(5,7),(3,14),(0,12),(3,8),(3,12),(7,12)]
 callsequence _ = []
 
-genCallSeqWithAgentsOfLength :: Int -> Int ->
-genCallSeqWithAgentsOfLength a n = getStdRandom (randomR (0,a-2))
-
-
-
--- The function we're benchmarking.
+-- The functions we're benchmarking.
+-- the scene is evaluated to ensure it is fully computed (similarly to `nf`)
 -- Simple Transformer
 benchSmpTrf :: Int -> Int -> Bool
 benchSmpTrf a c = evalViaBdd (afterSimple a $ take c $ callsequence a) (K "0" $ allExperts a)
@@ -62,29 +58,37 @@ benchOptTrf a c = evalViaBdd (afterOpt a $ take c $ callsequence a) (K "0" $ all
 -- Transparent Transformer
 benchTnsTrf :: Int -> Int -> Bool
 benchTnsTrf a c = evalViaBdd (afterTransparent a $ take c $ callsequence a) (K "0" $ allExperts a)
-\end{code}
 
-\begin{code}
 -- Our benchmark harness.
 main :: IO ()
 main = defaultMain [
   bgroup "SmpTrf - 3 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchSmpTrf 3) 3
                                 , bench "5 calls"  $ whnf (benchSmpTrf 3) 5
+                                , bench "15 calls" $ whnf (benchSmpTrf 3) 15
+                                , bench "25 calls" $ whnf (benchSmpTrf 3) 25
                                 ],
   bgroup "SmpTrf - 4 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 4) 1
                                 , bench "3 calls"  $ whnf (benchSmpTrf 4) 3
                                 , bench "5 calls"  $ whnf (benchSmpTrf 4) 5
+                                , bench "15 calls" $ whnf (benchSmpTrf 4) 15
+                                , bench "25 calls" $ whnf (benchSmpTrf 4) 25
                                 ],
   bgroup "SmpTrf - 5 agents"    [ bench "1 call"   $ whnf (benchSmpTrf 5) 1
                                 , bench "3 calls"  $ whnf (benchSmpTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchSmpTrf 5) 5
                                 , bench "15 calls" $ whnf (benchSmpTrf 5) 15
                                 , bench "25 calls" $ whnf (benchSmpTrf 5) 25
+                                , bench "50 calls" $ whnf (benchSmpTrf 5) 50
+                                , bench "75 calls" $ whnf (benchSmpTrf 5) 75
+                                , bench "100 calls" $ whnf (benchSmpTrf 5) 100
                                 ],
-  bgroup "SmpTrf - 10 agents"   [ bench " 5 call"   $ whnf (benchSmpTrf 10) 5
-                                , bench "15 calls"  $ whnf (benchSmpTrf 10) 15
-                                , bench "25 calls"  $ whnf (benchSmpTrf 10) 25
+  bgroup "SmpTrf - 15 agents"   [ bench " 5 call"  $ whnf (benchSmpTrf 15) 5
+                                , bench "15 calls" $ whnf (benchSmpTrf 15) 15
+                                , bench "25 calls" $ whnf (benchSmpTrf 15) 25
+                                , bench "50 calls" $ whnf (benchSmpTrf 15) 50
+                                , bench "75 calls" $ whnf (benchSmpTrf 15) 75
+                                , bench "100 calls" $ whnf (benchSmpTrf 15) 100
                                 ],
   bgroup "TnsTrf - 3 agents"    [ bench "1 call"   $ whnf (benchTnsTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchTnsTrf 3) 3
@@ -97,6 +101,16 @@ main = defaultMain [
   bgroup "TnsTrf - 5 agents"    [ bench "1 call"   $ whnf (benchTnsTrf 5) 1
                                 , bench "3 calls"  $ whnf (benchTnsTrf 5) 3
                                 , bench "5 calls"  $ whnf (benchTnsTrf 5) 5
+                                , bench "15 calls" $ whnf (benchTnsTrf 5) 15
+                                , bench "25 calls" $ whnf (benchTnsTrf 5) 25
+                                , bench "50 calls" $ whnf (benchTnsTrf 5) 50
+                                , bench "75 calls" $ whnf (benchTnsTrf 5) 75
+                                ],
+  bgroup "TnsTrf - 15 agents"   [ bench "1 call"   $ whnf (benchTnsTrf 15) 1
+                                , bench "3 calls"  $ whnf (benchTnsTrf 15) 3
+                                , bench "5 calls"  $ whnf (benchTnsTrf 15) 5
+                                , bench "15 calls" $ whnf (benchTnsTrf 15) 15
+                                , bench "25 calls" $ whnf (benchTnsTrf 15) 25
                                 ],
   bgroup "OptTrf - 3 agents"    [ bench "1 call"   $ whnf (benchOptTrf 3) 1
                                 , bench "3 calls"  $ whnf (benchOptTrf 3) 3

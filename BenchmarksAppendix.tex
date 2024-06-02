@@ -4,192 +4,415 @@ The following benchmarks are most recently produced.
 To run the benchmarks, run \texttt{stack bench} from the root folder.
 
 \begin{showCode}
-benchmarking SmpTrf - 3 agents/1 call
-time                 91.61 us   (84.94 us .. 97.30 us)
-                     0.975 R^2   (0.960 R^2 .. 0.988 R^2)
-mean                 88.29 us   (85.05 us .. 93.54 us)
-std dev              14.18 us   (10.70 us .. 20.56 us)
-variance introduced by outliers: 92% (severely inflated)
+    benchmarking SmpTrf - 3 agents/1 call
+    time                 93.02 us   (86.58 us .. 100.2 us)
+                         0.959 R^2   (0.939 R^2 .. 0.978 R^2)
+    mean                 99.69 us   (91.82 us .. 109.7 us)
+    std dev              29.49 us   (22.87 us .. 37.79 us)
+    variance introduced by outliers: 98% (severely inflated)
 
-benchmarking SmpTrf - 3 agents/3 calls
-time                 100.8 us   (96.63 us .. 104.8 us)
-                     0.982 R^2   (0.973 R^2 .. 0.990 R^2)
-mean                 99.34 us   (95.63 us .. 103.9 us)
-std dev              13.86 us   (11.42 us .. 17.02 us)
-variance introduced by outliers: 90% (severely inflated)
+    benchmarking SmpTrf - 3 agents/3 calls
+    time                 121.1 us   (113.1 us .. 129.9 us)
+                         0.964 R^2   (0.948 R^2 .. 0.980 R^2)
+    mean                 128.9 us   (123.4 us .. 134.3 us)
+    std dev              17.55 us   (14.38 us .. 21.83 us)
+    variance introduced by outliers: 89% (severely inflated)
 
-benchmarking SmpTrf - 3 agents/5 calls
-time                 475.9 us   (439.2 us .. 513.0 us)
-                     0.959 R^2   (0.935 R^2 .. 0.978 R^2)
-mean                 486.2 us   (458.0 us .. 514.8 us)
-std dev              91.05 us   (76.93 us .. 111.1 us)
-variance introduced by outliers: 93% (severely inflated)
+    benchmarking SmpTrf - 3 agents/5 calls
+    time                 520.4 us   (461.6 us .. 566.7 us)
+                         0.944 R^2   (0.916 R^2 .. 0.972 R^2)
+    mean                 448.7 us   (410.4 us .. 484.0 us)
+    std dev              114.6 us   (98.86 us .. 137.3 us)
+    variance introduced by outliers: 96% (severely inflated)
 
-benchmarking SmpTrf - 4 agents/1 call
-time                 331.5 us   (307.4 us .. 355.1 us)
-                     0.947 R^2   (0.900 R^2 .. 0.979 R^2)
-mean                 289.8 us   (273.9 us .. 317.2 us)
-std dev              66.15 us   (39.68 us .. 111.4 us)
-variance introduced by outliers: 95% (severely inflated)
+    benchmarking SmpTrf - 3 agents/15 calls
+    time                 1.268 ms   (1.204 ms .. 1.324 ms)
+                         0.981 R^2   (0.972 R^2 .. 0.989 R^2)
+    mean                 1.298 ms   (1.246 ms .. 1.377 ms)
+    std dev              214.5 us   (148.4 us .. 334.3 us)
+    variance introduced by outliers: 87% (severely inflated)
 
-benchmarking SmpTrf - 4 agents/3 calls
-time                 1.136 ms   (1.057 ms .. 1.213 ms)
-                     0.960 R^2   (0.938 R^2 .. 0.977 R^2)
-mean                 995.6 us   (942.0 us .. 1.052 ms)
-std dev              174.4 us   (148.5 us .. 210.5 us)
-variance introduced by outliers: 89% (severely inflated)
+    benchmarking SmpTrf - 3 agents/25 calls
+    time                 2.322 ms   (2.055 ms .. 2.621 ms)
+                         0.920 R^2   (0.889 R^2 .. 0.972 R^2)
+    mean                 2.261 ms   (2.152 ms .. 2.407 ms)
+    std dev              418.2 us   (335.9 us .. 522.7 us)
+    variance introduced by outliers: 88% (severely inflated)
 
-benchmarking SmpTrf - 4 agents/5 calls
-time                 784.1 us   (749.8 us .. 847.3 us)
-                     0.919 R^2   (0.875 R^2 .. 0.959 R^2)
-mean                 976.6 us   (913.5 us .. 1.056 ms)
-std dev              234.2 us   (203.3 us .. 267.9 us)
-variance introduced by outliers: 94% (severely inflated)
+    benchmarking SmpTrf - 4 agents/1 call
+    time                 281.8 us   (268.4 us .. 296.6 us)
+                         0.988 R^2   (0.982 R^2 .. 0.995 R^2)
+    mean                 286.3 us   (279.1 us .. 304.2 us)
+    std dev              35.23 us   (20.35 us .. 62.33 us)
+    variance introduced by outliers: 84% (severely inflated)
 
-benchmarking SmpTrf - 5 agents/1 call
-time                 646.4 us   (633.2 us .. 663.3 us)
-                     0.996 R^2   (0.994 R^2 .. 0.999 R^2)
-mean                 638.0 us   (630.9 us .. 649.1 us)
-std dev              29.30 us   (22.60 us .. 37.87 us)
-variance introduced by outliers: 38% (moderately inflated)
+    benchmarking SmpTrf - 4 agents/3 calls
+    time                 999.4 us   (921.4 us .. 1.081 ms)
+                         0.957 R^2   (0.936 R^2 .. 0.976 R^2)
+    mean                 945.9 us   (897.6 us .. 996.1 us)
+    std dev              161.7 us   (140.8 us .. 181.9 us)
+    variance introduced by outliers: 90% (severely inflated)
 
-benchmarking SmpTrf - 5 agents/3 calls
-time                 2.447 ms   (2.187 ms .. 2.754 ms)
-                     0.923 R^2   (0.887 R^2 .. 0.962 R^2)
-mean                 2.153 ms   (2.035 ms .. 2.316 ms)
-std dev              427.8 us   (323.7 us .. 546.3 us)
-variance introduced by outliers: 90% (severely inflated)
+    benchmarking SmpTrf - 4 agents/5 calls
+    time                 833.2 us   (799.3 us .. 870.4 us)
+                         0.988 R^2   (0.984 R^2 .. 0.993 R^2)
+    mean                 812.1 us   (791.7 us .. 838.3 us)
+    std dev              71.23 us   (56.16 us .. 93.05 us)
+    variance introduced by outliers: 69% (severely inflated)
 
-benchmarking SmpTrf - 5 agents/5 calls
-time                 2.167 ms   (2.073 ms .. 2.265 ms)
-                     0.982 R^2   (0.968 R^2 .. 0.993 R^2)
-mean                 2.096 ms   (2.037 ms .. 2.187 ms)
-std dev              234.3 us   (174.3 us .. 380.6 us)
-variance introduced by outliers: 74% (severely inflated)
+    benchmarking SmpTrf - 4 agents/15 calls
+    time                 3.283 ms   (3.205 ms .. 3.353 ms)
+                         0.992 R^2   (0.987 R^2 .. 0.996 R^2)
+    mean                 3.371 ms   (3.298 ms .. 3.455 ms)
+    std dev              255.3 us   (209.1 us .. 325.5 us)
+    variance introduced by outliers: 51% (severely inflated)
 
-benchmarking ClsTrf - 3 agents/1 call
-time                 437.5 us   (404.4 us .. 456.3 us)
-                     0.977 R^2   (0.971 R^2 .. 0.985 R^2)
-mean                 388.4 us   (376.8 us .. 402.8 us)
-std dev              43.75 us   (36.27 us .. 51.77 us)
-variance introduced by outliers: 81% (severely inflated)
+    benchmarking SmpTrf - 4 agents/25 calls
+    time                 5.849 ms   (5.701 ms .. 5.981 ms)
+                         0.991 R^2   (0.981 R^2 .. 0.996 R^2)
+    mean                 5.959 ms   (5.816 ms .. 6.177 ms)
+    std dev              517.6 us   (315.5 us .. 815.8 us)
+    variance introduced by outliers: 54% (severely inflated)
 
-benchmarking ClsTrf - 3 agents/3 calls
-time                 985.4 us   (957.6 us .. 1.008 ms)
-                     0.955 R^2   (0.895 R^2 .. 0.986 R^2)
-mean                 1.308 ms   (1.227 ms .. 1.405 ms)
-std dev              323.5 us   (260.1 us .. 469.4 us)
-variance introduced by outliers: 95% (severely inflated)
+    benchmarking SmpTrf - 5 agents/1 call
+    time                 713.8 us   (691.5 us .. 739.2 us)
+                         0.991 R^2   (0.987 R^2 .. 0.995 R^2)
+    mean                 711.1 us   (693.1 us .. 736.7 us)
+    std dev              77.31 us   (52.23 us .. 111.2 us)
+    variance introduced by outliers: 78% (severely inflated)
 
-benchmarking ClsTrf - 3 agents/5 calls
-time                 2.033 ms   (1.924 ms .. 2.171 ms)
-                     0.976 R^2   (0.956 R^2 .. 0.992 R^2)
-mean                 1.876 ms   (1.834 ms .. 1.961 ms)
-std dev              191.9 us   (139.1 us .. 314.8 us)
-variance introduced by outliers: 69% (severely inflated)
+    benchmarking SmpTrf - 5 agents/3 calls
+    time                 2.045 ms   (1.995 ms .. 2.100 ms)
+                         0.994 R^2   (0.992 R^2 .. 0.997 R^2)
+    mean                 2.099 ms   (2.058 ms .. 2.187 ms)
+    std dev              208.1 us   (133.2 us .. 355.0 us)
+    variance introduced by outliers: 69% (severely inflated)
 
-benchmarking ClsTrf - 4 agents/1 call
-time                 2.847 ms   (2.591 ms .. 3.161 ms)
-                     0.946 R^2   (0.910 R^2 .. 0.980 R^2)
-mean                 2.736 ms   (2.617 ms .. 2.876 ms)
-std dev              425.0 us   (357.2 us .. 627.7 us)
-variance introduced by outliers: 83% (severely inflated)
+    benchmarking SmpTrf - 5 agents/5 calls
+    time                 2.432 ms   (2.199 ms .. 2.613 ms)
+                         0.965 R^2   (0.953 R^2 .. 0.979 R^2)
+    mean                 2.259 ms   (2.159 ms .. 2.415 ms)
+    std dev              398.4 us   (274.8 us .. 654.4 us)
+    variance introduced by outliers: 87% (severely inflated)
 
-benchmarking ClsTrf - 4 agents/3 calls
-time                 9.385 ms   (8.941 ms .. 9.773 ms)
-                     0.968 R^2   (0.930 R^2 .. 0.988 R^2)
-mean                 8.423 ms   (8.039 ms .. 8.900 ms)
-std dev              1.189 ms   (876.5 us .. 1.739 ms)
-variance introduced by outliers: 71% (severely inflated)
+    benchmarking SmpTrf - 5 agents/15 calls
+    time                 7.920 ms   (7.410 ms .. 8.574 ms)
+                         0.931 R^2   (0.853 R^2 .. 0.980 R^2)
+    mean                 9.788 ms   (9.158 ms .. 10.73 ms)
+    std dev              2.136 ms   (1.628 ms .. 2.759 ms)
+    variance introduced by outliers: 86% (severely inflated)
 
-benchmarking ClsTrf - 4 agents/5 calls
-time                 12.53 ms   (9.774 ms .. 15.15 ms)
-                     0.754 R^2   (0.475 R^2 .. 0.952 R^2)
-mean                 19.57 ms   (17.57 ms .. 23.15 ms)
-std dev              6.303 ms   (3.938 ms .. 8.712 ms)
-variance introduced by outliers: 91% (severely inflated)
+    benchmarking SmpTrf - 5 agents/25 calls
+    time                 14.51 ms   (14.05 ms .. 14.92 ms)
+                         0.993 R^2   (0.987 R^2 .. 0.997 R^2)
+    mean                 15.18 ms   (14.79 ms .. 15.95 ms)
+    std dev              1.291 ms   (757.9 us .. 2.331 ms)
+    variance introduced by outliers: 42% (moderately inflated)
 
-benchmarking ClsTrf - 5 agents/1 call
-time                 17.66 ms   (12.66 ms .. 23.56 ms)
-                     0.740 R^2   (0.583 R^2 .. 0.920 R^2)
-mean                 18.33 ms   (16.58 ms .. 21.01 ms)
-std dev              4.837 ms   (3.220 ms .. 7.050 ms)
-variance introduced by outliers: 86% (severely inflated)
+    benchmarking SmpTrf - 5 agents/50 calls
+    time                 31.49 ms   (29.91 ms .. 34.02 ms)
+                         0.980 R^2   (0.958 R^2 .. 0.994 R^2)
+    mean                 32.50 ms   (31.40 ms .. 33.71 ms)
+    std dev              2.424 ms   (2.066 ms .. 3.033 ms)
+    variance introduced by outliers: 28% (moderately inflated)
 
-benchmarking ClsTrf - 5 agents/3 calls
-time                 37.18 ms   (24.98 ms .. 43.50 ms)
-                     0.750 R^2   (0.322 R^2 .. 0.960 R^2)
-mean                 63.01 ms   (52.45 ms .. 79.43 ms)
-std dev              25.10 ms   (15.74 ms .. 36.58 ms)
-variance introduced by outliers: 92% (severely inflated)
+    benchmarking SmpTrf - 5 agents/75 calls
+    time                 47.48 ms   (45.63 ms .. 48.85 ms)
+                         0.996 R^2   (0.991 R^2 .. 0.999 R^2)
+    mean                 47.00 ms   (45.76 ms .. 48.53 ms)
+    std dev              2.621 ms   (1.782 ms .. 3.860 ms)
+    variance introduced by outliers: 14% (moderately inflated)
 
-benchmarking ClsTrf - 5 agents/5 calls
-time                 12.81 s    (12.00 s .. 14.09 s)
-                     0.999 R^2   (0.998 R^2 .. 1.000 R^2)
-mean                 12.27 s    (12.10 s .. 12.55 s)
-std dev              276.2 ms   (33.61 ms .. 351.3 ms)
-variance introduced by outliers: 19% (moderately inflated)
+    benchmarking SmpTrf - 5 agents/100 calls
+    time                 61.62 ms   (59.17 ms .. 64.25 ms)
+                         0.995 R^2   (0.987 R^2 .. 0.999 R^2)
+    mean                 62.77 ms   (61.07 ms .. 64.67 ms)
+    std dev              3.405 ms   (2.526 ms .. 4.879 ms)
+    variance introduced by outliers: 15% (moderately inflated)
 
-benchmarking TnsTrf - 3 agents/1 call
-time                 148.0 us   (146.3 us .. 149.8 us)
-                     0.999 R^2   (0.998 R^2 .. 0.999 R^2)
-mean                 146.0 us   (144.9 us .. 147.1 us)
-std dev              3.788 us   (3.073 us .. 4.679 us)
-variance introduced by outliers: 21% (moderately inflated)
+    benchmarking SmpTrf - 15 agents/ 5 call
+    time                 41.55 ms   (18.98 ms .. 62.03 ms)
+                         0.682 R^2   (0.259 R^2 .. 0.995 R^2)
+    mean                 83.27 ms   (52.18 ms .. 176.9 ms)
+    std dev              105.8 ms   (3.388 ms .. 180.6 ms)
+    variance introduced by outliers: 92% (severely inflated)
 
-benchmarking TnsTrf - 3 agents/3 calls
-time                 293.6 us   (289.7 us .. 298.3 us)
-                     0.991 R^2   (0.983 R^2 .. 0.996 R^2)
-mean                 331.4 us   (319.3 us .. 347.0 us)
-std dev              48.50 us   (39.34 us .. 63.12 us)
-variance introduced by outliers: 89% (severely inflated)
+    benchmarking SmpTrf - 15 agents/15 calls
+    time                 788.3 ms   (577.6 ms .. 945.6 ms)
+                         0.992 R^2   (0.972 R^2 .. 1.000 R^2)
+    mean                 605.9 ms   (512.7 ms .. 663.1 ms)
+    std dev              98.75 ms   (75.75 ms .. 115.8 ms)
+    variance introduced by outliers: 46% (moderately inflated)
 
-benchmarking TnsTrf - 3 agents/5 calls
-time                 524.9 us   (506.5 us .. 542.4 us)
-                     0.986 R^2   (0.973 R^2 .. 0.995 R^2)
-mean                 491.2 us   (477.7 us .. 511.9 us)
-std dev              52.83 us   (34.29 us .. 87.06 us)
-variance introduced by outliers: 79% (severely inflated)
+    benchmarking SmpTrf - 15 agents/25 calls
+    time                 1.236 s    (1.093 s .. 1.304 s)
+                         0.998 R^2   (0.996 R^2 .. 1.000 R^2)
+    mean                 1.249 s    (1.230 s .. 1.268 s)
+    std dev              22.28 ms   (14.84 ms .. 26.32 ms)
+    variance introduced by outliers: 19% (moderately inflated)
 
-benchmarking TnsTrf - 4 agents/1 call
-time                 273.1 us   (255.5 us .. 292.6 us)
-                     0.977 R^2   (0.969 R^2 .. 0.990 R^2)
-mean                 265.8 us   (259.3 us .. 274.1 us)
-std dev              24.61 us   (17.88 us .. 34.30 us)
-variance introduced by outliers: 76% (severely inflated)
+    benchmarking SmpTrf - 15 agents/50 calls
+    time                 3.258 s    (2.086 s .. 4.926 s)
+                         0.962 R^2   (0.949 R^2 .. 1.000 R^2)
+    mean                 2.961 s    (2.663 s .. 3.219 s)
+    std dev              322.9 ms   (267.9 ms .. 364.7 ms)
+    variance introduced by outliers: 23% (moderately inflated)
 
-benchmarking TnsTrf - 4 agents/3 calls
-time                 842.4 us   (831.4 us .. 855.0 us)
-                     0.998 R^2   (0.996 R^2 .. 0.999 R^2)
-mean                 830.4 us   (823.7 us .. 841.1 us)
-std dev              26.04 us   (17.67 us .. 44.81 us)
-variance introduced by outliers: 22% (moderately inflated)
+    benchmarking SmpTrf - 15 agents/75 calls
+    time                 3.775 s    (3.332 s .. 4.614 s)
+                         0.994 R^2   (0.990 R^2 .. 1.000 R^2)
+    mean                 3.990 s    (3.857 s .. 4.186 s)
+    std dev              187.0 ms   (53.01 ms .. 244.1 ms)
+    variance introduced by outliers: 19% (moderately inflated)
 
-benchmarking TnsTrf - 4 agents/5 calls
-time                 1.193 ms   (1.112 ms .. 1.324 ms)
-                     0.942 R^2   (0.907 R^2 .. 0.976 R^2)
-mean                 1.433 ms   (1.377 ms .. 1.486 ms)
-std dev              194.9 us   (166.4 us .. 230.8 us)
-variance introduced by outliers: 82% (severely inflated)
+    benchmarking SmpTrf - 15 agents/100 calls
+    time                 5.387 s    (4.392 s .. 6.092 s)
+                         0.996 R^2   (0.987 R^2 .. 1.000 R^2)
+    mean                 5.334 s    (5.163 s .. 5.497 s)
+    std dev              201.0 ms   (84.86 ms .. 245.8 ms)
+    variance introduced by outliers: 19% (moderately inflated)
 
-benchmarking TnsTrf - 5 agents/1 call
-time                 489.7 us   (467.9 us .. 508.6 us)
-                     0.983 R^2   (0.971 R^2 .. 0.992 R^2)
-mean                 477.0 us   (462.8 us .. 494.9 us)
-std dev              54.69 us   (44.04 us .. 82.83 us)
-variance introduced by outliers: 81% (severely inflated)
+    benchmarking TnsTrf - 3 agents/1 call
+    time                 126.8 us   (122.9 us .. 133.6 us)
+                         0.970 R^2   (0.945 R^2 .. 0.989 R^2)
+    mean                 142.7 us   (134.6 us .. 152.5 us)
+    std dev              30.65 us   (22.90 us .. 41.19 us)
+    variance introduced by outliers: 95% (severely inflated)
 
-benchmarking TnsTrf - 5 agents/3 calls
-time                 1.299 ms   (1.220 ms .. 1.370 ms)
-                     0.979 R^2   (0.969 R^2 .. 0.988 R^2)
-mean                 1.323 ms   (1.274 ms .. 1.389 ms)
-std dev              192.9 us   (149.3 us .. 254.0 us)
-variance introduced by outliers: 84% (severely inflated)
+    benchmarking TnsTrf - 3 agents/3 calls
+    time                 331.3 us   (324.7 us .. 338.5 us)
+                         0.995 R^2   (0.989 R^2 .. 0.998 R^2)
+    mean                 335.1 us   (328.9 us .. 348.4 us)
+    std dev              31.03 us   (15.83 us .. 57.32 us)
+    variance introduced by outliers: 75% (severely inflated)
 
-benchmarking TnsTrf - 5 agents/5 calls
-time                 1.845 ms   (1.691 ms .. 2.010 ms)
-                     0.966 R^2   (0.951 R^2 .. 0.986 R^2)
-mean                 1.831 ms   (1.779 ms .. 1.913 ms)
-std dev              216.7 us   (164.0 us .. 335.5 us)
-variance introduced by outliers: 77% (severely inflated)
+    benchmarking TnsTrf - 3 agents/5 calls
+    time                 415.1 us   (408.2 us .. 420.6 us)
+                         0.998 R^2   (0.997 R^2 .. 0.999 R^2)
+    mean                 414.4 us   (409.1 us .. 420.5 us)
+    std dev              19.64 us   (15.58 us .. 24.87 us)
+    variance introduced by outliers: 43% (moderately inflated)
+
+    benchmarking TnsTrf - 4 agents/1 call
+    time                 263.4 us   (257.9 us .. 270.9 us)
+                         0.993 R^2   (0.988 R^2 .. 0.997 R^2)
+    mean                 268.8 us   (262.6 us .. 277.8 us)
+    std dev              25.59 us   (20.22 us .. 36.34 us)
+    variance introduced by outliers: 77% (severely inflated)
+
+    benchmarking TnsTrf - 4 agents/3 calls
+    time                 751.7 us   (727.7 us .. 777.1 us)
+                         0.993 R^2   (0.989 R^2 .. 0.996 R^2)
+    mean                 723.2 us   (710.7 us .. 740.0 us)
+    std dev              49.95 us   (41.42 us .. 65.93 us)
+    variance introduced by outliers: 58% (severely inflated)
+
+    benchmarking TnsTrf - 4 agents/5 calls
+    time                 1.194 ms   (1.171 ms .. 1.225 ms)
+                         0.994 R^2   (0.990 R^2 .. 0.997 R^2)
+    mean                 1.201 ms   (1.180 ms .. 1.229 ms)
+    std dev              85.34 us   (69.56 us .. 105.1 us)
+    variance introduced by outliers: 57% (severely inflated)
+
+    benchmarking TnsTrf - 5 agents/1 call
+    time                 570.4 us   (525.6 us .. 617.9 us)
+                         0.962 R^2   (0.948 R^2 .. 0.979 R^2)
+    mean                 544.0 us   (517.9 us .. 569.5 us)
+    std dev              81.95 us   (71.67 us .. 95.19 us)
+    variance introduced by outliers: 88% (severely inflated)
+
+    benchmarking TnsTrf - 5 agents/3 calls
+    time                 1.265 ms   (1.245 ms .. 1.286 ms)
+                         0.997 R^2   (0.994 R^2 .. 0.998 R^2)
+    mean                 1.255 ms   (1.238 ms .. 1.277 ms)
+    std dev              64.47 us   (49.46 us .. 85.75 us)
+    variance introduced by outliers: 39% (moderately inflated)
+
+    benchmarking TnsTrf - 5 agents/5 calls
+    time                 2.114 ms   (2.035 ms .. 2.206 ms)
+                         0.990 R^2   (0.985 R^2 .. 0.994 R^2)
+    mean                 2.143 ms   (2.099 ms .. 2.200 ms)
+    std dev              168.6 us   (135.3 us .. 222.3 us)
+    variance introduced by outliers: 57% (severely inflated)
+
+    benchmarking TnsTrf - 5 agents/15 calls
+    time                 5.416 ms   (5.283 ms .. 5.560 ms)
+                         0.995 R^2   (0.991 R^2 .. 0.998 R^2)
+    mean                 5.296 ms   (5.223 ms .. 5.386 ms)
+    std dev              229.0 us   (185.5 us .. 295.5 us)
+    variance introduced by outliers: 21% (moderately inflated)
+
+    benchmarking TnsTrf - 5 agents/25 calls
+    time                 9.518 ms   (9.241 ms .. 9.860 ms)
+                         0.991 R^2   (0.985 R^2 .. 0.996 R^2)
+    mean                 9.443 ms   (9.289 ms .. 9.632 ms)
+    std dev              479.3 us   (390.6 us .. 587.4 us)
+    variance introduced by outliers: 25% (moderately inflated)
+
+    benchmarking TnsTrf - 5 agents/50 calls
+    time                 21.30 ms   (20.70 ms .. 22.20 ms)
+                         0.996 R^2   (0.992 R^2 .. 0.999 R^2)
+    mean                 21.07 ms   (20.85 ms .. 21.38 ms)
+    std dev              604.7 us   (419.8 us .. 880.8 us)
+
+    benchmarking TnsTrf - 5 agents/75 calls
+    time                 34.07 ms   (33.03 ms .. 34.95 ms)
+                         0.998 R^2   (0.996 R^2 .. 0.999 R^2)
+    mean                 33.91 ms   (33.43 ms .. 34.84 ms)
+    std dev              1.367 ms   (789.5 us .. 2.250 ms)
+    variance introduced by outliers: 12% (moderately inflated)
+
+    benchmarking TnsTrf - 15 agents/1 call
+    time                 9.999 ms   (9.764 ms .. 10.33 ms)
+                         0.994 R^2   (0.989 R^2 .. 0.998 R^2)
+    mean                 10.06 ms   (9.896 ms .. 10.22 ms)
+    std dev              453.3 us   (368.9 us .. 542.9 us)
+    variance introduced by outliers: 19% (moderately inflated)
+
+    benchmarking TnsTrf - 15 agents/3 calls
+    time                 29.59 ms   (28.65 ms .. 30.64 ms)
+                         0.994 R^2   (0.986 R^2 .. 0.998 R^2)
+    mean                 29.40 ms   (28.78 ms .. 30.03 ms)
+    std dev              1.315 ms   (1.051 ms .. 1.726 ms)
+    variance introduced by outliers: 11% (moderately inflated)
+
+    benchmarking TnsTrf - 15 agents/5 calls
+    time                 49.93 ms   (48.18 ms .. 51.61 ms)
+                         0.997 R^2   (0.994 R^2 .. 0.999 R^2)
+    mean                 49.11 ms   (48.45 ms .. 49.82 ms)
+    std dev              1.350 ms   (1.044 ms .. 1.664 ms)
+
+    benchmarking TnsTrf - 15 agents/15 calls
+    time                 80.26 ms   (-32.72 ms .. 161.2 ms)
+                         0.450 R^2   (0.004 R^2 .. 1.000 R^2)
+    mean                 268.4 ms   (170.0 ms .. 555.6 ms)
+    std dev              234.8 ms   (3.347 ms .. 318.1 ms)
+    variance introduced by outliers: 83% (severely inflated)
+
+    benchmarking TnsTrf - 15 agents/25 calls
+    time                 -6.859 s   (-11.47 s .. 343.9 ms)
+                         0.864 R^2   (0.631 R^2 .. 1.000 R^2)
+    mean                 6.732 s    (346.3 ms .. 17.21 s)
+    std dev              9.957 s    (401.2 us .. 12.10 s)
+    variance introduced by outliers: 75% (severely inflated)
+
+    benchmarking OptTrf - 3 agents/1 call
+    time                 725.2 us   (711.4 us .. 743.8 us)
+                         0.995 R^2   (0.993 R^2 .. 0.997 R^2)
+    mean                 732.5 us   (718.0 us .. 754.5 us)
+    std dev              61.25 us   (40.69 us .. 85.43 us)
+    variance introduced by outliers: 67% (severely inflated)
+
+    benchmarking OptTrf - 3 agents/3 calls
+    time                 5.020 ms   (4.892 ms .. 5.144 ms)
+                         0.993 R^2   (0.987 R^2 .. 0.997 R^2)
+    mean                 5.033 ms   (4.946 ms .. 5.167 ms)
+    std dev              323.5 us   (204.5 us .. 455.4 us)
+    variance introduced by outliers: 40% (moderately inflated)
+
+    benchmarking OptTrf - 3 agents/5 calls
+    time                 11.80 ms   (11.52 ms .. 12.11 ms)
+                         0.996 R^2   (0.993 R^2 .. 0.999 R^2)
+    mean                 11.63 ms   (11.48 ms .. 11.86 ms)
+    std dev              473.0 us   (336.8 us .. 628.5 us)
+    variance introduced by outliers: 17% (moderately inflated)
+
+    benchmarking OptTrf - 4 agents/1 call
+    time                 4.735 ms   (4.129 ms .. 5.204 ms)
+                         0.954 R^2   (0.939 R^2 .. 0.983 R^2)
+    mean                 4.263 ms   (4.135 ms .. 4.456 ms)
+    std dev              465.8 us   (333.9 us .. 618.6 us)
+    variance introduced by outliers: 66% (severely inflated)
+
+    benchmarking OptTrf - 4 agents/3 calls
+    time                 35.19 ms   (32.58 ms .. 39.69 ms)
+                         0.921 R^2   (0.810 R^2 .. 0.993 R^2)
+    mean                 39.96 ms   (37.15 ms .. 43.79 ms)
+    std dev              6.574 ms   (5.446 ms .. 8.012 ms)
+    variance introduced by outliers: 65% (severely inflated)
+
+    benchmarking OptTrf - 4 agents/5 calls
+    time                 -4.295 s   (-15.44 s .. 9.397 s)
+                         0.460 R^2   (0.081 R^2 .. 1.000 R^2)
+    mean                 5.019 s    (336.1 ms .. 9.435 s)
+    std dev              5.118 s    (4.350 s .. 5.415 s)
+    variance introduced by outliers: 75% (severely inflated)
+
+    benchmarking OptTrf - 5 agents/1 call
+    time                 21.97 ms   (21.12 ms .. 22.99 ms)
+                         0.992 R^2   (0.985 R^2 .. 0.997 R^2)
+    mean                 22.76 ms   (22.22 ms .. 23.97 ms)
+    std dev              1.799 ms   (947.2 us .. 3.044 ms)
+    variance introduced by outliers: 33% (moderately inflated)
+
+    benchmarking OptTrf - 5 agents/3 calls
+    time                 125.3 ms   (15.57 ms .. 194.5 ms)
+                         0.726 R^2   (0.095 R^2 .. 1.000 R^2)
+    mean                 273.9 ms   (194.3 ms .. 510.9 ms)
+    std dev              193.4 ms   (1.771 ms .. 260.3 ms)
+    variance introduced by outliers: 83% (severely inflated)
+
+    benchmarking ClsTrf - 3 agents/1 call
+    time                 539.1 us   (499.3 us .. 580.2 us)
+                         0.977 R^2   (0.968 R^2 .. 0.994 R^2)
+    mean                 517.8 us   (503.2 us .. 542.7 us)
+    std dev              62.00 us   (43.01 us .. 93.51 us)
+    variance introduced by outliers: 82% (severely inflated)
+
+    benchmarking ClsTrf - 3 agents/3 calls
+    time                 1.515 ms   (1.435 ms .. 1.623 ms)
+                         0.948 R^2   (0.894 R^2 .. 0.980 R^2)
+    mean                 1.811 ms   (1.717 ms .. 1.937 ms)
+    std dev              382.6 us   (310.3 us .. 497.9 us)
+    variance introduced by outliers: 91% (severely inflated)
+
+    benchmarking ClsTrf - 3 agents/5 calls
+    time                 2.583 ms   (2.524 ms .. 2.639 ms)
+                         0.994 R^2   (0.989 R^2 .. 0.997 R^2)
+    mean                 2.578 ms   (2.528 ms .. 2.648 ms)
+    std dev              199.9 us   (143.6 us .. 305.5 us)
+    variance introduced by outliers: 55% (severely inflated)
+
+    benchmarking ClsTrf - 4 agents/1 call
+    time                 3.134 ms   (2.974 ms .. 3.323 ms)
+                         0.987 R^2   (0.982 R^2 .. 0.995 R^2)
+    mean                 3.015 ms   (2.965 ms .. 3.073 ms)
+    std dev              178.9 us   (138.4 us .. 232.2 us)
+    variance introduced by outliers: 40% (moderately inflated)
+
+    benchmarking ClsTrf - 4 agents/3 calls
+    time                 9.784 ms   (9.346 ms .. 10.16 ms)
+                         0.989 R^2   (0.981 R^2 .. 0.994 R^2)
+    mean                 10.05 ms   (9.762 ms .. 10.45 ms)
+    std dev              938.5 us   (667.4 us .. 1.282 ms)
+    variance introduced by outliers: 52% (severely inflated)
+
+    benchmarking ClsTrf - 4 agents/5 calls
+    time                 18.30 ms   (17.86 ms .. 18.76 ms)
+                         0.996 R^2   (0.991 R^2 .. 0.998 R^2)
+    mean                 18.38 ms   (18.09 ms .. 18.77 ms)
+    std dev              800.3 us   (597.3 us .. 1.050 ms)
+    variance introduced by outliers: 17% (moderately inflated)
+
+    benchmarking ClsTrf - 5 agents/1 call
+    time                 18.40 ms   (17.96 ms .. 18.93 ms)
+                         0.996 R^2   (0.992 R^2 .. 0.999 R^2)
+    mean                 18.38 ms   (18.05 ms .. 19.16 ms)
+    std dev              1.143 ms   (515.5 us .. 2.122 ms)
+    variance introduced by outliers: 26% (moderately inflated)
+
+    benchmarking ClsTrf - 5 agents/3 calls
+    time                 70.56 ms   (60.20 ms .. 83.98 ms)
+                         0.948 R^2   (0.872 R^2 .. 0.990 R^2)
+    mean                 63.70 ms   (59.28 ms .. 69.37 ms)
+    std dev              8.803 ms   (7.048 ms .. 11.28 ms)
+    variance introduced by outliers: 44% (moderately inflated)
+
+    benchmarking ClsTrf - 5 agents/5 calls
+    time                 -1.736 s   (-5.632 s .. 130.2 ms)
+                         0.611 R^2   (0.079 R^2 .. 1.000 R^2)
+    mean                 1.708 s    (135.1 ms .. 4.767 s)
+    std dev              3.031 s    (810.2 us .. 3.532 s)
+    variance introduced by outliers: 75% (severely inflated)
+
 \end{showCode}
